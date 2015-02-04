@@ -1,0 +1,22 @@
+h1 {
+  color: #881111;
+  margin-bottom: 20px;
+}
+.important {
+  color: #ee3322;
+}
+.author {
+  color: #777777;
+  margin-bottom: 10px;
+}
+.credits-panel {
+  margin-top: 20px;
+}
+.slide-animation.ng-enter {
+  transition: 0.5s linear all;
+  opacity: 0.2;
+}
+.slide-animation.ng-enter-active {
+  transition: 0.5s linear all;
+  opacity: 1;
+}

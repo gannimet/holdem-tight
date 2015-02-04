@@ -1,0 +1,27 @@
+{
+  "name": "holdem-tight",
+  "version": "0.0.1",
+  "authors": [
+    "gannimet <info@colimit.de>"
+  ],
+  "description": "Texas Hold'em tracking app",
+  "main": "src/server/app.js",
+  "license": "Do what the fuck you want to public license",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.0",
+    "alertify": "~0.3.10",
+    "bootstrap": "~3.2.0",
+    "angular-route": "~1.3.1",
+    "angular-mocks": "~1.3.1",
+    "jquery": "~2.1.1",
+    "angular-animate": "~1.3.2"
+  }
+}

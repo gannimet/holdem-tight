@@ -1,0 +1,26 @@
+doctype html
+
+html(data-ng-app='holdemApp')
+	head
+		// important for Angular's HTML 5 mode
+		base(href='/')
+
+		title Texas Hold'em Tracking
+
+		meta(charset='utf-8')
+		link(rel='stylesheet', type='text/css', href='/css/bootstrap.min.css')
+		link(rel='stylesheet', type='text/css', href='/css/bootstrap-theme.min.css')
+		link(rel='stylesheet', type='text/css', href='/css/alertify.core.css')
+		link(rel='stylesheet', type='text/css', href='/css/alertify.bootstrap.css')
+		link(rel='stylesheet', type='text/css', href='/css/custom.css')
+
+	body
+		.container.view-frame(data-ng-view)
+
+		script(type='text/javascript', src='/js/jquery.min.js')
+		script(type='text/javascript', src='/js/bootstrap.min.js')
+		script(type='text/javascript', src='/js/angular.min.js')
+		script(type='text/javascript', src='/js/angular-route.min.js')
+		script(type='text/javascript', src='/js/angular-animate.min.js')
+		script(type='text/javascript', src='/js/alertify.min.js')
+		script(type='text/javascript', src='/js/blogApp.min.js')

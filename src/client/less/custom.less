@@ -1,0 +1,31 @@
+@heading-color: #881111;
+@light-grey: #777;
+@urgent: #EE3322;
+
+h1 {
+	color: @heading-color;
+	margin-bottom: 20px;
+}
+
+.important {
+	color: @urgent;
+}
+
+.author {
+	color: @light-grey;
+	margin-bottom: 10px;
+}
+
+.credits-panel {
+	margin-top: 20px;
+}
+
+.slide-animation.ng-enter {
+	transition: 0.5s linear all;
+	opacity: 0.2;
+}
+
+.slide-animation.ng-enter-active {
+	transition: 0.5s linear all;
+	opacity: 1;
+}
