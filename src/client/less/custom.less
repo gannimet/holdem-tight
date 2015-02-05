@@ -1,53 +1,90 @@
-.player-panel, .dealer-panel {
-	width: 150px;
-	height: 150px;
-}
+@playerPanelWidth: 150px;
+@playerPanelHeight: 150px;
 
-.player-panel {
-	background-color: #12a3ee;
-	border-radius: 5px;
-	border: 4px solid transparent;
-}
+@firstVerticalOffset: 100px;
+@secondVerticalOffset: 30px;
+@allVerticalOffsets: @firstVerticalOffset + @secondVerticalOffset;
 
-.player-panel.active {
-	border-color: #ed2384;
-}
+@firstHorizontalGap: 20px;
+@secondHorizontalGap: 30px;
+@allHorizontalGaps: @firstHorizontalGap + @secondHorizontalGap;
 
-.dealer-panel {
-	border: 2px solid #000;
-	border-top-left-radius: 60px;
-	border-top-right-radius: 60px;
-	border-bottom: none;
-	text-align: center;
-	font-size: 200%;
-	padding-top: 50px;
-}
+@midwayGapHeight: 30px;
 
-#pot-row {
-	font-size: 150%;
-	text-align: center;
-}
+#game-table {
 
-#table-upper-half {
-
-	.winger-player {
-		margin-top: 140px;
+	.player-panel, .dealer-panel {
+		width: @playerPanelWidth;
+		height: @playerPanelHeight;
 	}
 
-	.half-player {
-		margin-top: 30px;
+	.player-panel {
+		background-color: #12a3ee;
+		border-radius: 5px;
+		border: 4px solid transparent;
+		position: absolute;
 	}
 
-}
-
-#table-lower-half {
-
-	.half-player {
-		margin-top: 110px;
+	.player-panel.active {
+		border-color: #ed2384;
 	}
 
-	.dealer-seat {
-		margin-top: 140px;
+	.dealer-panel {
+		position: absolute;
+		top: 2 * @allVerticalOffsets + @playerPanelHeight + @midwayGapHeight;
+		left: @allHorizontalGaps + 2 * @playerPanelWidth;
+		border: 2px solid #000;
+		border-top-left-radius: 60px;
+		border-top-right-radius: 60px;
+		border-bottom: none;
+		text-align: center;
+		font-size: 200%;
+		padding-top: 50px;
+	}
+
+	#player-1 {
+		top: @allVerticalOffsets + @firstVerticalOffset + @playerPanelHeight + @midwayGapHeight;
+		left: @firstHorizontalGap + @playerPanelWidth;
+	}
+
+	#player-2 {
+		top: @allVerticalOffsets + @playerPanelHeight + @midwayGapHeight;
+		left: 0px;
+	}
+
+	#player-3 {
+		top: @allVerticalOffsets;
+		left: 0px;
+	}
+
+	#player-4 {
+		top: @secondVerticalOffset;
+		left: @firstHorizontalGap + @playerPanelWidth;
+	}
+
+	#player-5 {
+		top: 0;
+		left: @allHorizontalGaps + 2 * @playerPanelWidth;
+	}
+
+	#player-6 {
+		top: @secondVerticalOffset;
+		left: @allHorizontalGaps + 3 * @playerPanelWidth + @secondHorizontalGap;
+	}
+
+	#player-7 {
+		top: @allVerticalOffsets;
+		left: 2 * @allHorizontalGaps + 4 * @playerPanelWidth;
+	}
+
+	#player-8 {
+		top: @allVerticalOffsets + @playerPanelHeight + @midwayGapHeight;
+		left: 2 * @allHorizontalGaps + 4 * @playerPanelWidth;
+	}
+
+	#player-9 {
+		top: @allVerticalOffsets + @firstVerticalOffset + @playerPanelHeight + @midwayGapHeight;
+		left: @allHorizontalGaps + 3 * @playerPanelWidth + @secondHorizontalGap;
 	}
 
 }
