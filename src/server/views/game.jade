@@ -1,4 +1,29 @@
 .row
 	.col-xs-12
 		h1 Spiel
-		p(data-ng-bind='message')
+.row#game-table
+	.row#table-upper-half
+		.col-xs-2
+			.player-panel.winger-player
+		.col-xs-2
+			.player-panel.half-player
+		.col-xs-2
+			.player-panel.center-player
+		.col-xs-2
+			.player-panel.half-player.active
+		.col-xs-2
+			.player-panel.winger-player
+	.row#pot-row
+		.col-xs-10
+			| Pot: 2400
+	.row#table-lower-half
+		.col-xs-2
+			.player-panel.winger-player
+		.col-xs-2
+			.player-panel.half-player
+		.col-xs-2
+			.dealer-panel.dealer-seat DEALER
+		.col-xs-2
+			.player-panel.half-player
+		.col-xs-2
+			.player-panel.winger-player

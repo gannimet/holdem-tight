@@ -1,22 +1,38 @@
-h1 {
-  color: #881111;
-  margin-bottom: 20px;
+.player-panel,
+.dealer-panel {
+  width: 150px;
+  height: 150px;
 }
-.important {
-  color: #ee3322;
+.player-panel {
+  background-color: #12a3ee;
+  border-radius: 5px;
+  border: 4px solid transparent;
 }
-.author {
-  color: #777777;
-  margin-bottom: 10px;
+.player-panel.active {
+  border-color: #ed2384;
 }
-.credits-panel {
-  margin-top: 20px;
+.dealer-panel {
+  border: 2px solid #000;
+  border-top-left-radius: 60px;
+  border-top-right-radius: 60px;
+  border-bottom: none;
+  text-align: center;
+  font-size: 200%;
+  padding-top: 50px;
 }
-.slide-animation.ng-enter {
-  transition: 0.5s linear all;
-  opacity: 0.2;
+#pot-row {
+  font-size: 150%;
+  text-align: center;
 }
-.slide-animation.ng-enter-active {
-  transition: 0.5s linear all;
-  opacity: 1;
+#table-upper-half .winger-player {
+  margin-top: 140px;
+}
+#table-upper-half .half-player {
+  margin-top: 30px;
+}
+#table-lower-half .half-player {
+  margin-top: 110px;
+}
+#table-lower-half .dealer-seat {
+  margin-top: 140px;
 }
