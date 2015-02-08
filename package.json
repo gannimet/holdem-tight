@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "express": "^4.10.0",
+    "hoyle": "^0.2.2",
     "jade": "^1.7.0"
   }
 }

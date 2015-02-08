@@ -1,15 +1,21 @@
 .row
-	.col-xs-12
-		h1 Spiel
-.row
-	.col-xs-12#game-table
-		.player-panel#player-1
-		.player-panel#player-2
-		.player-panel#player-3
-		.player-panel#player-4
-		.player-panel#player-5
-		.player-panel#player-6
-		.player-panel#player-7
-		.player-panel#player-8
-		.player-panel#player-9
+	.col-xs-10#game-table
+		data-player-panel.player-panel#player-1(seat-nr='1')
+		data-player-panel.player-panel#player-2(seat-nr='2')
+		data-player-panel.player-panel#player-3(seat-nr='3')
+		data-player-panel.player-panel#player-4(seat-nr='4')
+		data-player-panel.player-panel#player-5(seat-nr='5')
+		data-player-panel.player-panel#player-6(seat-nr='6')
+		data-player-panel.player-panel#player-7(seat-nr='7')
+		data-player-panel.player-panel#player-8(seat-nr='8')
+		data-player-panel.player-panel#player-9(seat-nr='9')
 		.dealer-panel DEALER
+		#community-cards
+			.card#flop-1 F1
+			.card#flop-2 F2
+			.card#flop-3 F3
+			.card#turn T
+			.card#river R
+		#pot-panel Pot: 430
+	.col-xs-2#control-panel
+		button.btn.btn-success(type='button', data-ng-click='addPlayer()') Add player

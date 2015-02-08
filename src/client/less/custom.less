@@ -1,15 +1,44 @@
+/* Size of player panels */
 @playerPanelWidth: 150px;
 @playerPanelHeight: 150px;
 
-@firstVerticalOffset: 100px;
-@secondVerticalOffset: 30px;
+/* Vertical offsets between player panels */
+@firstVerticalOffset: 150px;
+@secondVerticalOffset: 50px;
 @allVerticalOffsets: @firstVerticalOffset + @secondVerticalOffset;
 
-@firstHorizontalGap: 20px;
-@secondHorizontalGap: 30px;
+/* Horizontal gaps between player panels */
+@firstHorizontalGap: 40px;
+@secondHorizontalGap: 55px;
 @allHorizontalGaps: @firstHorizontalGap + @secondHorizontalGap;
 
-@midwayGapHeight: 30px;
+/* Vertical gap between upper and lower half of player panels */
+@midwayGapHeight: 40px;
+
+/* Horizontal center of table to align stuff centrally */
+@horizontalCenter: @allHorizontalGaps + 2.5 * @playerPanelWidth;
+
+/* Measurements of the cards and the board */
+@cardWidth: 80px;
+@cardHeight: (91 / 59) * @cardWidth;
+// Gap between single cards of the flop
+@flopGap: 10px;
+// Gaps bewteen the different streets
+@streetGap: 20px;
+@boardWidth: 5 * @cardWidth + 2 * @streetGap + 2 * @flopGap;
+@boardHeight: @cardHeight;
+@boardTop: @allVerticalOffsets + @playerPanelHeight / 3;
+@boardLeft: @horizontalCenter - (@boardWidth / 2);
+
+/* Measurements of the pot panel */
+@potTop: @boardTop + @cardHeight + 30px;
+@potLeft: @boardLeft;
+@potWidth: @boardWidth;
+@potHeight: 80px;
+
+/* Colors */
+@playerPanelThemeColor: #12a3ee;
+@playerPanelFontColor: #fff;
 
 #game-table {
 
@@ -19,10 +48,11 @@
 	}
 
 	.player-panel {
-		background-color: #12a3ee;
+		background-color: @playerPanelThemeColor;
 		border-radius: 5px;
 		border: 4px solid transparent;
 		position: absolute;
+		color: @playerPanelFontColor;
 	}
 
 	.player-panel.active {
@@ -85,6 +115,59 @@
 	#player-9 {
 		top: @allVerticalOffsets + @firstVerticalOffset + @playerPanelHeight + @midwayGapHeight;
 		left: @allHorizontalGaps + 3 * @playerPanelWidth + @secondHorizontalGap;
+	}
+
+	#community-cards {
+		position: absolute;
+		top: @boardTop;
+		left: @boardLeft;
+		width: @boardWidth;
+		height: @boardHeight;
+
+		.card {
+			background-color: #999;
+			border-radius: @cardWidth / 10;
+			position: absolute;
+			width: @cardWidth;
+			height: @cardHeight;
+		}
+
+		#flop-1 {
+			top: 0;
+			left: 0;
+		}
+
+		#flop-2 {
+			top: 0;
+			left: @cardWidth + @flopGap;
+		}
+
+		#flop-3 {
+			top: 0;
+			left: 2 * @cardWidth + 2 * @flopGap;
+		}
+
+		#turn {
+			top: 0;
+			left: 3 * @cardWidth + 2 * @flopGap + @streetGap;
+		}
+
+		#river {
+			top: 0;
+			left: 4 * @cardWidth + 2 * @flopGap + 2 * @streetGap;
+		}
+
+	}
+
+	#pot-panel {
+		position: absolute;
+		top: @potTop;
+		left: @potLeft;
+		width: @potWidth;
+		height: @potHeight;
+		border: 1px solid black;
+		text-align: center;
+		font-size: 130%;
 	}
 
 }
