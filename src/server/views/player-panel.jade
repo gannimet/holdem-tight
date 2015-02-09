@@ -1,6 +1,9 @@
 .row
 	.col-xs-12
 		span.player-name(data-ng-bind='player.name')
-		button.btn.btn-xs.btn-danger.player-delete-button.pull-right(data-ng-if='player', data-ng-click='deletePlayer()') X
+		button.btn.btn-xs.btn-danger.player-delete-button.pull-right(data-ng-if='player && !isGameStarted()', data-ng-click='deletePlayer()') X
+		span.pull-right.button-badge.dealer-button(data-ng-if='isDealer')
+		span.pull-right.button-badge.small-blind-button(data-ng-if='isSmallBlind')
+		span.pull-right.button-badge.big-blind-button(data-ng-if='isBigBlind')
 	.col-xs-12
 		span.player-chip-stack(data-ng-bind='player.stack | stackSize')

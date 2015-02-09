@@ -15,15 +15,24 @@
 					function($scope, $rootScope, $timeout, gameService) {
 				var playerIndex = $scope.seatNr - 1;
 
+				$scope.isDealer = false;
+				$scope.isSmallBlind = false;
+				$scope.isBigBlind = false;
+
 				/*
-				 * UI Event handlers for this directive
+				 * UI Event handlers and other function for the UI
+				 * for this directive
 				 */
 				$scope.deletePlayer = function() {
 					gameService.deletePlayer(playerIndex);
 				};
 
+				$scope.isGameStarted = function() {
+					return gameService.gameStarted;
+				};
+
 				/*
-				 * Game event handlers
+				 * Scope event handlers
 				 */
 				$rootScope.$on('playerAdded', function(event, players) {
 					handlePlayerEvent(players);
@@ -31,6 +40,12 @@
 
 				$rootScope.$on('playerDeleted', function(event, players) {
 					handlePlayerEvent(players);
+				});
+
+				$rootScope.$on('rolesAssigned', function(event, roles) {
+					$scope.isDealer     = playerIndex === roles.dealer;
+					$scope.isSmallBlind = playerIndex === roles.smallBlind;
+					$scope.isBigBlind   = playerIndex === roles.bigBlind;
 				});
 
 				/*

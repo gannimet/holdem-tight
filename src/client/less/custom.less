@@ -1,6 +1,8 @@
-/* Size of player panels */
+/* Player panel measurements */
 @playerPanelWidth: 150px;
 @playerPanelHeight: 130px;
+@buttonWidth: 20px;
+@buttonHeight: @buttonWidth;
 
 /* Vertical offsets between player panels */
 @firstVerticalOffset: 120px;
@@ -13,7 +15,7 @@
 @allHorizontalGaps: @firstHorizontalGap + @secondHorizontalGap;
 
 /* Vertical gap between upper and lower half of player panels */
-@midwayGapHeight: 70px;
+@midwayGapHeight: 55px;
 
 /* Horizontal center of table to align stuff centrally */
 @horizontalCenter: @allHorizontalGaps + 2.5 * @playerPanelWidth;
@@ -61,6 +63,26 @@
 		.player-name {
 			font-size: 110%;
 			font-weight: 600;
+		}
+
+		.button-badge {
+			width: @buttonWidth;
+			height: @buttonHeight;
+		}
+
+		.small-blind-button {
+			background: url('/img/buttons/small_blind.png');
+			background-size: @buttonWidth @buttonHeight;
+		}
+
+		.big-blind-button {
+			background: url('/img/buttons/big_blind.png');
+			background-size: @buttonWidth @buttonHeight;
+		}
+
+		.dealer-button {
+			background: url('/img/buttons/dealer.png');
+			background-size: @buttonWidth @buttonHeight;
 		}
 	}
 

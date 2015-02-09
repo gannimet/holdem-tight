@@ -18,4 +18,7 @@
 			.card#river
 		#pot-panel Pot: 430
 	.col-xs-2#control-panel
-		button.btn.btn-success(type='button', data-ng-click='addPlayer()') Add player
+		.form-group
+			button.btn.btn-success.form-control(type='button', data-ng-click='addPlayer()', data-ng-disabled='gameStarted') Add player
+		.form-group
+			button.btn.btn-primary.form-control(type='button', data-ng-click='startGame()', data-ng-disabled='gameStarted') Start game

@@ -1,4 +1,4 @@
-/* Size of player panels */
+/* Player panel measurements */
 /* Vertical offsets between player panels */
 /* Horizontal gaps between player panels */
 /* Vertical gap between upper and lower half of player panels */
@@ -25,9 +25,25 @@
   font-size: 110%;
   font-weight: 600;
 }
+#game-table .player-panel .button-badge {
+  width: 20px;
+  height: 20px;
+}
+#game-table .player-panel .small-blind-button {
+  background: url('/img/buttons/small_blind.png');
+  background-size: 20px 20px;
+}
+#game-table .player-panel .big-blind-button {
+  background: url('/img/buttons/big_blind.png');
+  background-size: 20px 20px;
+}
+#game-table .player-panel .dealer-button {
+  background: url('/img/buttons/dealer.png');
+  background-size: 20px 20px;
+}
 #game-table .dealer-panel {
   position: absolute;
-  top: 500px;
+  top: 485px;
   left: 395px;
   border: 2px solid #000;
   border-top-left-radius: 60px;
@@ -38,11 +54,11 @@
   padding-top: 50px;
 }
 #game-table #player-1 {
-  top: 470px;
+  top: 455px;
   left: 190px;
 }
 #game-table #player-2 {
-  top: 350px;
+  top: 335px;
   left: 0px;
 }
 #game-table #player-3 {
@@ -66,11 +82,11 @@
   left: 790px;
 }
 #game-table #player-8 {
-  top: 350px;
+  top: 335px;
   left: 790px;
 }
 #game-table #player-9 {
-  top: 470px;
+  top: 455px;
   left: 600px;
 }
 #game-table #community-cards {
