@@ -32,6 +32,10 @@
 			gameService.startGame();
 		};
 
+		$scope.nextHand = function() {
+			gameService.nextHand();
+		};
+
 		/*
 		 * Broadcast event handler
 		 */

@@ -30,25 +30,41 @@
 		this.startGame = function() {
 			this.gameStarted = true;
 
-			assignTurns();
+			assignRoles();
 
 			// Tell the world about the start of the game
 			$rootScope.$broadcast('gameStarted');
 		};
 
+		this.nextHand = function() {
+			assignRoles();
+		};
+
 		// Private utility functions
-		function assignTurns() {
+		function assignRoles() {
 			if (!self.currentRoles) {
-				self.currentRoles = {
-					smallBlind: 0,
-					bigBlind: 1 % self.players.length,
-					dealer: 2 % self.players.length
-				};
+				// It's obviously the first hand,
+				// assign initial roles
+				if (self.players.length > 2) {
+					self.currentRoles = {
+						dealer: 0,
+						smallBlind: 1,
+						bigBlind: 2
+					};
+				} else {
+					// Special rules for heads up
+					self.currentRoles = {
+						dealer: 0,
+						smallBlind: 0,
+						bigBlind: 1
+					};
+				}
 			} else {
+				// Shift all roles one player forward
 				self.currentRoles = {
+					dealer: (self.currentRoles.dealer + 1) % self.players.length,
 					smallBlind: (self.currentRoles.smallBlind + 1) % self.players.length,
-					bigBlind: (self.currentRoles.bigBlind + 1) % self.players.length,
-					dealer: (self.currentRoles.dealer + 1) % self.players.length
+					bigBlind: (self.currentRoles.bigBlind + 1) % self.players.length
 				};
 			}
 
