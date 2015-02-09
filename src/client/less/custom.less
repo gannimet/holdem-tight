@@ -1,10 +1,10 @@
 /* Size of player panels */
 @playerPanelWidth: 150px;
-@playerPanelHeight: 150px;
+@playerPanelHeight: 130px;
 
 /* Vertical offsets between player panels */
-@firstVerticalOffset: 150px;
-@secondVerticalOffset: 50px;
+@firstVerticalOffset: 120px;
+@secondVerticalOffset: 30px;
 @allVerticalOffsets: @firstVerticalOffset + @secondVerticalOffset;
 
 /* Horizontal gaps between player panels */
@@ -13,21 +13,21 @@
 @allHorizontalGaps: @firstHorizontalGap + @secondHorizontalGap;
 
 /* Vertical gap between upper and lower half of player panels */
-@midwayGapHeight: 40px;
+@midwayGapHeight: 70px;
 
 /* Horizontal center of table to align stuff centrally */
 @horizontalCenter: @allHorizontalGaps + 2.5 * @playerPanelWidth;
 
 /* Measurements of the cards and the board */
-@cardWidth: 80px;
-@cardHeight: (91 / 59) * @cardWidth;
+@cardWidth: 90px;
+@cardHeight: (726 / 500) * @cardWidth;
 // Gap between single cards of the flop
 @flopGap: 10px;
 // Gaps bewteen the different streets
 @streetGap: 20px;
 @boardWidth: 5 * @cardWidth + 2 * @streetGap + 2 * @flopGap;
 @boardHeight: @cardHeight;
-@boardTop: @allVerticalOffsets + @playerPanelHeight / 3;
+@boardTop: @allVerticalOffsets + @playerPanelHeight / 2;
 @boardLeft: @horizontalCenter - (@boardWidth / 2);
 
 /* Measurements of the pot panel */
@@ -39,6 +39,10 @@
 /* Colors */
 @playerPanelThemeColor: #12a3ee;
 @playerPanelFontColor: #fff;
+
+#game-area {
+	margin: 20px 0;
+}
 
 #game-table {
 
@@ -53,10 +57,11 @@
 		border: 4px solid transparent;
 		position: absolute;
 		color: @playerPanelFontColor;
-	}
 
-	.player-panel.active {
-		border-color: #ed2384;
+		.player-name {
+			font-size: 110%;
+			font-weight: 600;
+		}
 	}
 
 	.dealer-panel {
@@ -125,8 +130,7 @@
 		height: @boardHeight;
 
 		.card {
-			background-color: #999;
-			border-radius: @cardWidth / 10;
+			background-color: #eee;
 			position: absolute;
 			width: @cardWidth;
 			height: @cardHeight;
@@ -135,26 +139,36 @@
 		#flop-1 {
 			top: 0;
 			left: 0;
+			background: url('/img/6_of_diamonds.svg');
+			background-size: @cardWidth @cardHeight;
 		}
 
 		#flop-2 {
 			top: 0;
 			left: @cardWidth + @flopGap;
+			background: url('/img/jack_of_hearts.svg');
+			background-size: @cardWidth @cardHeight;
 		}
 
 		#flop-3 {
 			top: 0;
 			left: 2 * @cardWidth + 2 * @flopGap;
+			background: url('/img/king_of_spades.svg');
+			background-size: @cardWidth @cardHeight;
 		}
 
 		#turn {
 			top: 0;
 			left: 3 * @cardWidth + 2 * @flopGap + @streetGap;
+			background: url('/img/7_of_spades.svg');
+			background-size: @cardWidth @cardHeight;
 		}
 
 		#river {
 			top: 0;
 			left: 4 * @cardWidth + 2 * @flopGap + 2 * @streetGap;
+			background: url('/img/ace_of_clubs.svg');
+			background-size: @cardWidth @cardHeight;
 		}
 
 	}
@@ -165,7 +179,6 @@
 		left: @potLeft;
 		width: @potWidth;
 		height: @potHeight;
-		border: 1px solid black;
 		text-align: center;
 		font-size: 130%;
 	}

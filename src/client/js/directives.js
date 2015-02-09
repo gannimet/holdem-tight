@@ -10,16 +10,48 @@
 			scope: {
 				seatNr: '=seatNr'
 			},
-			controller: ['$scope', '$rootScope', function($scope, $rootScope) {
+			controller: [
+					'$scope', '$rootScope', '$timeout', 'gameService',
+					function($scope, $rootScope, $timeout, gameService) {
+				var playerIndex = $scope.seatNr - 1;
+
+				/*
+				 * UI Event handlers for this directive
+				 */
+				$scope.deletePlayer = function() {
+					gameService.deletePlayer(playerIndex);
+				};
+
+				/*
+				 * Game event handlers
+				 */
 				$rootScope.$on('playerAdded', function(event, players) {
-					var playerIndex = $scope.seatNr - 1;
-					if (players[playerIndex]) {
-						console.log('I, as the owner of seat #' + $scope.seatNr +
-							' feel obliged to handle player ' + players[playerIndex].name);
-						$scope.player = players[playerIndex];
-						$scope.$apply();
-					}
+					handlePlayerEvent(players);
 				});
+
+				$rootScope.$on('playerDeleted', function(event, players) {
+					handlePlayerEvent(players);
+				});
+
+				/*
+				 * Utility functions
+				 */
+				function handlePlayerEvent(players) {
+					var player = players[playerIndex];
+
+					assignPlayer(player);
+				}
+
+				function assignPlayer(player) {
+					// this is a hack
+					// if we would use $scope.$apply() we
+					// would get an error because it gets
+					// called in quick succession
+					// see: http://stackoverflow.com/a/25149047/1722704
+					$timeout(function() {
+						$scope.player = player;
+					});
+				}
 			}]
 		};
 	}]);

@@ -6,10 +6,13 @@
 /* Measurements of the cards and the board */
 /* Measurements of the pot panel */
 /* Colors */
+#game-area {
+  margin: 20px 0;
+}
 #game-table .player-panel,
 #game-table .dealer-panel {
   width: 150px;
-  height: 150px;
+  height: 130px;
 }
 #game-table .player-panel {
   background-color: #12a3ee;
@@ -18,12 +21,13 @@
   position: absolute;
   color: #ffffff;
 }
-#game-table .player-panel.active {
-  border-color: #ed2384;
+#game-table .player-panel .player-name {
+  font-size: 110%;
+  font-weight: 600;
 }
 #game-table .dealer-panel {
   position: absolute;
-  top: 590px;
+  top: 500px;
   left: 395px;
   border: 2px solid #000;
   border-top-left-radius: 60px;
@@ -34,19 +38,19 @@
   padding-top: 50px;
 }
 #game-table #player-1 {
-  top: 540px;
+  top: 470px;
   left: 190px;
 }
 #game-table #player-2 {
-  top: 390px;
+  top: 350px;
   left: 0px;
 }
 #game-table #player-3 {
-  top: 200px;
+  top: 150px;
   left: 0px;
 }
 #game-table #player-4 {
-  top: 50px;
+  top: 30px;
   left: 190px;
 }
 #game-table #player-5 {
@@ -54,62 +58,70 @@
   left: 395px;
 }
 #game-table #player-6 {
-  top: 50px;
+  top: 30px;
   left: 600px;
 }
 #game-table #player-7 {
-  top: 200px;
+  top: 150px;
   left: 790px;
 }
 #game-table #player-8 {
-  top: 390px;
+  top: 350px;
   left: 790px;
 }
 #game-table #player-9 {
-  top: 540px;
+  top: 470px;
   left: 600px;
 }
 #game-table #community-cards {
   position: absolute;
-  top: 250px;
-  left: 240px;
-  width: 460px;
-  height: 123.38983051px;
+  top: 215px;
+  left: 215px;
+  width: 510px;
+  height: 130.68px;
 }
 #game-table #community-cards .card {
-  background-color: #999;
-  border-radius: 8px;
+  background-color: #eee;
   position: absolute;
-  width: 80px;
-  height: 123.38983051px;
+  width: 90px;
+  height: 130.68px;
 }
 #game-table #community-cards #flop-1 {
   top: 0;
   left: 0;
+  background: url('/img/6_of_diamonds.svg');
+  background-size: 90px 130.68px;
 }
 #game-table #community-cards #flop-2 {
   top: 0;
-  left: 90px;
+  left: 100px;
+  background: url('/img/jack_of_hearts.svg');
+  background-size: 90px 130.68px;
 }
 #game-table #community-cards #flop-3 {
   top: 0;
-  left: 180px;
+  left: 200px;
+  background: url('/img/king_of_spades.svg');
+  background-size: 90px 130.68px;
 }
 #game-table #community-cards #turn {
   top: 0;
-  left: 280px;
+  left: 310px;
+  background: url('/img/7_of_spades.svg');
+  background-size: 90px 130.68px;
 }
 #game-table #community-cards #river {
   top: 0;
-  left: 380px;
+  left: 420px;
+  background: url('/img/ace_of_clubs.svg');
+  background-size: 90px 130.68px;
 }
 #game-table #pot-panel {
   position: absolute;
-  top: 403.38983051px;
-  left: 240px;
-  width: 460px;
+  top: 375.68px;
+  left: 215px;
+  width: 510px;
   height: 80px;
-  border: 1px solid black;
   text-align: center;
   font-size: 130%;
 }

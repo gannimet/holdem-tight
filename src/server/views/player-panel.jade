@@ -1,5 +1,6 @@
 .row
 	.col-xs-12
 		span.player-name(data-ng-bind='player.name')
+		button.btn.btn-xs.btn-danger.player-delete-button.pull-right(data-ng-if='player', data-ng-click='deletePlayer()') X
 	.col-xs-12
 		span.player-chip-stack(data-ng-bind='player.stack | stackSize')
