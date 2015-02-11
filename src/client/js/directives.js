@@ -11,8 +11,8 @@
 				seatNr: '=seatNr'
 			},
 			controller: [
-					'$scope', '$rootScope', '$timeout', 'gameService',
-					function($scope, $rootScope, $timeout, gameService) {
+					'$scope', '$timeout', 'gameService', 'HOLDEM_EVENTS',
+					function($scope, $timeout, gameService, HOLDEM_EVENTS) {
 				var playerIndex = $scope.seatNr - 1;
 
 				$scope.isDealer = false;
@@ -34,15 +34,15 @@
 				/*
 				 * Scope event handlers
 				 */
-				$rootScope.$on('playerAdded', function(event, players) {
+				$scope.$on(HOLDEM_EVENTS.PLAYER_ADDED, function(event, players) {
 					handlePlayerEvent(players);
 				});
 
-				$rootScope.$on('playerDeleted', function(event, players) {
+				$scope.$on(HOLDEM_EVENTS.PLAYER_DELETED, function(event, players) {
 					handlePlayerEvent(players);
 				});
 
-				$rootScope.$on('rolesAssigned', function(event, roles) {
+				$scope.$on(HOLDEM_EVENTS.ROLES_ASSIGNED, function(event, roles) {
 					$scope.isDealer     = playerIndex === roles.dealer;
 					$scope.isSmallBlind = playerIndex === roles.smallBlind;
 					$scope.isBigBlind   = playerIndex === roles.bigBlind;

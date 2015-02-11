@@ -6,7 +6,8 @@
 		'holdemFilters',
 		'holdemControllers',
 		'holdemServices',
-		'holdemDirectives'
+		'holdemDirectives',
+		'holdemConstants'
 	]);
 
 	holdemApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {

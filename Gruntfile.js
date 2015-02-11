@@ -110,7 +110,8 @@ module.exports = function(grunt) {
 					'src/client/js/controllers.js',
 					'src/client/js/directives.js',
 					'src/client/js/filters.js',
-					'src/client/js/services.js'
+					'src/client/js/services.js',
+					'src/client/js/constants.js'
 				],
 				dest: 'static/js/blogApp.js'
 			}

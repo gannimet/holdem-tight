@@ -2,12 +2,13 @@
 
 	var holdemServices = angular.module('holdemServices', []);
 
-	holdemServices.service('gameService', ['$rootScope', function($rootScope) {
+	holdemServices.service('gameService', ['$rootScope', 'HOLDEM_EVENTS', function($rootScope, HOLDEM_EVENTS) {
 		// Instance variables
 		var self = this;
 		this.players = [];
 		this.gameStarted = false;
 		this.currentRoles = null;
+		this.handNr = null;
 		
 		// Public API
 		this.addPlayer = function(player) {
@@ -17,27 +18,35 @@
 			this.players.push(player);
 
 			// Tell the world about our new player
-			$rootScope.$broadcast('playerAdded', this.players);
+			$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_ADDED, this.players);
 		};
 
 		this.deletePlayer = function(playerIndex) {
 			this.players.splice(playerIndex, 1);
 
 			// Tell the world about the player we removed
-			$rootScope.$broadcast('playerDeleted', this.players);
+			$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_DELETED, this.players);
 		};
 
 		this.startGame = function() {
 			this.gameStarted = true;
-
-			assignRoles();
+			this.nextHand();
 
 			// Tell the world about the start of the game
-			$rootScope.$broadcast('gameStarted');
+			$rootScope.$broadcast(HOLDEM_EVENTS.GAME_STARTED);
 		};
 
 		this.nextHand = function() {
 			assignRoles();
+
+			if (this.handNr) {
+				this.handNr++;
+			} else {
+				this.handNr = 1;
+			}
+
+			// Tell the world about the new hand
+			$rootScope.$broadcast(HOLDEM_EVENTS.NEXT_HAND_DEALT, this.handNr);
 		};
 
 		// Private utility functions
@@ -69,7 +78,7 @@
 			}
 
 			// Tell the world about the newly assigned roles
-			$rootScope.$broadcast('rolesAssigned', self.currentRoles);
+			$rootScope.$broadcast(HOLDEM_EVENTS.ROLES_ASSIGNED, self.currentRoles);
 		}
 	}]);
 

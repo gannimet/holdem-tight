@@ -10,4 +10,12 @@
 		};
 	}]);
 
+	holdemFilters.filter('handNrFilter', [function() {
+		return function(handNr) {
+			if (typeof(handNr) === 'number') {
+				return 'Hand #' + handNr;
+			}
+		};
+	}]);
+
 })(window);

@@ -3,9 +3,10 @@
 	var holdemControllers = angular.module('holdemControllers', []);
 
 	holdemControllers.controller('GameCtrl',
-			['$scope', '$rootScope', 'gameService', 'uiService',
-			function($scope, $rootScope, gameService, uiService) {
+			['$scope', 'gameService', 'uiService', 'HOLDEM_EVENTS',
+			function($scope, gameService, uiService, HOLDEM_EVENTS) {
 		$scope.gameStarted = false;
+		$scope.handNr = null;
 
 		/*
 		 * UI event handlers and utility functions
@@ -37,10 +38,14 @@
 		};
 
 		/*
-		 * Broadcast event handler
+		 * Broadcast event handlers
 		 */
-		$rootScope.$on('gameStarted', function(event) {
+		$scope.$on(HOLDEM_EVENTS.GAME_STARTED, function(event) {
 			$scope.gameStarted = true;
+		});
+
+		$scope.$on(HOLDEM_EVENTS.NEXT_HAND_DEALT, function(event, handNr) {
+			$scope.handNr = handNr;
 		});
 	}]);
 

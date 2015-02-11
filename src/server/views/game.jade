@@ -24,3 +24,5 @@
 			button.btn.btn-primary.form-control(type='button', data-ng-click='startGame()', data-ng-disabled='gameStarted') Start game
 		.form-group
 			button.btn.btn-warning.form-control(type='button', data-ng-click='nextHand()', data-ng-if='gameStarted') Next hand
+		.panel.panel-primary(data-ng-if='handNr')
+			.panel-body(data-ng-bind='handNr | handNrFilter')
