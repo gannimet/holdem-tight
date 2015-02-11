@@ -1,5 +1,5 @@
 /* Player panel measurements */
-@playerPanelWidth: 150px;
+@playerPanelWidth: 180px;
 @playerPanelHeight: 130px;
 @buttonWidth: 20px;
 @buttonHeight: @buttonWidth;
@@ -10,8 +10,8 @@
 @allVerticalOffsets: @firstVerticalOffset + @secondVerticalOffset;
 
 /* Horizontal gaps between player panels */
-@firstHorizontalGap: 40px;
-@secondHorizontalGap: 55px;
+@firstHorizontalGap: 20px;
+@secondHorizontalGap: 30px;
 @allHorizontalGaps: @firstHorizontalGap + @secondHorizontalGap;
 
 /* Vertical gap between upper and lower half of player panels */
@@ -38,6 +38,10 @@
 @potWidth: @boardWidth;
 @potHeight: 80px;
 
+/* Action controls */
+@actionControlWidth: @playerPanelWidth / 2 - 5px;
+@actionControlHeight: 40px;
+
 /* Colors */
 @playerPanelThemeColor: #12a3ee;
 @playerPanelFontColor: #fff;
@@ -51,18 +55,28 @@
 	.player-panel, .dealer-panel {
 		width: @playerPanelWidth;
 		height: @playerPanelHeight;
+		padding: 0 !important;
 	}
 
 	.player-panel {
 		background-color: @playerPanelThemeColor;
 		border-radius: 5px;
-		border: 4px solid transparent;
 		position: absolute;
 		color: @playerPanelFontColor;
 
 		.player-name {
-			font-size: 110%;
+			font-size: 15px;
 			font-weight: 600;
+			position: absolute;
+			top: 0;
+			left: 3px;
+		}
+
+		.player-chip-stack {
+			position: absolute;
+			font-size: 13px;
+			top: 18px;
+			left: 3px;
 		}
 
 		.button-badge {
@@ -83,6 +97,38 @@
 		.dealer-button {
 			background: url('/img/buttons/dealer.png');
 			background-size: @buttonWidth @buttonHeight;
+		}
+
+		.check-fold-button {
+			position: absolute;
+			top: 35px;
+			left: 3px;
+			width: @actionControlWidth;
+			height: @actionControlHeight;
+		}
+
+		.call-button {
+			position: absolute;
+			top: 35px;
+			left: @playerPanelWidth / 2 + 2px;
+			width: @actionControlWidth;
+			height: @actionControlHeight;
+		}
+
+		.raise-button {
+			position: absolute;
+			top: 78px;
+			left: 3px;
+			width: @actionControlWidth;
+			height: @actionControlHeight;
+		}
+
+		.raise-amount-txt {
+			position: absolute;
+			top: 78px;
+			left: @playerPanelWidth / 2 + 2px;
+			width: @actionControlWidth;
+			height: @actionControlHeight;
 		}
 	}
 

@@ -6,7 +6,7 @@
 		return {
 			restrict: 'E',
 			templateUrl: '/partials/player-panel',
-			replace: false,
+			replace: true,
 			scope: {
 				seatNr: '=seatNr'
 			},
