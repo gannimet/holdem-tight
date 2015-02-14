@@ -17,7 +17,7 @@
   padding: 0 !important;
 }
 #game-table .player-panel {
-  background-color: #12a3ee;
+  background-color: #28d444;
   border-radius: 5px;
   position: absolute;
   color: #ffffff;
@@ -36,20 +36,21 @@
   left: 3px;
 }
 #game-table .player-panel .button-badge {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
+  margin: 3px 3px 0 0;
 }
 #game-table .player-panel .small-blind-button {
   background: url('/img/buttons/small_blind.png');
-  background-size: 20px 20px;
+  background-size: 25px 25px;
 }
 #game-table .player-panel .big-blind-button {
   background: url('/img/buttons/big_blind.png');
-  background-size: 20px 20px;
+  background-size: 25px 25px;
 }
 #game-table .player-panel .dealer-button {
   background: url('/img/buttons/dealer.png');
-  background-size: 20px 20px;
+  background-size: 25px 25px;
 }
 #game-table .player-panel .check-fold-button {
   position: absolute;
@@ -68,16 +69,20 @@
 #game-table .player-panel .raise-button {
   position: absolute;
   top: 78px;
-  left: 3px;
+  left: 92px;
   width: 85px;
   height: 40px;
 }
 #game-table .player-panel .raise-amount-txt {
   position: absolute;
   top: 78px;
-  left: 92px;
+  left: 3px;
   width: 85px;
   height: 40px;
+  text-align: center;
+}
+#game-table .player-panel:hover {
+  background-color: #187e28;
 }
 #game-table .dealer-panel {
   position: absolute;

@@ -10,4 +10,12 @@
 		ROLES_ASSIGNED: 'rolesAssigned'
 	});
 
+	holdemConstants.constant('HOLDEM_ACTIONS', {
+		FOLD: 'fold',
+		CALL: 'call',
+		RAISE: 'raise',
+		BET: 'bet',
+		CHECK: 'check'
+	});
+
 })(window);

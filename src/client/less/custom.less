@@ -1,7 +1,7 @@
 /* Player panel measurements */
 @playerPanelWidth: 180px;
 @playerPanelHeight: 130px;
-@buttonWidth: 20px;
+@buttonWidth: 25px;
 @buttonHeight: @buttonWidth;
 
 /* Vertical offsets between player panels */
@@ -43,7 +43,9 @@
 @actionControlHeight: 40px;
 
 /* Colors */
-@playerPanelThemeColor: #12a3ee;
+@iceBlue: #12a3ee;
+@mintGreen: #28d444;
+@playerPanelThemeColor: @mintGreen;
 @playerPanelFontColor: #fff;
 
 #game-area {
@@ -82,6 +84,7 @@
 		.button-badge {
 			width: @buttonWidth;
 			height: @buttonHeight;
+			margin: 3px 3px 0 0;
 		}
 
 		.small-blind-button {
@@ -118,7 +121,7 @@
 		.raise-button {
 			position: absolute;
 			top: 78px;
-			left: 3px;
+			left: @playerPanelWidth / 2 + 2px;
 			width: @actionControlWidth;
 			height: @actionControlHeight;
 		}
@@ -126,10 +129,15 @@
 		.raise-amount-txt {
 			position: absolute;
 			top: 78px;
-			left: @playerPanelWidth / 2 + 2px;
+			left: 3px;
 			width: @actionControlWidth;
 			height: @actionControlHeight;
+			text-align: center;
 		}
+	}
+
+	.player-panel:hover {
+		background-color: darken(@playerPanelThemeColor, 20%);
 	}
 
 	.dealer-panel {
