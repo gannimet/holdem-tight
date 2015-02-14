@@ -7,7 +7,8 @@
 		PLAYER_ADDED: 'playerAdded',
 		PLAYER_DELETED: 'playerDeleted',
 		NEXT_HAND_DEALT: 'nextHandDealt',
-		ROLES_ASSIGNED: 'rolesAssigned'
+		ROLES_ASSIGNED: 'rolesAssigned',
+		ACTION_PERFORMED: 'actionPerformed'
 	});
 
 	holdemConstants.constant('HOLDEM_ACTIONS', {

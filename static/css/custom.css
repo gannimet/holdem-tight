@@ -5,15 +5,14 @@
 /* Horizontal center of table to align stuff centrally */
 /* Measurements of the cards and the board */
 /* Measurements of the pot panel */
-/* Action controls */
 /* Colors */
 #game-area {
-  margin: 20px 0;
+  margin: 20px;
 }
 #game-table .player-panel,
 #game-table .dealer-panel {
   width: 180px;
-  height: 130px;
+  height: 160px;
   padding: 0 !important;
 }
 #game-table .player-panel {
@@ -23,16 +22,16 @@
   color: #ffffff;
 }
 #game-table .player-panel .player-name {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   position: absolute;
-  top: 0;
+  top: 0px;
   left: 3px;
 }
 #game-table .player-panel .player-chip-stack {
   position: absolute;
-  font-size: 13px;
-  top: 18px;
+  font-size: 14px;
+  top: 20px;
   left: 3px;
 }
 #game-table .player-panel .button-badge {
@@ -54,28 +53,28 @@
 }
 #game-table .player-panel .check-fold-button {
   position: absolute;
-  top: 35px;
+  top: 74px;
   left: 3px;
   width: 85px;
   height: 40px;
 }
 #game-table .player-panel .call-button {
   position: absolute;
-  top: 35px;
+  top: 74px;
   left: 92px;
   width: 85px;
   height: 40px;
 }
 #game-table .player-panel .raise-button {
   position: absolute;
-  top: 78px;
+  top: 117px;
   left: 92px;
   width: 85px;
   height: 40px;
 }
 #game-table .player-panel .raise-amount-txt {
   position: absolute;
-  top: 78px;
+  top: 117px;
   left: 3px;
   width: 85px;
   height: 40px;
@@ -86,7 +85,7 @@
 }
 #game-table .dealer-panel {
   position: absolute;
-  top: 485px;
+  top: 515px;
   left: 410px;
   border: 2px solid #000;
   border-top-left-radius: 60px;
@@ -97,11 +96,11 @@
   padding-top: 50px;
 }
 #game-table #player-1 {
-  top: 455px;
+  top: 485px;
   left: 200px;
 }
 #game-table #player-2 {
-  top: 335px;
+  top: 365px;
   left: 0px;
 }
 #game-table #player-3 {
@@ -125,16 +124,16 @@
   left: 820px;
 }
 #game-table #player-8 {
-  top: 335px;
+  top: 365px;
   left: 820px;
 }
 #game-table #player-9 {
-  top: 455px;
+  top: 485px;
   left: 620px;
 }
 #game-table #community-cards {
   position: absolute;
-  top: 215px;
+  top: 230px;
   left: 245px;
   width: 510px;
   height: 130.68px;
@@ -177,7 +176,7 @@
 }
 #game-table #pot-panel {
   position: absolute;
-  top: 375.68px;
+  top: 390.68px;
   left: 245px;
   width: 510px;
   height: 80px;

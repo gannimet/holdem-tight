@@ -109,15 +109,23 @@
 		function recordBlindActions() {
 			var currentHand = self.getCurrentHand();
 
-			currentHand.actions = [{
+			var smallBlindAction = {
 				player: currentHand.roles.smallBlind,
 				action: HOLDEM_ACTIONS.BET,
 				amount: currentHand.blinds.smallBlind
-			}, {
+			};
+
+			var bigBlindAction = {
 				playerIndex: currentHand.roles.bigBlind,
 				action: HOLDEM_ACTIONS.RAISE,
 				amount: currentHand.blinds.bigBlind
-			}];
+			};
+
+			currentHand.actions = [smallBlindAction, bigBlindAction];
+
+			// Tell the world about these two actions
+			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, smallBlindAction);
+			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, bigBlindAction);
 		}
 	}]);
 

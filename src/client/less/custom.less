@@ -1,8 +1,14 @@
 /* Player panel measurements */
 @playerPanelWidth: 180px;
-@playerPanelHeight: 130px;
+@playerPanelHeight: 160px;
 @buttonWidth: 25px;
 @buttonHeight: @buttonWidth;
+// Action controls
+@actionControlWidth: @playerPanelWidth / 2 - 5px;
+@actionControlHeight: 40px;
+// Font sizes
+@playerNameFontSize: 17px;
+@chipStackFontSize: 14px;
 
 /* Vertical offsets between player panels */
 @firstVerticalOffset: 120px;
@@ -38,10 +44,6 @@
 @potWidth: @boardWidth;
 @potHeight: 80px;
 
-/* Action controls */
-@actionControlWidth: @playerPanelWidth / 2 - 5px;
-@actionControlHeight: 40px;
-
 /* Colors */
 @iceBlue: #12a3ee;
 @mintGreen: #28d444;
@@ -49,7 +51,7 @@
 @playerPanelFontColor: #fff;
 
 #game-area {
-	margin: 20px 0;
+	margin: 20px;
 }
 
 #game-table {
@@ -67,17 +69,17 @@
 		color: @playerPanelFontColor;
 
 		.player-name {
-			font-size: 15px;
+			font-size: @playerNameFontSize;
 			font-weight: 600;
 			position: absolute;
-			top: 0;
+			top: 0px;
 			left: 3px;
 		}
 
 		.player-chip-stack {
 			position: absolute;
-			font-size: 13px;
-			top: 18px;
+			font-size: @chipStackFontSize;
+			top: 3px + @playerNameFontSize;
 			left: 3px;
 		}
 
@@ -102,9 +104,10 @@
 			background-size: @buttonWidth @buttonHeight;
 		}
 
+		// Action controls
 		.check-fold-button {
 			position: absolute;
-			top: 35px;
+			top: @playerPanelHeight - 2 * @actionControlHeight - 6;
 			left: 3px;
 			width: @actionControlWidth;
 			height: @actionControlHeight;
@@ -112,7 +115,7 @@
 
 		.call-button {
 			position: absolute;
-			top: 35px;
+			top: @playerPanelHeight - 2 * @actionControlHeight - 6;
 			left: @playerPanelWidth / 2 + 2px;
 			width: @actionControlWidth;
 			height: @actionControlHeight;
@@ -120,7 +123,7 @@
 
 		.raise-button {
 			position: absolute;
-			top: 78px;
+			top: @playerPanelHeight - @actionControlHeight - 3;
 			left: @playerPanelWidth / 2 + 2px;
 			width: @actionControlWidth;
 			height: @actionControlHeight;
@@ -128,7 +131,7 @@
 
 		.raise-amount-txt {
 			position: absolute;
-			top: 78px;
+			top: @playerPanelHeight - @actionControlHeight - 3;
 			left: 3px;
 			width: @actionControlWidth;
 			height: @actionControlHeight;
