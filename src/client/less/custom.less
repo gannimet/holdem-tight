@@ -1,3 +1,7 @@
+/* Global measurements */
+@siteMarginHorizontal: 20px;
+@siteMarginVertical: 20px;
+
 /* Player panel measurements */
 @playerPanelWidth: 180px;
 @playerPanelHeight: 160px;
@@ -5,7 +9,7 @@
 @buttonHeight: @buttonWidth;
 // Action controls
 @actionControlWidth: @playerPanelWidth / 2 - 5px;
-@actionControlHeight: 40px;
+@actionControlHeight: 35px;
 // Font sizes
 @playerNameFontSize: 17px;
 @chipStackFontSize: 14px;
@@ -44,17 +48,22 @@
 @potWidth: @boardWidth;
 @potHeight: 80px;
 
+/* Measurements of control panel */
+@controlPanelTop: @siteMarginVertical;
+@controlPanelLeft: 5 * @playerPanelWidth + 2 * @allHorizontalGaps + 30px + @siteMarginHorizontal;
+@controlPanelWidth: 300px;
+
 /* Colors */
 @iceBlue: #12a3ee;
 @mintGreen: #28d444;
 @playerPanelThemeColor: @mintGreen;
 @playerPanelFontColor: #fff;
 
-#game-area {
-	margin: 20px;
-}
-
 #game-table {
+
+	position: absolute;
+	top: @siteMarginVertical;
+	left: @siteMarginHorizontal;
 
 	.player-panel, .dealer-panel {
 		width: @playerPanelWidth;
@@ -102,6 +111,19 @@
 		.dealer-button {
 			background: url('/img/buttons/dealer.png');
 			background-size: @buttonWidth @buttonHeight;
+		}
+
+		.current-action {
+			position: absolute;
+			top: 12px + @playerNameFontSize + @chipStackFontSize;
+			left: 0;
+			width: 100%;
+			height: 34px;
+			font-size: 20px;
+			text-align: center;
+			padding: 3px 0;
+			background-color: lighten(@playerPanelThemeColor, 45%);
+			color: @playerPanelThemeColor;
 		}
 
 		// Action controls
@@ -218,35 +240,35 @@
 		#flop-1 {
 			top: 0;
 			left: 0;
-			background: url('/img/10_of_hearts.svg');
+			background: url('/img/jack_of_diamonds.svg');
 			background-size: @cardWidth @cardHeight;
 		}
 
 		#flop-2 {
 			top: 0;
 			left: @cardWidth + @flopGap;
-			background: url('/img/jack_of_hearts.svg');
+			background: url('/img/3_of_spades.svg');
 			background-size: @cardWidth @cardHeight;
 		}
 
 		#flop-3 {
 			top: 0;
 			left: 2 * @cardWidth + 2 * @flopGap;
-			background: url('/img/queen_of_hearts.svg');
+			background: url('/img/queen_of_diamonds.svg');
 			background-size: @cardWidth @cardHeight;
 		}
 
 		#turn {
 			top: 0;
 			left: 3 * @cardWidth + 2 * @flopGap + @streetGap;
-			background: url('/img/king_of_hearts.svg');
+			background: url('/img/7_of_hearts.svg');
 			background-size: @cardWidth @cardHeight;
 		}
 
 		#river {
 			top: 0;
 			left: 4 * @cardWidth + 2 * @flopGap + 2 * @streetGap;
-			background: url('/img/ace_of_hearts.svg');
+			background: url('/img/ace_of_clubs.svg');
 			background-size: @cardWidth @cardHeight;
 		}
 
@@ -262,4 +284,12 @@
 		font-size: 130%;
 	}
 
+}
+
+#control-panel {
+	position: absolute;
+	top: @controlPanelTop;
+	left: @controlPanelLeft;
+	width: @controlPanelWidth;
+	margin-right: @siteMarginHorizontal;
 }

@@ -1,28 +1,32 @@
-.row#game-area
-	.col-xs-10#game-table
-		data-player-panel#player-1(seat-nr='1')
-		data-player-panel#player-2(seat-nr='2')
-		data-player-panel#player-3(seat-nr='3')
-		data-player-panel#player-4(seat-nr='4')
-		data-player-panel#player-5(seat-nr='5')
-		data-player-panel#player-6(seat-nr='6')
-		data-player-panel#player-7(seat-nr='7')
-		data-player-panel#player-8(seat-nr='8')
-		data-player-panel#player-9(seat-nr='9')
-		.dealer-panel DEALER
-		#community-cards
-			.card#flop-1
-			.card#flop-2
-			.card#flop-3
-			.card#turn
-			.card#river
-		#pot-panel Pot: 430
-	.col-xs-2#control-panel
-		.form-group
-			button.btn.btn-success.form-control(type='button', data-ng-click='addPlayer()', data-ng-disabled='gameStarted') Add player
-		.form-group
-			button.btn.btn-primary.form-control(type='button', data-ng-click='startGame()', data-ng-disabled='gameStarted') Start game
-		.form-group
-			button.btn.btn-warning.form-control(type='button', data-ng-click='nextHand()', data-ng-if='gameStarted') Next hand
-		.panel.panel-primary(data-ng-if='handNr')
-			.panel-body(data-ng-bind='handNr | handNrFilter')
+#game-table
+	data-player-panel#player-1(seat-nr='1')
+	data-player-panel#player-2(seat-nr='2')
+	data-player-panel#player-3(seat-nr='3')
+	data-player-panel#player-4(seat-nr='4')
+	data-player-panel#player-5(seat-nr='5')
+	data-player-panel#player-6(seat-nr='6')
+	data-player-panel#player-7(seat-nr='7')
+	data-player-panel#player-8(seat-nr='8')
+	data-player-panel#player-9(seat-nr='9')
+	.dealer-panel DEALER
+	#community-cards
+		.card#flop-1
+		.card#flop-2
+		.card#flop-3
+		.card#turn
+		.card#river
+	#pot-panel Pot: 430
+	
+#control-panel
+	.form-group
+		button.btn.btn-success.form-control(type='button', data-ng-click='addPlayer()', data-ng-disabled='gameStarted') Add player
+	.form-group
+		button.btn.btn-primary.form-control(type='button', data-ng-click='startGame()', data-ng-disabled='gameStarted') Start game
+	.form-group
+		button.btn.btn-warning.form-control(type='button', data-ng-click='nextHand()', data-ng-if='gameStarted') Next hand
+	.panel.panel-primary(data-ng-if='handNr')
+		.panel-heading
+			h2.panel-title Game info
+		.panel-body(data-ng-bind='handNr | handNrFilter')
+		.panel-footer Time left in level: 
+			strong 10:34

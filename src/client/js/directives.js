@@ -48,6 +48,13 @@
 					$scope.isBigBlind   = playerIndex === roles.bigBlind;
 				});
 
+				$scope.$on(HOLDEM_EVENTS.ACTION_PERFORMED, function(event, action) {
+					// Did our player perform the action?
+					if (action.player === playerIndex) {
+						$scope.mostRecentAction = action;
+					}
+				});
+
 				/*
 				 * Utility functions
 				 */

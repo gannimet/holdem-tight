@@ -116,7 +116,7 @@
 			};
 
 			var bigBlindAction = {
-				playerIndex: currentHand.roles.bigBlind,
+				player: currentHand.roles.bigBlind,
 				action: HOLDEM_ACTIONS.RAISE,
 				amount: currentHand.blinds.bigBlind
 			};

@@ -18,4 +18,12 @@
 		};
 	}]);
 
+	holdemFilters.filter('playerAction', [function() {
+		return function(action) {
+			if (action) {
+				return action.action + ' ' + action.amount;
+			}
+		};
+	}]);
+
 })(window);

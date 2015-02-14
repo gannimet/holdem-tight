@@ -11,6 +11,9 @@
 	// Stack
 	span.player-chip-stack(data-ng-bind='player.stack | stackSize')
 
+	// Action info
+	.current-action(data-ng-if='player && isGameStarted()', data-ng-bind='mostRecentAction | playerAction')
+
 	// Action buttons and controls
 	.action-controls(data-ng-if='player && isGameStarted()')
 		button.form-control.btn.btn-sm.btn-primary.check-fold-button CHECK

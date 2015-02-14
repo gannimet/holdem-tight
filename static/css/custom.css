@@ -1,3 +1,4 @@
+/* Global measurements */
 /* Player panel measurements */
 /* Vertical offsets between player panels */
 /* Horizontal gaps between player panels */
@@ -5,9 +6,12 @@
 /* Horizontal center of table to align stuff centrally */
 /* Measurements of the cards and the board */
 /* Measurements of the pot panel */
+/* Measurements of control panel */
 /* Colors */
-#game-area {
-  margin: 20px;
+#game-table {
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 #game-table .player-panel,
 #game-table .dealer-panel {
@@ -51,33 +55,45 @@
   background: url('/img/buttons/dealer.png');
   background-size: 25px 25px;
 }
+#game-table .player-panel .current-action {
+  position: absolute;
+  top: 43px;
+  left: 0;
+  width: 100%;
+  height: 34px;
+  font-size: 20px;
+  text-align: center;
+  padding: 3px 0;
+  background-color: #e7faea;
+  color: #28d444;
+}
 #game-table .player-panel .check-fold-button {
   position: absolute;
-  top: 74px;
+  top: 84px;
   left: 3px;
   width: 85px;
-  height: 40px;
+  height: 35px;
 }
 #game-table .player-panel .call-button {
   position: absolute;
-  top: 74px;
+  top: 84px;
   left: 92px;
   width: 85px;
-  height: 40px;
+  height: 35px;
 }
 #game-table .player-panel .raise-button {
   position: absolute;
-  top: 117px;
+  top: 122px;
   left: 92px;
   width: 85px;
-  height: 40px;
+  height: 35px;
 }
 #game-table .player-panel .raise-amount-txt {
   position: absolute;
-  top: 117px;
+  top: 122px;
   left: 3px;
   width: 85px;
-  height: 40px;
+  height: 35px;
   text-align: center;
 }
 #game-table .player-panel:hover {
@@ -147,31 +163,31 @@
 #game-table #community-cards #flop-1 {
   top: 0;
   left: 0;
-  background: url('/img/10_of_hearts.svg');
+  background: url('/img/jack_of_diamonds.svg');
   background-size: 90px 130.68px;
 }
 #game-table #community-cards #flop-2 {
   top: 0;
   left: 100px;
-  background: url('/img/jack_of_hearts.svg');
+  background: url('/img/3_of_spades.svg');
   background-size: 90px 130.68px;
 }
 #game-table #community-cards #flop-3 {
   top: 0;
   left: 200px;
-  background: url('/img/queen_of_hearts.svg');
+  background: url('/img/queen_of_diamonds.svg');
   background-size: 90px 130.68px;
 }
 #game-table #community-cards #turn {
   top: 0;
   left: 310px;
-  background: url('/img/king_of_hearts.svg');
+  background: url('/img/7_of_hearts.svg');
   background-size: 90px 130.68px;
 }
 #game-table #community-cards #river {
   top: 0;
   left: 420px;
-  background: url('/img/ace_of_hearts.svg');
+  background: url('/img/ace_of_clubs.svg');
   background-size: 90px 130.68px;
 }
 #game-table #pot-panel {
@@ -182,4 +198,11 @@
   height: 80px;
   text-align: center;
   font-size: 130%;
+}
+#control-panel {
+  position: absolute;
+  top: 20px;
+  left: 1050px;
+  width: 300px;
+  margin-right: 20px;
 }
