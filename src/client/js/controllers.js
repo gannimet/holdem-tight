@@ -37,6 +37,10 @@
 			gameService.nextHand();
 		};
 
+		$scope.advanceBettingRound = function() {
+			gameService.advanceBettingRound();
+		};
+
 		/*
 		 * Broadcast event handlers
 		 */
@@ -46,6 +50,10 @@
 
 		$scope.$on(HOLDEM_EVENTS.NEXT_HAND_DEALT, function(event, handNr) {
 			$scope.handNr = handNr;
+		});
+
+		$scope.$on(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, function(event, bettingRound) {
+			$scope.currentBettingRound = bettingRound;
 		});
 	}]);
 

@@ -3,13 +3,14 @@
 	var holdemServices = angular.module('holdemServices', []);
 
 	holdemServices.service('gameService',
-			['$rootScope', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS',
-			function($rootScope, HOLDEM_EVENTS, HOLDEM_ACTIONS) {
+			['$rootScope', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS', 'HOLDEM_BETTING_ROUNDS',
+			function($rootScope, HOLDEM_EVENTS, HOLDEM_ACTIONS, HOLDEM_BETTING_ROUNDS) {
 		// Instance variables
 		var self = this;
 		this.players = [];
 		this.allHands = [];
 		this.gameStarted = false;
+		this.currentBettingRound = null;
 		
 		// Public API
 		this.addPlayer = function(player) {
@@ -31,10 +32,13 @@
 
 		this.startGame = function() {
 			this.gameStarted = true;
+			this.currentBettingRound = HOLDEM_BETTING_ROUNDS.PRE_FLOP;
 			this.nextHand();
 
-			// Tell the world about the start of the game
+			// Tell the world about the start of the game, and
+			// therefore the new betting round
 			$rootScope.$broadcast(HOLDEM_EVENTS.GAME_STARTED);
+			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, this.currentBettingRound);
 		};
 
 		this.nextHand = function() {
@@ -55,6 +59,25 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.NEXT_HAND_DEALT, newHandNr);
 		};
 
+		this.advanceBettingRound = function() {
+			switch (this.currentBettingRound) {
+				case HOLDEM_BETTING_ROUNDS.PRE_FLOP:
+					this.currentBettingRound = HOLDEM_BETTING_ROUNDS.FLOP;
+					break;
+				case HOLDEM_BETTING_ROUNDS.FLOP:
+					this.currentBettingRound = HOLDEM_BETTING_ROUNDS.TURN;
+					break;
+				case HOLDEM_BETTING_ROUNDS.TURN:
+					this.currentBettingRound = HOLDEM_BETTING_ROUNDS.RIVER;
+					break;
+				case HOLDEM_BETTING_ROUNDS.RIVER:
+					throw 'There is no betting round after the river';
+			}
+
+			// Tell the world about the new betting round
+			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, this.currentBettingRound);
+		};
+
 		this.getCurrentHand = function() {
 			if (this.allHands.length < 1) {
 				return null;
@@ -69,6 +92,18 @@
 			}
 
 			return this.allHands[this.allHands.length - 2];
+		};
+
+		this.recordAction = function(action) {
+			if (!action.player || !action.action) {
+				return false;
+			}
+
+			action.bettingRound = this.currentBettingRound;
+			getCurrentHand().actions.push(action);
+
+			// Tell the world about the action
+			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, action);
 		};
 
 		// Private utility functions
@@ -112,13 +147,15 @@
 			var smallBlindAction = {
 				player: currentHand.roles.smallBlind,
 				action: HOLDEM_ACTIONS.BET,
-				amount: currentHand.blinds.smallBlind
+				amount: currentHand.blinds.smallBlind,
+				bettingRound: HOLDEM_BETTING_ROUNDS.PRE_FLOP
 			};
 
 			var bigBlindAction = {
 				player: currentHand.roles.bigBlind,
 				action: HOLDEM_ACTIONS.RAISE,
-				amount: currentHand.blinds.bigBlind
+				amount: currentHand.blinds.bigBlind,
+				bettingRound: HOLDEM_BETTING_ROUNDS.PRE_FLOP
 			};
 
 			currentHand.actions = [smallBlindAction, bigBlindAction];

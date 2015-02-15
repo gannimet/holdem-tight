@@ -8,7 +8,8 @@
 		PLAYER_DELETED: 'playerDeleted',
 		NEXT_HAND_DEALT: 'nextHandDealt',
 		ROLES_ASSIGNED: 'rolesAssigned',
-		ACTION_PERFORMED: 'actionPerformed'
+		ACTION_PERFORMED: 'actionPerformed',
+		BETTING_ROUND_ADVANCED: 'bettingRoundAdvanced'
 	});
 
 	holdemConstants.constant('HOLDEM_ACTIONS', {
@@ -17,6 +18,13 @@
 		RAISE: 'raise',
 		BET: 'bet',
 		CHECK: 'check'
+	});
+
+	holdemConstants.constant('HOLDEM_BETTING_ROUNDS', {
+		PRE_FLOP: 'pre_flop',
+		FLOP: 'flop',
+		TURN: 'turn',
+		RIVER: 'river'
 	});
 
 })(window);

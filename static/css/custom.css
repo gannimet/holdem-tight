@@ -11,7 +11,7 @@
 #game-table {
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 30px;
 }
 #game-table .player-panel,
 #game-table .dealer-panel {
@@ -109,7 +109,6 @@
   border-bottom: none;
   text-align: center;
   font-size: 200%;
-  padding-top: 50px;
 }
 #game-table #player-1 {
   top: 485px;
@@ -202,7 +201,7 @@
 #control-panel {
   position: absolute;
   top: 20px;
-  left: 1050px;
+  left: 1060px;
   width: 300px;
-  margin-right: 20px;
+  margin-right: 30px;
 }

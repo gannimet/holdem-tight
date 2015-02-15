@@ -16,7 +16,7 @@
 		.card#turn
 		.card#river
 	#pot-panel Pot: 430
-	
+
 #control-panel
 	.form-group
 		button.btn.btn-success.form-control(type='button', data-ng-click='addPlayer()', data-ng-disabled='gameStarted') Add player
@@ -27,6 +27,10 @@
 	.panel.panel-primary(data-ng-if='handNr')
 		.panel-heading
 			h2.panel-title Game info
-		.panel-body(data-ng-bind='handNr | handNrFilter')
+		.panel-body
+			.hand-nr(data-ng-bind='handNr | handNrFilter')
+			.betting-round-info
+				span(data-ng-bind='currentBettingRound | bettingRound')  
+				button.btn.btn-sm.btn-success(data-ng-click='advanceBettingRound()') ->
 		.panel-footer Time left in level: 
 			strong 10:34
