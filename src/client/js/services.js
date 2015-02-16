@@ -8,9 +8,11 @@
 		// Instance variables
 		var self = this;
 		this.players = [];
+		this.finishedPlayers = [];
 		this.allHands = [];
 		this.gameStarted = false;
 		this.currentBettingRound = null;
+		this.whoseTurnItIs = undefined;
 		
 		// Public API
 		this.addPlayer = function(player) {
@@ -30,6 +32,13 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_DELETED, this.players);
 		};
 
+		/**
+		 * Whether the player with index playerIndex has already finished
+		 */
+		this.isPlayerFinished = function(playerIndex) {
+			return this.finishedPlayers.indexOf(playerIndex) > -1;
+		};
+
 		this.startGame = function() {
 			this.gameStarted = true;
 			this.currentBettingRound = HOLDEM_BETTING_ROUNDS.PRE_FLOP;
@@ -41,6 +50,11 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, this.currentBettingRound);
 		};
 
+		/**
+		 * Add a new hand to the list, and make it "play ready",
+		 * i.e. assign the roles, take the blinds, and post all the
+		 * proper notifications
+		 */
 		this.nextHand = function() {
 			var newHandNr = this.allHands.length + 1;
 
@@ -54,12 +68,21 @@
 			
 			assignRoles();
 			recordBlindActions();
+			assignTurn();
 
 			// Tell the world about the new hand
 			$rootScope.$broadcast(HOLDEM_EVENTS.NEXT_HAND_DEALT, newHandNr);
 		};
 
+		/**
+		 * Advances play to the next betting round, if this is legal
+		 * (i.e. if the previous betting round has been finished)
+		 */
 		this.advanceBettingRound = function() {
+			if (!isCurrentBettingRoundFinished()) {
+				throw 'Current betting round wasn\'t yet finished';
+			}
+
 			switch (this.currentBettingRound) {
 				case HOLDEM_BETTING_ROUNDS.PRE_FLOP:
 					this.currentBettingRound = HOLDEM_BETTING_ROUNDS.FLOP;
@@ -78,6 +101,10 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, this.currentBettingRound);
 		};
 
+		/**
+		 * Returns the hand that is currently in play,
+		 * or null if there isn't one
+		 */
 		this.getCurrentHand = function() {
 			if (this.allHands.length < 1) {
 				return null;
@@ -86,6 +113,10 @@
 			return this.allHands[this.allHands.length - 1];
 		};
 
+		/**
+		 * Returns the hand that was played right before the
+		 * current one
+		 */
 		this.getPreviousHand = function() {
 			if (this.allHands.length < 2) {
 				return null;
@@ -94,6 +125,10 @@
 			return this.allHands[this.allHands.length - 2];
 		};
 
+		/**
+		 * Adds the action to the actions of the current hand,
+		 * checking for validity first
+		 */
 		this.recordAction = function(action) {
 			if (!action.player || !action.action) {
 				return false;
@@ -106,7 +141,32 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, action);
 		};
 
+		/**
+		 * True, if the current betting round is finished and the next card
+		 * can be dealt or a showdown can be performed respectively,
+		 * false if there are still players to act in this betting round
+		 */
+		this.isCurrentBettingRoundFinished = function() {
+			// TODO implement
+		};
+
+		this.getLastAction = function() {
+			var currentHand = self.getCurrentHand();
+
+			if (!currentHand.actions || !currentHand.actions.length) {
+				throw 'No actions yet in current hand';
+			}
+
+			return currentHand.actions[currentHand.actions.length - 1];
+		};
+
 		// Private utility functions
+		/**
+		 * Assigns small blind, big blind and dealer position
+		 * to the correct players, i.e. moves them on by one
+		 * position compared to the previous hand, respecting already
+		 * finished players
+		 */
 		function assignRoles() {
 			var currentHand = self.getCurrentHand();
 			var previousHand = self.getPreviousHand();
@@ -141,6 +201,29 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.ROLES_ASSIGNED, currentHand.roles);
 		}
 
+		/**
+		 * Sets the instance variable whoseTurnItIs to the correct
+		 * player, respecting already finished players and players
+		 * who have already folded in this hand
+		 */
+		function assignTurn() {
+			if (self.isCurrentBettingRoundFinished()) {
+				self.whoseTurnItIs = earliestNonFinishedPlayer();
+			} else {
+				var playerWhoActedLast = self.getLastAction().player;
+
+				self.whoseTurnItIs = nextNonFinishedPlayerAfter(playerWhoActedLast, false);
+			}
+
+			// Tell the world about the new player's turn
+			$rootScope.$broadcast(HOLDEM_EVENTS.TURN_ASSIGNED, self.whoseTurnItIs);
+		}
+
+		/**
+		 * Adds the forced blinds of the players in the roles of
+		 * small blind and big blind to the actions of the current
+		 * hand
+		 */
 		function recordBlindActions() {
 			var currentHand = self.getCurrentHand();
 
@@ -163,6 +246,35 @@
 			// Tell the world about these two actions
 			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, smallBlindAction);
 			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, bigBlindAction);
+		}
+
+		/**
+		 * Returns the index of the player in the earliest position
+		 * in the current hand that is not yet finished
+		 */
+		function earliestNonFinishedPlayer() {
+			var currentHand = self.getCurrentHand();
+			var smallBind = currentHand.roles.smallBlind;
+
+			return nextNonFinishedPlayerAfter(smallBlind, true);
+		}
+
+		function nextNonFinishedPlayerAfter(referencePlayer, inclusive) {
+			var playerIndex;
+			var exclusiveCorrection = inclusive ? 0 : 1;
+
+			for (
+					var i = referencePlayer + exclusiveCorrection;
+					i < (referencePlayer + self.players.length - 1);
+					i++
+				) {
+				playerIndex = i % self.players.length;
+				if (!self.isPlayerFinished(playerIndex)) {
+					return playerIndex;
+				}
+			}
+
+			throw 'No unfinished player found';
 		}
 	}]);
 

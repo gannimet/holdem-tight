@@ -9,7 +9,8 @@
 		NEXT_HAND_DEALT: 'nextHandDealt',
 		ROLES_ASSIGNED: 'rolesAssigned',
 		ACTION_PERFORMED: 'actionPerformed',
-		BETTING_ROUND_ADVANCED: 'bettingRoundAdvanced'
+		BETTING_ROUND_ADVANCED: 'bettingRoundAdvanced',
+		TURN_ASSIGNED: 'turnAssigned'
 	});
 
 	holdemConstants.constant('HOLDEM_ACTIONS', {

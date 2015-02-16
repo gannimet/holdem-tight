@@ -55,6 +55,13 @@
 					}
 				});
 
+				$scope.$on(HOLDEM_EVENTS.TURN_ASSIGNED, function(event, whoseTurnItIs) {
+					// Is it our player's turn?
+					if (whoseTurnItIs === playerIndex) {
+						console.log('It is our player\'s turn (' + whoseTurnItIs + ')');
+					}
+				});
+
 				/*
 				 * Utility functions
 				 */
