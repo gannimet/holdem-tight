@@ -147,9 +147,38 @@
 		 * false if there are still players to act in this betting round
 		 */
 		this.isCurrentBettingRoundFinished = function() {
-			// TODO implement
+			var thisRoundActions = getAllActionsOfCurrentBettingRound();
+			var contradictionFound = false;
+			var playerCommitments = collectPlayerCommitments(thisRoundActions);
+			
+			var referenceAmount;
+			for (var playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
+				if (playerCommitments.hasOwnProperty(playerIndex)) {
+					// player has not folded and is not finished
+					if (referenceAmount) {
+						// we have a reference amount to compare with
+						if (this.players[playerIndex].stack !== 0) {
+							// and the player is NOT all in, so he
+							// must have committed the referecne amount
+							if (playerCommitments[playerIndex] !== referenceAmount) {
+								// CONTRADICTION!
+								contradictionFound = true;
+							}
+						}
+					} else {
+						// no reference amount yet, set to the
+						// current player's commitment
+						referenceAmount = playerCommitments[playerIndex];
+					}
+				}
+			}
+
+			return !contradictionFound;
 		};
 
+		/**
+		 * Returns the last performed action in the current hand
+		 */
 		this.getLastAction = function() {
 			var currentHand = self.getCurrentHand();
 
@@ -259,6 +288,13 @@
 			return nextNonFinishedPlayerAfter(smallBlind, true);
 		}
 
+		/**
+		 * Returns the index of the next player that has not yet finished
+		 * the game after the reference player
+		 * @param {number} referencePlayer - index of the reference player
+		 * @param {boolean} inclusive - whether or not referenceplayer should
+		 * be considered as the possible next player
+		 */
 		function nextNonFinishedPlayerAfter(referencePlayer, inclusive) {
 			var playerIndex;
 			var exclusiveCorrection = inclusive ? 0 : 1;
@@ -275,6 +311,62 @@
 			}
 
 			throw 'No unfinished player found';
+		}
+
+		/**
+		 * Returns a list of all player's actions during the currently
+		 * active betting round
+		 */
+		function getAllActionsOfCurrentBettingRound() {
+			var allActions = self.getCurrentHand().actions;
+			var result = [];
+
+			for (var i = 0; i < allActions.length; i++) {
+				if (allActions[i].bettingRound === self.currentBettingRound) {
+					result.push(allActions[i]);
+				}
+			}
+
+			return result;
+		}
+
+		/**
+		 * Returns an object describing the total amount of chips committed
+		 * by every player, if any
+		 * @param {Array} actions - list of all actions for which to collect
+		 * the players' commitments
+		 * @return {Object} An object describing every player's commitments
+		 * given the supplied list of actions, with the player's index as key
+		 * and the total amount of chips as value. Players who folded do not
+		 * appear in the result object
+		 */
+		function collectPlayerCommitments(actions) {
+			var playerCommitments = {};
+
+			var currentAction;
+			for (var i = 0; i < actions.length; i++) {
+				currentAction = actions[i];
+
+				if (currentAction.action === HOLDEM_ACTIONS.FOLD) {
+					// player is out of the hand
+					delete playerCommitments[currentAction.player];
+				} else if (currentAction.action === HOLDEM_ACTIONS.CHECK) {
+					// a check is basically a bet of size 0
+					playerCommitments[currentAction.player] = 0;
+				} else {
+					// Call, raise or bet
+
+					if (playerCommitments.hasOwnProperty(currentAction.player)) {
+						// player had already made commitment(s), add to them/it
+						playerCommitments[currentAction.player] += currentAction.amount;
+					} else {
+						// no prior commitments, create new
+						playerCommitments[currentAction.player] = currentAction.amount;
+					}
+				}
+			}
+
+			return playerCommitments;
 		}
 	}]);
 

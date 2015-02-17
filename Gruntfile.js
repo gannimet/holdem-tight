@@ -102,7 +102,7 @@ module.exports = function(grunt) {
 			options: {
 				separator: ';',
 				sourceMap: true,
-				sourceMapName: 'static/js/blogApp.js.concat.map'
+				sourceMapName: 'static/js/holdemApp.js.concat.map'
 			},
 			build: {
 				src: [
@@ -113,23 +113,31 @@ module.exports = function(grunt) {
 					'src/client/js/services.js',
 					'src/client/js/constants.js'
 				],
-				dest: 'static/js/blogApp.js'
+				dest: 'static/js/holdemApp.js'
 			}
 		},
 		uglify: {
 			options: {
 				sourceMap: true,
-				sourceMapIn: 'static/js/blogApp.js.concat.map'
+				sourceMapIn: 'static/js/holdemApp.js.concat.map'
 			},
 			build: {
 				files: {
-					'static/js/blogApp.min.js': ['<%= concat.build.dest %>']
+					'static/js/holdemApp.min.js': ['<%= concat.build.dest %>']
 				}
 			}
 		},
 		clean: {
-			concatenated: ['static/js/blogApp.js', 'static/js/blogApp.js.concat.map'],
+			concatenated: ['static/js/holdemApp.js', 'static/js/holdemApp.js.concat.map'],
 			allStaticFiles: ['static/css/*', 'static/fonts/*', 'static/js/*']
+		},
+		jsdoc: {
+			dist: {
+				src: ['src/client/js/**/*.js'],
+				options: {
+					destination: 'doc'
+				}
+			}
 		}
 	});
 
@@ -140,9 +148,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-jsdoc');
 
 	var buildTasks = ['copy', 'jshint', 'concat', 'uglify', 'less', 'clean:concatenated'];
 
 	grunt.registerTask('build', buildTasks);
 	grunt.registerTask('default', ['build']);
+	grunt.registerTask('doc', ['jsdoc']);
 };

@@ -162,7 +162,7 @@
 #game-table #community-cards #flop-1 {
   top: 0;
   left: 0;
-  background: url('/img/jack_of_diamonds.svg');
+  background: url('/img/3_of_diamonds.svg');
   background-size: 90px 130.68px;
 }
 #game-table #community-cards #flop-2 {
@@ -174,7 +174,7 @@
 #game-table #community-cards #flop-3 {
   top: 0;
   left: 200px;
-  background: url('/img/queen_of_diamonds.svg');
+  background: url('/img/king_of_diamonds.svg');
   background-size: 90px 130.68px;
 }
 #game-table #community-cards #turn {
@@ -186,7 +186,7 @@
 #game-table #community-cards #river {
   top: 0;
   left: 420px;
-  background: url('/img/ace_of_clubs.svg');
+  background: url('/img/5_of_clubs.svg');
   background-size: 90px 130.68px;
 }
 #game-table #pot-panel {
