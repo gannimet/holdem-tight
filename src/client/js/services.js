@@ -148,7 +148,6 @@
 		 */
 		this.isCurrentBettingRoundFinished = function() {
 			var thisRoundActions = getAllActionsOfCurrentBettingRound();
-			var contradictionFound = false;
 			var playerCommitments = collectPlayerCommitments(thisRoundActions);
 			
 			var referenceAmount;
@@ -162,7 +161,7 @@
 							// must have committed the referecne amount
 							if (playerCommitments[playerIndex] !== referenceAmount) {
 								// CONTRADICTION!
-								contradictionFound = true;
+								return false;
 							}
 						}
 					} else {
@@ -173,7 +172,8 @@
 				}
 			}
 
-			return !contradictionFound;
+			// no contradiction found, so betting round is finished
+			return true;
 		};
 
 		/**
