@@ -154,7 +154,24 @@
 				if (!isCorrectCall(action)) {
 					throw 'Invalid call';
 				}
+			} else if (action.action === HOLDEM_ACTIONS.BET) {
+				// check whether this is a legal bet
+				if (!isCorrectBet(action)) {
+					throw 'Invalid bet';
+				}
+			} else if (action.action === HOLDEM_ACTIONS.RAISE) {
+				// check whether this is a legal raise
+				if (!isCorrectRaise(action)) {
+					throw 'Invalid raise';
+				}
+			} else if (action.action === HOLDEM_ACTIONS.CHECK) {
+				// check whether this is a legal check
+				if (!isCorrectCheck(action)) {
+					throw 'Invalid check';
+				}
 			}
+
+			// TODO reduce player's stack by action.amount
 
 			action.bettingRound = this.currentBettingRound;
 			currentHand.actions.push(action);
@@ -345,13 +362,28 @@
 		 * Returns a list of all player's actions during the currently
 		 * active betting round
 		 */
-		function getAllActionsOfCurrentBettingRound() {
+		function getAllActionsOfCurrentBettingRound(type) {
 			var allActions = self.getCurrentHand().actions;
 			var result = [];
 
 			for (var i = 0; i < allActions.length; i++) {
 				if (allActions[i].bettingRound === self.currentBettingRound) {
-					result.push(allActions[i]);
+					if (type) {
+						// Action type restriction given
+						if (Array.isArray(type)) {
+							// we were given a list of possible types
+							if (type.indexOf(allActions[i].action) > -1) {
+								result.push(allActions[i]);
+							}
+						} else {
+							// we assume it's just one type, not a list
+							if (allActions[i].action === type) {
+								result.push(allActions[i]);
+							}
+						}
+					} else {
+						result.push(allActions[i]);
+					}
 				}
 			}
 
@@ -460,6 +492,81 @@
 
 			// Call was incorrect
 			return false;
+		}
+
+		/**
+		 * Whether the supplied bet was a correct action in the current situation
+		 * of play. Takes into account the previous actions in the current betting
+		 * round, the big blind and the stack of the player who makes the bet.
+		 * @return {boolean} whether or not the bet was correct
+		 */
+		function isCorrectBet(bet) {
+			if (bet.action !== HOLDEM_ACTIONS.BET) {
+				return false;
+			}
+
+			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+			var biggestCommitment = getBiggestCommitment(playerCommitments);
+
+			if (!biggestCommitment || biggestCommitment.amount === 0) {
+				// no bet yet
+				if (bet.amount >= self.getCurrentHand().blinds.bigBlind) {
+					// bet has at least the size of the big blind
+					if (bet.amount <= self.players[bet.player].stack) {
+						// bet does not exceed player's stack size
+						// looks like a good bet
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		function isCorrectRaise(raise) {
+			if (raise.action !== HOLDEM_ACTIONS.RAISE) {
+				return false;
+			}
+
+			var allBetsAndRaises = getAllActionsOfCurrentBettingRound([
+				HOLDEM_ACTIONS.BET, HOLDEM_ACTIONS.RAISE]);
+
+			if (allBetsAndRaises.length === 1) {
+				// only one bet so far, this means our raise
+				// has to be double the amount of that bet
+				if (raise.amount >= 2 * allBetsAndRaises[0].amount) {
+					// raise was big enough
+					if (raise.amount <= self.players[raise.player].stack) {
+						// but smaller than the player's stack
+						// looks ok
+						return true;
+					}
+				}
+			} else if (allBetsAndRaises.length > 1) {
+				// there was at least a bet and a raise, possibly re-raises
+				var lastRaise = allBetsAndRaises[allBetsAndRaises.length - 1];
+				var secondToLastRaiseOrBet = allBetsAndRaises[allBetsAndRaises.length - 2];
+				var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+
+				// get absolute commitments by previous two raisers/betters
+				var lastRaiserCommitment = playerCommitments[lastRaise.player];
+				var secondToLastRaiserCommitment = playerCommitments[secondToLastRaiseOrBet.player];
+
+				// the difference between these two total commitment is the
+				// minimum amount to raise
+				var minRaise = lastRaiserCommitment - secondToLastRaiserCommitment;
+				var hypotheticalPlayerCommitmentWithThisRaise =
+					(playerCommitments[raise.player] || 0) + raise.amount;
+				var raiseSize = hypotheticalPlayerCommitmentWithThisRaise - lastRaiserCommitment;
+
+				return raiseSize >= minRaise;
+			}
+
+			return false;
+		}
+
+		function isCorrectCheck(check) {
+
 		}
 	}]);
 
