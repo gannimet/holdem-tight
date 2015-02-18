@@ -128,9 +128,26 @@ describe('unit test for holdem game service', function() {
 			expect($rootScope.$broadcast.calls.count()).toEqual(2);
 			$rootScope.$broadcast.calls.reset();
 			expect(gameService.whoseTurnItIs).toEqual(4);
+			expect(gameService.getLastAction().bettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			// Player 4 calls
+			var player4Call = {
+				player: 4,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 20
+			};
+			expect(gameService.recordAction.bind(gameService, player4Call)).not.toThrow();
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player4Call);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 0);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(0);
+			expect(gameService.getLastAction().bettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
 		});
 
-		it('should perform a complete heads up game', function() {
+		xit('should perform a complete heads up game', function() {
 
 		});
 	});

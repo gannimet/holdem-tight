@@ -63,7 +63,8 @@
 				blinds: {
 					smallBlind: 10,
 					bigBlind: 20
-				}
+				},
+				foldedPlayers: []
 			});
 			
 			assignRoles();
@@ -138,8 +139,25 @@
 				throw 'Player acted out of turn';
 			}
 
+			if (action.action !== HOLDEM_ACTIONS.FOLD && action.action !== HOLDEM_ACTIONS.CHECK) {
+				if (!action.hasOwnProperty('amount')) {
+					throw 'No amount given in a non-fold/check action';
+				}
+			}
+
+			var currentHand = this.getCurrentHand();
+			if (action.action === HOLDEM_ACTIONS.FOLD) {
+				// if player folded, add him to folded players
+				currentHand.foldedPlayers.push(action.player);
+			} else if (action.action === HOLDEM_ACTIONS.CALL) {
+				// check whether this is a legal call
+				if (!isCorrectCall(action)) {
+					throw 'Invalid call';
+				}
+			}
+
 			action.bettingRound = this.currentBettingRound;
-			this.getCurrentHand().actions.push(action);
+			currentHand.actions.push(action);
 
 			// Tell the world about the action
 			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, action);
@@ -197,6 +215,7 @@
 		};
 
 		// Private utility functions
+
 		/**
 		 * Assigns small blind, big blind and dealer position
 		 * to the correct players, i.e. moves them on by one
@@ -297,7 +316,7 @@
 
 		/**
 		 * Returns the index of the next player that has not yet finished
-		 * the game after the reference player
+		 * the game or folded the current hand after the reference player
 		 * @param {number} referencePlayer - index of the reference player
 		 * @param {boolean} inclusive - whether or not referenceplayer should
 		 * be considered as the possible next player
@@ -305,6 +324,7 @@
 		function nextNonFinishedPlayerAfter(referencePlayer, inclusive) {
 			var playerIndex;
 			var exclusiveCorrection = inclusive ? 0 : 1;
+			var currentHand = self.getCurrentHand();
 
 			for (
 					var i = referencePlayer + exclusiveCorrection;
@@ -312,7 +332,8 @@
 					i++
 				) {
 				playerIndex = i % self.players.length;
-				if (!self.isPlayerFinished(playerIndex)) {
+				if (!self.isPlayerFinished(playerIndex) &&
+						currentHand.foldedPlayers.indexOf(playerIndex) < 0) {
 					return playerIndex;
 				}
 			}
@@ -339,7 +360,7 @@
 
 		/**
 		 * Returns an object describing the total amount of chips committed
-		 * by every player, if any
+		 * by every player, if any, over all actions in the supplied list
 		 * @param {Array} actions - list of all actions for which to collect
 		 * the players' commitments
 		 * @return {Object} An object describing every player's commitments
@@ -374,6 +395,71 @@
 			}
 
 			return playerCommitments;
+		}
+
+		/**
+		 * Returns the biggest commitment in the supplied list of commitments
+		 * @return {Object} An object describing the biggest commitment
+		 * within the supplied list of commitments, with the player index as
+		 * key and the committed amount as the value
+		 */
+		function getBiggestCommitment(commitments) {
+			var maxCommitment;
+
+			var currentAmount;
+			for (var player in commitments) {
+				if (commitments.hasOwnProperty(player)) {
+					currentAmount = commitments[player];
+					
+					if (!maxCommitment || currentAmount > maxCommitment.amount) {
+						// if maxCommitment wasn't set before OR
+						// the current one is bigger, override it
+						maxCommitment = {
+							player: player,
+							amount: currentAmount
+						};
+					}
+				}
+			}
+
+			return maxCommitment;
+		}
+
+		/**
+		 * Whether the supplied call was a correct action in the current situation
+		 * of play. Takes into account the amount called, whether the player
+		 * is all in and therefore perhaps can't call the required amount and
+		 * whether a call was even a possible action
+		 * @return {boolean} whether or not the call was correct
+		 */
+		function isCorrectCall(call) {
+			if (call.action !== HOLDEM_ACTIONS.CALL) {
+				return false;
+			}
+
+			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+			var biggestCommitment = getBiggestCommitment(playerCommitments);
+
+			if (call.player == biggestCommitment.player) {
+				// the raiser is now the caller?
+				// something's not quite right here
+				return false;
+			}
+
+			var previousCallerCommitment = playerCommitments[call.player] || 0;
+			if (self.players[call.player].stack === call.amount) {
+				// this call puts the player all in, so it's fine
+				return true;
+			} else {
+				// he's not all in with this call, so he has to call
+				// the exact difference to the biggest commitment
+				if (call.amount == (biggestCommitment.amount - previousCallerCommitment)) {
+					return true;
+				}
+			}
+
+			// Call was incorrect
+			return false;
 		}
 	}]);
 
