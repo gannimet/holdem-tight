@@ -131,14 +131,21 @@
 		 */
 		this.recordAction = function(action) {
 			if (!action.player || !action.action) {
-				return false;
+				throw 'No player or action given';
+			}
+
+			if (action.player !== this.whoseTurnItIs) {
+				throw 'Player acted out of turn';
 			}
 
 			action.bettingRound = this.currentBettingRound;
-			getCurrentHand().actions.push(action);
+			this.getCurrentHand().actions.push(action);
 
 			// Tell the world about the action
 			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, action);
+
+			// Move on to the next player
+			assignTurn();
 		};
 
 		/**
