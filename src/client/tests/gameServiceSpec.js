@@ -128,7 +128,7 @@ describe('unit test for holdem game service', function() {
 			expect($rootScope.$broadcast.calls.count()).toEqual(2);
 			$rootScope.$broadcast.calls.reset();
 			expect(gameService.whoseTurnItIs).toEqual(4);
-			expect(gameService.getLastAction().bettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
 
 			// Player 4 calls
@@ -143,8 +143,84 @@ describe('unit test for holdem game service', function() {
 			expect($rootScope.$broadcast.calls.count()).toEqual(2);
 			$rootScope.$broadcast.calls.reset();
 			expect(gameService.whoseTurnItIs).toEqual(0);
-			expect(gameService.getLastAction().bettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			// Illegal bet from player 0
+			var illegalBet = {
+				player: 0,
+				action: HOLDEM_ACTIONS.BET,
+				amount: 40
+			};
+			expect(gameService.recordAction.bind(gameService, illegalBet)).toThrow();
+			expect($rootScope.$broadcast.calls.count()).toEqual(0);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.getLastAction()).toEqual(player4Call);
+
+			var player0Raise = {
+				player: 0,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 40
+			};
+			expect(gameService.recordAction.bind(gameService, player0Raise)).not.toThrow();
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player0Raise);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 1);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(1);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			var player1Call = {
+				player: 1,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 30
+			};
+			expect(gameService.recordAction.bind(gameService, player1Call)).not.toThrow();
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player1Call);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 2);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(2);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			var player2Fold = {
+				player: 2,
+				action: HOLDEM_ACTIONS.FOLD
+			};
+			expect(gameService.recordAction.bind(gameService, player2Fold)).not.toThrow();
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player2Fold);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 4);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(4);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			var player4Fold = {
+				player: 4,
+				action: HOLDEM_ACTIONS.FOLD
+			};
+			expect(gameService.recordAction.bind(gameService, player4Fold)).not.toThrow();
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player4Fold);
+			expect($rootScope.$broadcast.calls.count()).toEqual(1);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toBeUndefined();
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+
+			// PRE-FLOP action is finished, we cann advance the betting round
+			expect(gameService.advanceBettingRound.bind(gameService)).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(
+				HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, HOLDEM_BETTING_ROUNDS.FLOP
+			);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 1);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(1);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
 		});
 
 		xit('should perform a complete heads up game', function() {

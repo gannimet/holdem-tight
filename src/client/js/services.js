@@ -80,7 +80,7 @@
 		 * (i.e. if the previous betting round has been finished)
 		 */
 		this.advanceBettingRound = function() {
-			if (!isCurrentBettingRoundFinished()) {
+			if (!this.isCurrentBettingRoundFinished()) {
 				throw 'Current betting round wasn\'t yet finished';
 			}
 
@@ -100,6 +100,9 @@
 
 			// Tell the world about the new betting round
 			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, this.currentBettingRound);
+
+			// Somebody has to start acting in the new betting round
+			assignTurn(true);
 		};
 
 		/**
@@ -131,7 +134,7 @@
 		 * checking for validity first
 		 */
 		this.recordAction = function(action) {
-			if (!action.player || !action.action) {
+			if (!action.hasOwnProperty('player') || !action.action) {
 				throw 'No player or action given';
 			}
 
@@ -190,6 +193,14 @@
 		 */
 		this.isCurrentBettingRoundFinished = function() {
 			var thisRoundActions = getAllActionsOfCurrentBettingRound();
+			var numberOfActivePlayers = this.players.length - this.getCurrentHand().foldedPlayers.length;
+
+			// Every player needs to have had at least one chance to
+			// act in this hand
+			if (thisRoundActions.length < numberOfActivePlayers) {
+				return false;
+			}
+
 			var playerCommitments = collectPlayerCommitments(thisRoundActions);
 			
 			var referenceAmount;
@@ -277,18 +288,31 @@
 		 * Sets the instance variable whoseTurnItIs to the correct
 		 * player, respecting already finished players and players
 		 * who have already folded in this hand
+		 * @param {boolean} isNewBettingRound - whether we start a
+		 * new betting round and the turn needs to be assigned for
+		 * the first time in it
 		 */
-		function assignTurn() {
-			if (self.isCurrentBettingRoundFinished()) {
+		function assignTurn(isNewBettingRound) {
+			if (isNewBettingRound) {
 				self.whoseTurnItIs = earliestNonFinishedPlayer();
+
+				// Tell the world about the new player's turn
+				$rootScope.$broadcast(HOLDEM_EVENTS.TURN_ASSIGNED, self.whoseTurnItIs);
+				return;
+			}
+
+			if (self.isCurrentBettingRoundFinished()) {
+				// The turn will be assigned when the betting round
+				// is advanced
+				self.whoseTurnItIs = undefined;
 			} else {
 				var playerWhoActedLast = self.getLastAction().player;
 
 				self.whoseTurnItIs = nextNonFinishedPlayerAfter(playerWhoActedLast, false);
-			}
 
-			// Tell the world about the new player's turn
-			$rootScope.$broadcast(HOLDEM_EVENTS.TURN_ASSIGNED, self.whoseTurnItIs);
+				// Tell the world about the new player's turn
+				$rootScope.$broadcast(HOLDEM_EVENTS.TURN_ASSIGNED, self.whoseTurnItIs);
+			}
 		}
 
 		/**
@@ -326,7 +350,7 @@
 		 */
 		function earliestNonFinishedPlayer() {
 			var currentHand = self.getCurrentHand();
-			var smallBind = currentHand.roles.smallBlind;
+			var smallBlind = currentHand.roles.smallBlind;
 
 			return nextNonFinishedPlayerAfter(smallBlind, true);
 		}
@@ -512,17 +536,22 @@
 				// no bet yet
 				if (bet.amount >= self.getCurrentHand().blinds.bigBlind) {
 					// bet has at least the size of the big blind
-					if (bet.amount <= self.players[bet.player].stack) {
-						// bet does not exceed player's stack size
-						// looks like a good bet
-						return true;
-					}
+					
+					// bet may not exceed player's stack size
+					return bet.amount <= self.players[bet.player].stack;
+				} else {
+					// bet less than the big blind, this is only legal
+					// if it is an all in bet
+					return bet.amount === self.players[bet.player].stack;
 				}
 			}
 
 			return false;
 		}
 
+		/**
+		 * 
+		 */
 		function isCorrectRaise(raise) {
 			if (raise.action !== HOLDEM_ACTIONS.RAISE) {
 				return false;
@@ -530,6 +559,24 @@
 
 			var allBetsAndRaises = getAllActionsOfCurrentBettingRound([
 				HOLDEM_ACTIONS.BET, HOLDEM_ACTIONS.RAISE]);
+			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+
+			if (allBetsAndRaises.length > 0) {
+				// there has been at least one bet
+				if (raise.amount === self.players[raise.player].stack) {
+					// player is all in, in which case it is legal
+					// to raise by less than the min raise, as long as
+					// it is still more than the previous bet/raise
+					var lastRaiseOrBet = allBetsAndRaises[allBetsAndRaises.length - 1];
+					var lastRaiserOrBetterCommitment = playerCommitments[lastRaiseOrBet.player];
+					var ourHypotheticalTotalCommitment = playerCommitments[raise.player] + raise.amount;
+
+					return ourHypotheticalTotalCommitment > lastRaiserOrBetterCommitment;
+				}
+			} else {
+				// not even a bet yet, so this can't be a raise
+				return false;
+			}
 
 			if (allBetsAndRaises.length === 1) {
 				// only one bet so far, this means our raise
@@ -546,7 +593,6 @@
 				// there was at least a bet and a raise, possibly re-raises
 				var lastRaise = allBetsAndRaises[allBetsAndRaises.length - 1];
 				var secondToLastRaiseOrBet = allBetsAndRaises[allBetsAndRaises.length - 2];
-				var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
 
 				// get absolute commitments by previous two raisers/betters
 				var lastRaiserCommitment = playerCommitments[lastRaise.player];
@@ -565,8 +611,27 @@
 			return false;
 		}
 
+		/**
+		 * Whether the supplied check was a correct action in the current situation
+		 * of play. Takes into account the previous actions in the current betting
+		 * round.
+		 * @return {boolean} whether or not the check was correct
+		 */
 		function isCorrectCheck(check) {
+			if (check.action !== HOLDEM_ACTIONS.CHECK) {
+				return false;
+			}
 
+			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+			var biggestCommitment = getBiggestCommitment(playerCommitments);
+
+			if (!biggestCommitment || biggestCommitment.amount === 0) {
+				// no one has committed any chips yet
+				// looks good to check
+				return true;
+			}
+
+			return false;
 		}
 	}]);
 
