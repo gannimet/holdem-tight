@@ -58,10 +58,10 @@ describe('unit test for holdem game service', function() {
 
 			expect(gameService.players.length).toBe(5);
 
-			// Test notifications on game start
+			// Test notifications
 			spyOn($rootScope, '$broadcast').and.callThrough();
 
-			gameService.startGame();
+			expect(gameService.startGame.bind(gameService)).not.toThrow();
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.GAME_STARTED);
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, HOLDEM_BETTING_ROUNDS.PRE_FLOP);
@@ -77,6 +77,7 @@ describe('unit test for holdem game service', function() {
 				amount: gameService.getCurrentHand().blinds.smallBlind,
 				bettingRound: HOLDEM_BETTING_ROUNDS.PRE_FLOP
 			});
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 2);
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, {
 				player: 2,
 				action: HOLDEM_ACTIONS.RAISE,
@@ -85,7 +86,10 @@ describe('unit test for holdem game service', function() {
 			});
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 3);
 
-			expect($rootScope.$broadcast.calls.count()).toBe(7);
+			expect(gameService.players[1].stack).toEqual(1490);
+			expect(gameService.players[2].stack).toEqual(1480);
+
+			expect($rootScope.$broadcast.calls.count()).toBe(8);
 			$rootScope.$broadcast.calls.reset();
 
 			expect(gameService.whoseTurnItIs).toEqual(3);
@@ -130,6 +134,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(4);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect(gameService.players[3].stack).toEqual(1500);
 
 			// Player 4 calls
 			var player4Call = {
@@ -145,6 +150,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(0);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect(gameService.players[4].stack).toEqual(1480);
 
 			// Illegal bet from player 0
 			var illegalBet = {
@@ -156,6 +162,7 @@ describe('unit test for holdem game service', function() {
 			expect($rootScope.$broadcast.calls.count()).toEqual(0);
 			$rootScope.$broadcast.calls.reset();
 			expect(gameService.getLastAction()).toEqual(player4Call);
+			expect(gameService.players[0].stack).toEqual(1500);
 
 			var player0Raise = {
 				player: 0,
@@ -170,6 +177,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(1);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect(gameService.players[0].stack).toEqual(1460);
 
 			var player1Call = {
 				player: 1,
@@ -184,6 +192,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(2);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect(gameService.players[1].stack).toEqual(1460);
 
 			var player2Fold = {
 				player: 2,
@@ -197,6 +206,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(4);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect(gameService.players[2].stack).toEqual(1480);
 
 			var player4Fold = {
 				player: 4,
@@ -209,6 +219,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toBeUndefined();
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+			expect(gameService.players[4].stack).toEqual(1480);
 
 			// PRE-FLOP action is finished, we cann advance the betting round
 			expect(gameService.advanceBettingRound.bind(gameService)).not.toThrow();
@@ -221,9 +232,48 @@ describe('unit test for holdem game service', function() {
 			$rootScope.$broadcast.calls.reset();
 			expect(gameService.whoseTurnItIs).toEqual(1);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
+			expect(gameService.getCurrentHand().foldedPlayers).toContain(2);
+			expect(gameService.getCurrentHand().foldedPlayers).toContain(3);
+			expect(gameService.getCurrentHand().foldedPlayers).toContain(4);
+			expect(gameService.getCurrentHand().foldedPlayers.length).toEqual(3);
+
+			// Now intiate a reraise battle between the two players left
+			// ... but first test a check
+			var player1Check = {
+				player: 1,
+				action: HOLDEM_ACTIONS.CHECK
+			};
+			expect(gameService.recordAction.bind(gameService, player1Check)).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player1Check);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 0);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(0);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
+			expect(gameService.players[1].stack).toEqual(1460);
+
+			var player0Bet = {
+				player: 0,
+				action: HOLDEM_ACTIONS.BET,
+				amount: 300
+			};
+			expect(gameService.recordAction.bind(gameService, player0Bet)).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player0Bet);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 1);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(1);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
+			expect(gameService.players[0].stack).toEqual(1160);
 		});
 
 		xit('should perform a complete heads up game', function() {
+
+		});
+
+		xit('should keep track of correct main pot and side pots', function() {
 
 		});
 	});

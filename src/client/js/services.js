@@ -64,12 +64,13 @@
 					smallBlind: 10,
 					bigBlind: 20
 				},
-				foldedPlayers: []
+				foldedPlayers: [],
+				actions: []
 			});
 			
 			assignRoles();
+			self.whoseTurnItIs = this.getCurrentHand().roles.smallBlind;
 			recordBlindActions();
-			assignTurn();
 
 			// Tell the world about the new hand
 			$rootScope.$broadcast(HOLDEM_EVENTS.NEXT_HAND_DEALT, newHandNr);
@@ -133,7 +134,7 @@
 		 * Adds the action to the actions of the current hand,
 		 * checking for validity first
 		 */
-		this.recordAction = function(action) {
+		this.recordAction = function(action, isSmallBlind) {
 			if (!action.hasOwnProperty('player') || !action.action) {
 				throw 'No player or action given';
 			}
@@ -159,7 +160,7 @@
 				}
 			} else if (action.action === HOLDEM_ACTIONS.BET) {
 				// check whether this is a legal bet
-				if (!isCorrectBet(action)) {
+				if (!isCorrectBet(action, isSmallBlind)) {
 					throw 'Invalid bet';
 				}
 			} else if (action.action === HOLDEM_ACTIONS.RAISE) {
@@ -174,7 +175,10 @@
 				}
 			}
 
-			// TODO reduce player's stack by action.amount
+			// Reduce player's stack by action.amount
+			if (action.hasOwnProperty('amount')) {
+				this.players[action.player].stack -= action.amount;
+			}
 
 			action.bettingRound = this.currentBettingRound;
 			currentHand.actions.push(action);
@@ -307,7 +311,6 @@
 				self.whoseTurnItIs = undefined;
 			} else {
 				var playerWhoActedLast = self.getLastAction().player;
-
 				self.whoseTurnItIs = nextNonFinishedPlayerAfter(playerWhoActedLast, false);
 
 				// Tell the world about the new player's turn
@@ -326,22 +329,17 @@
 			var smallBlindAction = {
 				player: currentHand.roles.smallBlind,
 				action: HOLDEM_ACTIONS.BET,
-				amount: currentHand.blinds.smallBlind,
-				bettingRound: HOLDEM_BETTING_ROUNDS.PRE_FLOP
+				amount: currentHand.blinds.smallBlind
 			};
 
 			var bigBlindAction = {
 				player: currentHand.roles.bigBlind,
 				action: HOLDEM_ACTIONS.RAISE,
-				amount: currentHand.blinds.bigBlind,
-				bettingRound: HOLDEM_BETTING_ROUNDS.PRE_FLOP
+				amount: currentHand.blinds.bigBlind
 			};
 
-			currentHand.actions = [smallBlindAction, bigBlindAction];
-
-			// Tell the world about these two actions
-			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, smallBlindAction);
-			$rootScope.$broadcast(HOLDEM_EVENTS.ACTION_PERFORMED, bigBlindAction);
+			self.recordAction(smallBlindAction, true);
+			self.recordAction(bigBlindAction);
 		}
 
 		/**
@@ -369,7 +367,7 @@
 
 			for (
 					var i = referencePlayer + exclusiveCorrection;
-					i < (referencePlayer + self.players.length - 1);
+					i < (referencePlayer + self.players.length);
 					i++
 				) {
 				playerIndex = i % self.players.length;
@@ -524,14 +522,14 @@
 		 * round, the big blind and the stack of the player who makes the bet.
 		 * @return {boolean} whether or not the bet was correct
 		 */
-		function isCorrectBet(bet) {
+		function isCorrectBet(bet, isSmallBlind) {
 			if (bet.action !== HOLDEM_ACTIONS.BET) {
 				return false;
 			}
 
 			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
 			var biggestCommitment = getBiggestCommitment(playerCommitments);
-
+			
 			if (!biggestCommitment || biggestCommitment.amount === 0) {
 				// no bet yet
 				if (bet.amount >= self.getCurrentHand().blinds.bigBlind) {
@@ -541,7 +539,11 @@
 					return bet.amount <= self.players[bet.player].stack;
 				} else {
 					// bet less than the big blind, this is only legal
-					// if it is an all in bet
+					// if it is a small blind bet …
+					if (isSmallBlind) {
+						return bet.player === self.getCurrentHand().roles.smallBlind;
+					}
+					// … or, if it is an all in bet
 					return bet.amount === self.players[bet.player].stack;
 				}
 			}
