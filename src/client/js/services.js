@@ -65,7 +65,8 @@
 					bigBlind: 20
 				},
 				foldedPlayers: [],
-				actions: []
+				actions: [],
+				pot: 0
 			});
 			
 			assignRoles();
@@ -175,9 +176,10 @@
 				}
 			}
 
-			// Reduce player's stack by action.amount
+			// Reduce player's stack by action.amount and add it to the pot
 			if (action.hasOwnProperty('amount')) {
 				this.players[action.player].stack -= action.amount;
+				currentHand.pot += action.amount;
 			}
 
 			action.bettingRound = this.currentBettingRound;
@@ -206,25 +208,19 @@
 			}
 
 			var playerCommitments = collectPlayerCommitments(thisRoundActions);
-			
-			var referenceAmount;
+			var biggestCommitment = getBiggestCommitment(playerCommitments);
+
 			for (var playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
 				if (playerCommitments.hasOwnProperty(playerIndex)) {
 					// player has not folded and is not finished
-					if (referenceAmount) {
-						// we have a reference amount to compare with
-						if (this.players[playerIndex].stack !== 0) {
-							// and the player is NOT all in, so he
-							// must have committed the referecne amount
-							if (playerCommitments[playerIndex] !== referenceAmount) {
-								// CONTRADICTION!
-								return false;
-							}
+					if (this.players[playerIndex].stack !== 0) {
+						// and the player is NOT all in, so he
+						// must have committed the same amount as
+						// the biggest commitment
+						if (playerCommitments[playerIndex] !== biggestCommitment.amount) {
+							// CONTRADICTION!
+							return false;
 						}
-					} else {
-						// no reference amount yet, set to the
-						// current player's commitment
-						referenceAmount = playerCommitments[playerIndex];
 					}
 				}
 			}

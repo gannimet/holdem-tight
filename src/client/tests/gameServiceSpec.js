@@ -88,6 +88,7 @@ describe('unit test for holdem game service', function() {
 
 			expect(gameService.players[1].stack).toEqual(1490);
 			expect(gameService.players[2].stack).toEqual(1480);
+			expect(gameService.getCurrentHand().pot).toEqual(30);
 
 			expect($rootScope.$broadcast.calls.count()).toBe(8);
 			$rootScope.$broadcast.calls.reset();
@@ -135,6 +136,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
 			expect(gameService.players[3].stack).toEqual(1500);
+			expect(gameService.getCurrentHand().pot).toEqual(30);
 
 			// Player 4 calls
 			var player4Call = {
@@ -151,6 +153,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
 			expect(gameService.players[4].stack).toEqual(1480);
+			expect(gameService.getCurrentHand().pot).toEqual(50);
 
 			// Illegal bet from player 0
 			var illegalBet = {
@@ -178,6 +181,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
 			expect(gameService.players[0].stack).toEqual(1460);
+			expect(gameService.getCurrentHand().pot).toEqual(90);
 
 			var player1Call = {
 				player: 1,
@@ -193,6 +197,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
 			expect(gameService.players[1].stack).toEqual(1460);
+			expect(gameService.getCurrentHand().pot).toEqual(120);
 
 			var player2Fold = {
 				player: 2,
@@ -207,6 +212,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
 			expect(gameService.players[2].stack).toEqual(1480);
+			expect(gameService.getCurrentHand().pot).toEqual(120);
 
 			var player4Fold = {
 				player: 4,
@@ -220,6 +226,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.PRE_FLOP);
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
 			expect(gameService.players[4].stack).toEqual(1480);
+			expect(gameService.getCurrentHand().pot).toEqual(120);
 
 			// PRE-FLOP action is finished, we cann advance the betting round
 			expect(gameService.advanceBettingRound.bind(gameService)).not.toThrow();
@@ -252,6 +259,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(0);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
 			expect(gameService.players[1].stack).toEqual(1460);
+			expect(gameService.getCurrentHand().pot).toEqual(120);
 
 			var player0Bet = {
 				player: 0,
@@ -267,6 +275,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(1);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
 			expect(gameService.players[0].stack).toEqual(1160);
+			expect(gameService.getCurrentHand().pot).toEqual(420);
 
 			var player1Raise = {
 				player: 1,
@@ -282,6 +291,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(0);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
 			expect(gameService.players[1].stack).toEqual(860);
+			expect(gameService.getCurrentHand().pot).toEqual(1020);
 
 			// let player 0 make too small a raise
 			player0Raise = {
@@ -293,6 +303,7 @@ describe('unit test for holdem game service', function() {
 			expect($rootScope.$broadcast.calls.count()).toEqual(0);
 			expect(gameService.whoseTurnItIs).toEqual(0);
 			expect(gameService.players[0].stack).toEqual(1160);
+			expect(gameService.getCurrentHand().pot).toEqual(1020);
 
 			// this time it should be enough
 			player0Raise = {
@@ -309,6 +320,38 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(1);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
 			expect(gameService.players[0].stack).toEqual(560);
+			expect(gameService.getCurrentHand().pot).toEqual(1620);
+
+			player1Raise = {
+				player: 1,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 860
+			};
+			expect(gameService.recordAction.bind(gameService, player1Raise)).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player1Raise);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 0);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(0);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
+			expect(gameService.players[1].stack).toEqual(0);
+			expect(gameService.getCurrentHand().pot).toEqual(2480);
+
+			var player0Call = {
+				player: 0,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 560
+			};
+			expect(gameService.recordAction.bind(gameService, player0Call)).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player0Call);
+			expect($rootScope.$broadcast.calls.count()).toEqual(1);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toBeUndefined();
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
+			expect(gameService.players[0].stack).toEqual(0);
+			expect(gameService.getCurrentHand().pot).toEqual(3040);
 		});
 
 		xit('should perform a complete heads up game', function() {
