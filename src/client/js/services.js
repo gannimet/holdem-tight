@@ -242,6 +242,42 @@
 			return currentHand.actions[currentHand.actions.length - 1];
 		};
 
+		this.doesHandRequireMoreAction = function() {
+			// the betting round has to be finished first
+			if (!this.isCurrentBettingRoundFinished()) {
+				return true;
+			}
+
+			// there need to be at least two players with chips left
+			// in the hand
+
+			var playersInHand = this.players.reduce(function(playersLeft, player, playerIndex) {
+				if (self.getCurrentHand().foldedPlayers.indexOf(playerIndex) < 0) {
+					// player has not folded
+					playersLeft.push(playerIndex);
+				}
+
+				return playersLeft;
+			}, []);
+
+			if (playersInHand.length < 2) {
+				return false;
+			}
+
+			var playersWithChips = 0;
+			for (var i = 0; i < playersInHand.length; i++) {
+				if (this.players[playersInHand[i]].stack > 0) {
+					playersWithChips++;
+				}
+
+				if (playersWithChips >= 2) {
+					return true;
+				}
+			}
+
+			return false;
+		};
+
 		// Private utility functions
 
 		/**

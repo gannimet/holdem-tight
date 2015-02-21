@@ -227,6 +227,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
 			expect(gameService.players[4].stack).toEqual(1480);
 			expect(gameService.getCurrentHand().pot).toEqual(120);
+			expect(gameService.doesHandRequireMoreAction()).toBe(true);
 
 			// PRE-FLOP action is finished, we cann advance the betting round
 			expect(gameService.advanceBettingRound.bind(gameService)).not.toThrow();
@@ -243,6 +244,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.getCurrentHand().foldedPlayers).toContain(3);
 			expect(gameService.getCurrentHand().foldedPlayers).toContain(4);
 			expect(gameService.getCurrentHand().foldedPlayers.length).toEqual(3);
+			expect(gameService.doesHandRequireMoreAction()).toBe(true);
 
 			// Now intiate a reraise battle between the two players left
 			// ... but first test a check
@@ -337,6 +339,7 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
 			expect(gameService.players[1].stack).toEqual(0);
 			expect(gameService.getCurrentHand().pot).toEqual(2480);
+			expect(gameService.doesHandRequireMoreAction()).toBe(true);
 
 			var player0Call = {
 				player: 0,
@@ -352,6 +355,8 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
 			expect(gameService.players[0].stack).toEqual(0);
 			expect(gameService.getCurrentHand().pot).toEqual(3040);
+
+			expect(gameService.doesHandRequireMoreAction()).toBe(false);
 		});
 
 		xit('should perform a complete heads up game', function() {
