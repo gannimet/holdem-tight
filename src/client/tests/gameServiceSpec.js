@@ -267,6 +267,48 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.whoseTurnItIs).toEqual(1);
 			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
 			expect(gameService.players[0].stack).toEqual(1160);
+
+			var player1Raise = {
+				player: 1,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 600
+			};
+			expect(gameService.recordAction.bind(gameService, player1Raise)).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player1Raise);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 0);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(0);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
+			expect(gameService.players[1].stack).toEqual(860);
+
+			// let player 0 make too small a raise
+			player0Raise = {
+				player: 0,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 599
+			};
+			expect(gameService.recordAction.bind(gameService, player0Raise)).toThrow();
+			expect($rootScope.$broadcast.calls.count()).toEqual(0);
+			expect(gameService.whoseTurnItIs).toEqual(0);
+			expect(gameService.players[0].stack).toEqual(1160);
+
+			// this time it should be enough
+			player0Raise = {
+				player: 0,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 600
+			};
+			expect(gameService.recordAction.bind(gameService, player0Raise)).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.ACTION_PERFORMED, player0Raise);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.TURN_ASSIGNED, 1);
+			expect($rootScope.$broadcast.calls.count()).toEqual(2);
+			$rootScope.$broadcast.calls.reset();
+			expect(gameService.whoseTurnItIs).toEqual(1);
+			expect(gameService.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
+			expect(gameService.players[0].stack).toEqual(560);
 		});
 
 		xit('should perform a complete heads up game', function() {

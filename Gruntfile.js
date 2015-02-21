@@ -94,7 +94,7 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			sripts: {
-				files: ['Gruntfile.js', 'src/client/js/**/*.js', 'src/client/less/**/*.less', 'src/server/**/*.js'],
+				files: ['Gruntfile.js', 'src/client/js/**/*.js', 'src/client/less/**/*.less', 'src/server/**/*.js', 'src/client/tests/**/*.js'],
 				tasks: ['build']
 			}
 		},
