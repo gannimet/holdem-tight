@@ -57,6 +57,19 @@
 		 */
 		this.nextHand = function() {
 			var newHandNr = this.allHands.length + 1;
+			var commitments = {};
+
+			// initialize every player commitment with 0
+			for (var i = 0; i < this.players.length; i++) {
+				if (this.finishedPlayers.indexOf(i) < 0) {
+					commitments[i] = 0;
+				}
+			}
+
+			var pot = {
+				amount: 0,
+				commitments: commitments
+			};
 
 			this.allHands.push({
 				handNr: newHandNr,
@@ -66,7 +79,7 @@
 				},
 				foldedPlayers: [],
 				actions: [],
-				pot: 0
+				pot: pot
 			});
 			
 			assignRoles();
@@ -136,6 +149,10 @@
 		 * checking for validity first
 		 */
 		this.recordAction = function(action, isSmallBlind) {
+			if (!this.doesHandRequireMoreAction() || this.isCurrentBettingRoundFinished()) {
+				throw 'No more action required in this hand or betting round';
+			}
+
 			if (!action.hasOwnProperty('player') || !action.action) {
 				throw 'No player or action given';
 			}
@@ -179,7 +196,9 @@
 			// Reduce player's stack by action.amount and add it to the pot
 			if (action.hasOwnProperty('amount')) {
 				this.players[action.player].stack -= action.amount;
-				currentHand.pot += action.amount;
+
+				currentHand.pot.amount += action.amount;
+				currentHand.pot.commitments[action.player] += action.amount;
 			}
 
 			action.bettingRound = this.currentBettingRound;
@@ -242,6 +261,11 @@
 			return currentHand.actions[currentHand.actions.length - 1];
 		};
 
+		/**
+		 * Whether more betting action is required in the current hand.
+		 * @return {boolean} true, if at least two players with chips
+		 * are left in the hand
+		 */
 		this.doesHandRequireMoreAction = function() {
 			// the betting round has to be finished first
 			if (!this.isCurrentBettingRoundFinished()) {
