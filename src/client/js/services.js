@@ -302,6 +302,18 @@
 			return false;
 		};
 
+		/**
+		 * Converts the supplied pot (as the current hand records it) into a
+		 * list of side pots, each containing an amount and a list of player
+		 * indices between which the pot will be played.
+		 * @param {Object} wholePot - the pot as it is recorded in the pot
+		 * attribute of a hand
+		 * @param {Number} wholePot.amount - Total pot amount
+		 * @param {Object} wholePot.commitments - Object describing which player
+		 * (index as key) as commited which amount (amount as value) to the pot
+		 * @return {Object[]} list of side pots, each with an amount and a list
+		 * of eligible players
+		 */
 		this.convertToSidePots = function(wholePot) {
 			var foldedPlayers = this.getCurrentHand().foldedPlayers;
 			// collect all 'vertical lines' within the diagram
@@ -676,7 +688,10 @@
 		}
 
 		/**
-		 * 
+		 * Whether the supplied raise was a correct action in the current situation
+		 * of play. Takes into acount the previous actions, stack sizes, raise
+		 * amount and possible all in situations.
+		 * @return {boolean} whether or not the raise was correct
 		 */
 		function isCorrectRaise(raise) {
 			if (raise.action !== HOLDEM_ACTIONS.RAISE) {
