@@ -383,6 +383,8 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.players[1].stack).toEqual(0);
 			expect(gameService.getCurrentHand().pot.amount).toEqual(3040);
 			expect(gameService.getCurrentHand().pot.commitments[1]).toEqual(1500);
+
+			console.log('side pots: ', gameService.convertToSidePots(gameService.getCurrentHand().pot));
 		});
 
 		xit('should perform a complete heads up game', function() {
