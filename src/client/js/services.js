@@ -304,21 +304,17 @@
 
 		this.convertToSidePots = function(wholePot) {
 			var foldedPlayers = this.getCurrentHand().foldedPlayers;
-			console.log('foldedPlayers: ', foldedPlayers);
 			// collect all 'vertical lines' within the diagram
 			var commitmentValues = collectUniqueCommitmentValuesOfNonFoldedPlayers(
 				wholePot, foldedPlayers
 			);
 			commitmentValues.push(0);
-			console.log('commitmentValues (unsorted): ', commitmentValues);
 
 			var numberOfPots = commitmentValues.length - 1;
 			// sort commitmentValues ascending
 			commitmentValues.sort(function(a, b) {
 				return a - b;
 			});
-			console.log('commitmentValues (sorted): ', commitmentValues);
-			console.log('numberOfPots: ', numberOfPots);
 
 			// Create the proper number of pots
 			var sidePots = [];
@@ -331,16 +327,11 @@
 
 			for (var potIndex = 0; potIndex < numberOfPots; potIndex++) {
 				// for each pot …
-				console.log('potIndex: ' + potIndex);
 				for (var playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
 					// for each player …
-					console.log('playerIndex: ' + playerIndex);
 					if (wholePot.commitments.hasOwnProperty(playerIndex)) {
 						// add the money 'between the lines' to the current side pot
 
-						console.log('wholePot.commitments[playerIndex]: ' + wholePot.commitments[playerIndex]);
-						console.log('commitmentValues[potIndex]: ' + commitmentValues[potIndex]);
-						console.log('commitmentValues[potIndex + 1]: ' + commitmentValues[potIndex + 1]);
 						// calculate amount of money player put into the pot
 						// between those two lines and add this money to the
 						// current side pot
@@ -350,19 +341,15 @@
 								commitmentValues[potIndex + 1]
 							), 0
 						) - commitmentValues[potIndex];
-						console.log('sidePots[potIndex].amount: ' + sidePots[potIndex].amount);
-
+						
 						// and if the player hasn't folded and has committed money
 						// beyond the lower 'line', also add him to the eligible players
 						if (foldedPlayers.indexOf(playerIndex) < 0 &&
 								wholePot.commitments[playerIndex] > commitmentValues[potIndex]) {
 							sidePots[potIndex].eligiblePlayers.push(playerIndex);
-							console.log('sidePots[potIndex].eligiblePlayers: ', sidePots[potIndex].eligiblePlayers);
 						}
 					}
-					console.log('--');
 				}
-				console.log('------');
 			}
 
 			return sidePots;
