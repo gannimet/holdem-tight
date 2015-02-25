@@ -11,7 +11,8 @@
 		ACTION_PERFORMED: 'actionPerformed',
 		BETTING_ROUND_ADVANCED: 'bettingRoundAdvanced',
 		TURN_ASSIGNED: 'turnAssigned',
-		PLAYER_WON_MONEY: 'playerWonMoney'
+		PLAYER_WON_MONEY: 'playerWonMoney',
+		PLAYER_FINISHED: 'playerFinished'
 	});
 
 	holdemConstants.constant('HOLDEM_ACTIONS', {

@@ -55,12 +55,11 @@
 		this.startGame = function() {
 			this.gameStarted = true;
 			this.currentBettingRound = HOLDEM_BETTING_ROUNDS.PRE_FLOP;
-			this.nextHand();
 
-			// Tell the world about the start of the game, and
-			// therefore the new betting round
+			// Tell the world about the start of the game
 			$rootScope.$broadcast(HOLDEM_EVENTS.GAME_STARTED);
-			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, this.currentBettingRound);
+
+			this.nextHand();
 		};
 
 		/**
@@ -71,6 +70,7 @@
 		this.nextHand = function() {
 			var newHandNr = this.allHands.length + 1;
 			var commitments = {};
+			this.currentBettingRound = HOLDEM_BETTING_ROUNDS.PRE_FLOP;
 
 			// initialize every player commitment with 0
 			for (var i = 0; i < this.players.length; i++) {
@@ -101,6 +101,7 @@
 
 			// Tell the world about the new hand
 			$rootScope.$broadcast(HOLDEM_EVENTS.NEXT_HAND_DEALT, newHandNr);
+			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, this.currentBettingRound);
 		};
 
 		/**
@@ -316,7 +317,17 @@
 		};
 
 		this.doesHandRequireShowdown = function() {
-			// TODO
+			// if there is more action required
+			if (this.doesHandRequireMoreAction()) {
+				return false;
+			}
+
+			// there need to be at least two players left
+			// in the hand
+			var numberOfNonFinishedPlayers = this.players.length - this.finishedPlayers.length;
+			var numberOfNonFoldedPlayers = numberOfNonFinishedPlayers - this.getCurrentHand().foldedPlayers.length;
+
+			return numberOfNonFoldedPlayers >= 2;
 		};
 
 		/**
@@ -330,6 +341,14 @@
 		 * in second place it's a tie between 1 and 4, and 0 has the worst hand
 		 */
 		this.resolveCurrentHandByShowdown = function(playerRanking) {
+			if (this.doesHandRequireMoreAction()) {
+				throw 'Hand requires more action';
+			}
+
+			if (!this.doesHandRequireShowdown()) {
+				throw 'Hand requires no showdown';
+			}
+
 			var sidePots = this.convertToSidePots(this.getCurrentHand().pot);
 
 			// collct all the payments first before we actually increase the stacks
@@ -396,8 +415,22 @@
 			for (var i = 0; i < payments.length; i++) {
 				var payment = payments[i];
 
-				this.players[payment.player].stack += payment.amount;
+				payPlayer(payment.player, payment.amount);
 			}
+
+			finishDroppedOutPlayers();
+		};
+
+		this.resolveCurrentHandWithoutShowdown = function() {
+			if (this.doesHandRequireMoreAction()) {
+				throw 'Hand requires more action';
+			}
+
+			if (this.doesHandRequireShowdown()) {
+				throw 'Hand requires showdown';
+			}
+
+			finishDroppedOutPlayers();
 		};
 
 		/**
@@ -889,13 +922,29 @@
 		 * @param {Number} amount - amount to be paid to playerIndex
 		 */
 		function payPlayer(playerIndex, amount) {
-			this.players[playerIndex].stack += amount;
+			self.players[playerIndex].stack += amount;
 
 			// Tell the world about the payment
 			$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_WON_MONEY, {
 				player: playerIndex,
-				amount: money
+				amount: amount
 			});
+		}
+
+		function finishDroppedOutPlayers() {
+			for (var playerIndex = 0; playerIndex < self.players.length; playerIndex++) {
+				if (self.finishedPlayers.indexOf(playerIndex) < 0) {
+					// player was not yet finished
+					if (self.players[playerIndex].stack === 0) {
+						// player has no chips left
+						// finish him
+						self.finishedPlayers.push(playerIndex);
+						
+						// tell the world about the finished player
+						$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_FINISHED, playerIndex);
+					}
+				}
+			}
 		}
 	}]);
 
