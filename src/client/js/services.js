@@ -302,6 +302,22 @@
 			return false;
 		};
 
+		this.resolveCurrentHandByPlayerRanking = function(playerRanking) {
+			var sidePots = this.convertToSidePots(getCurrentHand().pot);
+
+			for (var potIndex = 0; potIndex < sidePots.length; potIndex++) {
+				var eligiblePlayers = sidePots[potIndex].eligiblePlayers;
+
+				for (var rankingIndex = 0; rankingIndex < playerRanking.length; rankingIndex++) {
+					if (Array.isArray(playerRanking[rankingIndex])) {
+						// TODO
+					} else {
+						// TODO
+					}
+				}
+			}
+		};
+
 		/**
 		 * Converts the supplied pot (as the current hand records it) into a
 		 * list of side pots, each containing an amount and a list of player
@@ -600,6 +616,15 @@
 			return maxCommitment;
 		}
 
+		/**
+		 * Returns an array of all unique values, that players who are not in the
+		 * foldedPlayers list have committed to the pot
+		 * @param {Object} pot - the pot, as it is recorded by every hand
+		 * @param {Integer[]} foldedPlayers - a list of players who have already folded
+		 * their hand, i.e. whose commitments should not be respected
+		 * @return {Number[]} list of all unique commitments to the pot by non-folded
+		 * players
+		 */
 		function collectUniqueCommitmentValuesOfNonFoldedPlayers(pot, foldedPlayers) {
 			var commitmentValues = []; // unique values
 
