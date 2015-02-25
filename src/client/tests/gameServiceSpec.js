@@ -390,6 +390,15 @@ describe('unit test for holdem game service', function() {
 				amount: 3040,
 				eligiblePlayers: [0, 1]
 			});
+
+			// Pay out the pot
+			expect(gameService.resolveCurrentHandByShowdown.bind(gameService, [1, 0])).not.toThrow();
+			// Test new stack sizes
+			expect(gameService.players[0].stack).toEqual(0);
+			expect(gameService.players[1].stack).toEqual(3040);
+			expect(gameService.players[2].stack).toEqual(1480);
+			expect(gameService.players[3].stack).toEqual(1500);
+			expect(gameService.players[4].stack).toEqual(1480);
 		});
 
 		xit('should perform a complete heads up game', function() {

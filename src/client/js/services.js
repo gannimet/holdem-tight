@@ -302,19 +302,74 @@
 			return false;
 		};
 
-		this.resolveCurrentHandByPlayerRanking = function(playerRanking) {
-			var sidePots = this.convertToSidePots(getCurrentHand().pot);
+		this.resolveCurrentHandByShowdown = function(playerRanking) {
+			var sidePots = this.convertToSidePots(this.getCurrentHand().pot);
+
+			// collct all the payments first before we actually increase the stacks
+			var payments = [];
 
 			for (var potIndex = 0; potIndex < sidePots.length; potIndex++) {
 				var eligiblePlayers = sidePots[potIndex].eligiblePlayers;
+				var potPaidOut = false;
 
 				for (var rankingIndex = 0; rankingIndex < playerRanking.length; rankingIndex++) {
-					if (Array.isArray(playerRanking[rankingIndex])) {
-						// TODO
-					} else {
-						// TODO
+					if (!potPaidOut) {
+						// there is still money to distribute in this pot
+						if (Array.isArray(playerRanking[rankingIndex])) {
+							// there is a tie in this spot
+							var tie = playerRanking[rankingIndex];
+
+							// collect all players in the tie that are eligible
+							var tieWinners = [];
+							for (var tieIndex = 0; tieIndex < tie.length; tieIndex++) {
+								if (eligiblePlayers.indexOf(tie[tieIndex])) {
+									// current tie candidate is eligible
+									tieWinners.push(tie[tieIndex]);
+								}
+							}
+
+							if (tieWinners.length > 0) {
+								// we have (a) winner(s)
+								var moneyForEach = sidePots[potIndex].amount / tieWinners.length;
+
+								// distribute the money
+								for (var winnerIndex = 0; winnerIndex < tieWinners.length; winnerIndex++) {
+									payments.push({
+										player: tieWinners[winnerIndex],
+										amount: moneyForEach
+									});
+								}
+								potPaidOut = true;
+							}
+						} else {
+							// no tie in this position
+							// current candidate to win this pot
+							var rankedPlayer = playerRanking[rankingIndex];
+							
+							if (eligiblePlayers.indexOf(rankedPlayer) >= 0) {
+								// player is eligible for this pot, so pay him out
+								payments.push({
+									player: rankedPlayer,
+									amount: sidePots[potIndex].amount
+								});
+								potPaidOut = true;
+							}
+						}
 					}
 				}
+
+				if (!potPaidOut) {
+					// went through all ranked players and still the pot wasn't paid out
+					throw 'Insufficient ranking. Side pot #' + potIndex + ' could not be paid out.';
+				}
+			}
+
+			// Now that no errors were thrown, perform the actual payments
+			this.getCurrentHand().payments = payments;
+			for (var i = 0; i < payments.length; i++) {
+				var payment = payments[i];
+
+				this.players[payment.player].stack += payment.amount;
 			}
 		};
 
@@ -798,6 +853,16 @@
 			}
 
 			return false;
+		}
+
+		function payPlayer(playerIndex, amount) {
+			this.players[playerIndex].stack += amount;
+
+			// Tell the world about the payment
+			$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_WON_MONEY, {
+				player: playerIndex,
+				amount: money
+			});
 		}
 	}]);
 
