@@ -16,6 +16,10 @@
 		
 		// Public API
 		this.addPlayer = function(player) {
+			if (this.gameStarted) {
+				return false;
+			}
+
 			player.name = player.name || 'Player ' + (this.players.length + 1);
 			player.stack = player.stack || 1500;
 
@@ -26,6 +30,10 @@
 		};
 
 		this.deletePlayer = function(playerIndex) {
+			if (this.gameStarted) {
+				return false;
+			}
+
 			this.players.splice(playerIndex, 1);
 
 			// Tell the world about the player we removed
@@ -39,6 +47,11 @@
 			return this.finishedPlayers.indexOf(playerIndex) > -1;
 		};
 
+		/**
+		 * Starts a game of no limit hold'em. Creates a first hand
+		 * and notifies listeners about game start and the first
+		 * betting round
+		 */
 		this.startGame = function() {
 			this.gameStarted = true;
 			this.currentBettingRound = HOLDEM_BETTING_ROUNDS.PRE_FLOP;
@@ -302,6 +315,20 @@
 			return false;
 		};
 
+		this.doesHandRequireShowdown = function() {
+			// TODO
+		};
+
+		/**
+		 * Distributes the money in all the current side pots based on the
+		 * supplied player ranking
+		 * @param {Integer[]} playerRanking - list of player indices representing
+		 * the player ranking. The earlier an index appears in the list, the
+		 * better that player is ranked. If there is a tie, this should be
+		 * indicated through a list of indices at that position. For example:
+		 * the player ranking [2, [1, 4], 0] means that player 2 has the best hand,
+		 * in second place it's a tie between 1 and 4, and 0 has the worst hand
+		 */
 		this.resolveCurrentHandByShowdown = function(playerRanking) {
 			var sidePots = this.convertToSidePots(this.getCurrentHand().pot);
 
@@ -855,6 +882,12 @@
 			return false;
 		}
 
+		/**
+		 * Increases playerIndex's stack size by amount and
+		 * notifies about the payment
+		 * @param {Integer} playerIndex - index of the player to be paid
+		 * @param {Number} amount - amount to be paid to playerIndex
+		 */
 		function payPlayer(playerIndex, amount) {
 			this.players[playerIndex].stack += amount;
 
