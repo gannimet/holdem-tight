@@ -507,6 +507,27 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.getCurrentHand().pot.amount).toEqual(130);
 			expect(gameService.getCurrentHand().pot.commitments[3]).toEqual(20);
 			expect(gameService.doesHandRequireMoreAction()).toBe(false);
+
+			sidePots = gameService.convertToSidePots(gameService.getCurrentHand().pot);
+			expect(sidePots.length).toBe(1);
+			expect(sidePots[0]).toEqual({
+				amount: 130,
+				eligiblePlayers: [1]
+			});
+			expect(gameService.doesHandRequireShowdown()).toBe(false);
+
+			expect(gameService.resolveCurrentHandWithoutShowdown.bind(gameService)).not.toThrow();
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_WON_MONEY, {
+				player: 1,
+				amount: 130
+			});
+			expect($rootScope.$broadcast.calls.count()).toEqual(1);
+			$rootScope.$broadcast.calls.reset();
+
+			expect(gameService.players[1].stack).toEqual(3070);
+			expect(gameService.players[2].stack).toEqual(1470);
+			expect(gameService.players[3].stack).toEqual(1480);
+			expect(gameService.players[4].stack).toEqual(1480);
 		});
 
 		xit('should perform a complete heads up game', function() {

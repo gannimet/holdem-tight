@@ -430,6 +430,47 @@
 				throw 'Hand requires showdown';
 			}
 
+			// there should only be one non-folded player left
+			// find him
+			var nonFoldedPlayers = [];
+			for (var playerIndex = 0; playerIndex < this.players.length; playerIndex++) {
+				if (this.finishedPlayers.indexOf(playerIndex) < 0) {
+					// player is not finished, so still active
+					if (this.getCurrentHand().foldedPlayers.indexOf(playerIndex) < 0) {
+						// player has also not folded
+						nonFoldedPlayers.push(playerIndex);
+					}
+				}
+			}
+
+			if (nonFoldedPlayers.length !== 1) {
+				throw 'Zero or more than one player have not folded, cannot resolve hand';
+			}
+
+			var winnerIndex = nonFoldedPlayers[0];
+			var sidePots = this.convertToSidePots(this.getCurrentHand().pot);
+			var payments = [];
+			for (var potIndex = 0; potIndex < sidePots.length; potIndex++) {
+				var sidePot = sidePots[potIndex];
+
+				if (sidePot.eligiblePlayers.indexOf(winnerIndex) < 0) {
+					// winner is not eligible?
+					// this should not be possible
+					throw 'Only non-folded player does not appear in eligible players';
+				}
+
+				payments.push({
+					player: winnerIndex,
+					amount: sidePot.amount
+				});
+			}
+
+			// no errors detected, pay out winner
+			for (var i = 0; i < payments.length; i++) {
+				var payment = payments[i];
+				payPlayer(payment.player, payment.amount);
+			}
+
 			finishDroppedOutPlayers();
 		};
 
