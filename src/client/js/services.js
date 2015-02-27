@@ -11,6 +11,7 @@
 		this.finishedPlayers = [];
 		this.allHands = [];
 		this.gameStarted = false;
+		this.gameFinished = false;
 		this.currentBettingRound = null;
 		this.whoseTurnItIs = undefined;
 		
@@ -68,6 +69,10 @@
 		 * proper notifications
 		 */
 		this.nextHand = function() {
+			if (this.gameFinished) {
+				throw 'Game already finished';
+			}
+
 			var newHandNr = this.allHands.length + 1;
 			var commitments = {};
 			this.currentBettingRound = HOLDEM_BETTING_ROUNDS.PRE_FLOP;
@@ -1011,6 +1016,7 @@
 						'indicate there should only be one.';
 				}
 
+				self.gameFinished = true;
 				// Tell the world about the winner
 				$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_WON_TOURNAMENT, winners[0]);
 			}
