@@ -655,7 +655,8 @@ describe('unit test for holdem game service', function() {
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_FINISHED, 2);
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_FINISHED, 3);
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_FINISHED, 4);
-			expect($rootScope.$broadcast.calls.count()).toEqual(5);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_WON_TOURNAMENT, 1);
+			expect($rootScope.$broadcast.calls.count()).toEqual(6);
 			$rootScope.$broadcast.calls.reset();
 		});
 

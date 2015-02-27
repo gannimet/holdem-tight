@@ -418,7 +418,7 @@
 				payPlayer(payment.player, payment.amount);
 			}
 
-			finishDroppedOutPlayers();
+			finaliseHand();
 		};
 
 		this.resolveCurrentHandWithoutShowdown = function() {
@@ -471,7 +471,7 @@
 				payPlayer(payment.player, payment.amount);
 			}
 
-			finishDroppedOutPlayers();
+			finaliseHand();
 		};
 
 		/**
@@ -972,6 +972,11 @@
 			});
 		}
 
+		function finaliseHand() {
+			finishDroppedOutPlayers();
+			checkForWinner();
+		}
+
 		function finishDroppedOutPlayers() {
 			for (var playerIndex = 0; playerIndex < self.players.length; playerIndex++) {
 				if (self.finishedPlayers.indexOf(playerIndex) < 0) {
@@ -985,6 +990,29 @@
 						$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_FINISHED, playerIndex);
 					}
 				}
+			}
+		}
+
+		function checkForWinner() {
+			// If there's only one player left, we have a winner!
+			if ((self.players.length - self.finishedPlayers.length) === 1) {
+				// find the winner
+				var winners = [];
+				for (var playerIndex = 0; playerIndex < self.players.length; playerIndex++) {
+					if (self.finishedPlayers.indexOf(playerIndex) < 0) {
+						// player is still in the game
+						winners.push(playerIndex);
+					}
+				}
+
+				// There can only be one winner
+				if (winners.length !== 1) {
+					throw 'More or less than one player left despite array lengths ' +
+						'indicate there should only be one.';
+				}
+
+				// Tell the world about the winner
+				$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_WON_TOURNAMENT, winners[0]);
 			}
 		}
 	}]);
