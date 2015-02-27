@@ -237,12 +237,19 @@
 		 */
 		this.isCurrentBettingRoundFinished = function() {
 			var thisRoundActions = getAllActionsOfCurrentBettingRound();
-			var numberOfActivePlayers = this.players.length - this.getCurrentHand().foldedPlayers.length;
+			var numberOfActivePlayers = this.players.length -
+				this.finishedPlayers.length - this.getCurrentHand().foldedPlayers.length;
 
 			// Every player needs to have had at least one chance to
-			// act in this hand
-			if (thisRoundActions.length < numberOfActivePlayers) {
-				return false;
+			// act in this hand (and blind actions pre-flop don't count)
+			if (this.currentBettingRound === HOLDEM_BETTING_ROUNDS.PRE_FLOP) {
+				if ((thisRoundActions.length - 2) < numberOfActivePlayers) {
+					return false;
+				}
+			} else {
+				if (thisRoundActions.length < numberOfActivePlayers) {
+					return false;
+				}
 			}
 
 			var playerCommitments = collectPlayerCommitments(thisRoundActions);
@@ -727,12 +734,13 @@
 			for (var i = 0; i < actions.length; i++) {
 				currentAction = actions[i];
 
-				if (currentAction.action === HOLDEM_ACTIONS.FOLD) {
+				if (currentAction.action === HOLDEM_ACTIONS.CHECK) {
+					// a check adds no money
+					playerCommitments[currentAction.player] =
+						playerCommitments[currentAction.player] || 0;
+				} else if (currentAction.action === HOLDEM_ACTIONS.FOLD) {
 					// player is out of the hand
 					delete playerCommitments[currentAction.player];
-				} else if (currentAction.action === HOLDEM_ACTIONS.CHECK) {
-					// a check is basically a bet of size 0
-					playerCommitments[currentAction.player] = 0;
 				} else {
 					// Call, raise or bet
 
@@ -955,6 +963,11 @@
 			if (!biggestCommitment || biggestCommitment.amount === 0) {
 				// no one has committed any chips yet
 				// looks good to check
+				return true;
+			}
+
+			// it is also OK to check if you already committed the biggest amount
+			if (playerCommitments[check.player] === biggestCommitment.amount) {
 				return true;
 			}
 
