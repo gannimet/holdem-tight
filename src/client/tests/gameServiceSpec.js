@@ -880,8 +880,67 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.nextHand).toThrow();
 		});
 
-		xit('should keep track of correct main pot and side pots', function() {
+		it('should keep track of correct main pot and side pots', function() {
+			gameService.addPlayer({
+				name: 'Gilberto',
+				stack: 1000
+			});
+			gameService.addPlayer({
+				name: 'Dankwart',
+				stack: 600
+			});
+			gameService.addPlayer({
+				name: 'Danuta',
+				stack: 400
+			});
+			gameService.addPlayer({
+				name: 'Gertrude',
+				stack: 200
+			});
+			gameService.startGame();
 
+			expect(gameService.whoseTurnItIs).toEqual(3);
+			expect(gameService.recordAction.bind(gameService, {
+				player: 3,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 200
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect(gameService.recordAction.bind(gameService, {
+				player: 0,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 600
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect(gameService.recordAction.bind(gameService, {
+				player: 1,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 590
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 380
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+
+			// Analyse side pots
+			var sidePots = gameService.convertToSidePots(gameService.getCurrentHand().pot);
+
+			expect(sidePots.length).toEqual(3);
+			expect(sidePots[0]).toEqual({
+				amount: 800,
+				eligiblePlayers: [0, 1, 2, 3]
+			});
+			expect(sidePots[1]).toEqual({
+				amount: 600,
+				eligiblePlayers: [0, 1, 2]
+			});
+			expect(sidePots[2]).toEqual({
+				amount: 400,
+				eligiblePlayers: [0, 1]
+			});
 		});
 	});
 });

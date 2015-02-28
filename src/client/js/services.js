@@ -532,11 +532,15 @@
 						// between those two lines and add this money to the
 						// current side pot
 						sidePots[potIndex].amount += Math.max(
-							Math.min(
-								wholePot.commitments[playerIndex],
-								commitmentValues[potIndex + 1]
-							), 0
-						) - commitmentValues[potIndex];
+							Math.max(
+								Math.min(
+									wholePot.commitments[playerIndex],
+									commitmentValues[potIndex + 1]
+								),
+								0
+							) - commitmentValues[potIndex],
+							0
+						);
 						
 						// and if the player hasn't folded and has committed money
 						// beyond the lower 'line', also add him to the eligible players
@@ -912,8 +916,8 @@
 					// to raise by less than the min raise, as long as
 					// it is still more than the previous bet/raise
 					var lastRaiseOrBet = allBetsAndRaises[allBetsAndRaises.length - 1];
-					var lastRaiserOrBetterCommitment = playerCommitments[lastRaiseOrBet.player];
-					var ourHypotheticalTotalCommitment = playerCommitments[raise.player] + raise.amount;
+					var lastRaiserOrBetterCommitment = (playerCommitments[lastRaiseOrBet.player] || 0);
+					var ourHypotheticalTotalCommitment = (playerCommitments[raise.player] || 0) + raise.amount;
 
 					return ourHypotheticalTotalCommitment > lastRaiserOrBetterCommitment;
 				}
@@ -937,7 +941,7 @@
 				// there was at least a bet and a raise, possibly re-raises
 				var lastRaise = allBetsAndRaises[allBetsAndRaises.length - 1];
 				var secondToLastRaiseOrBet = allBetsAndRaises[allBetsAndRaises.length - 2];
-
+				
 				// get absolute commitments by previous two raisers/betters
 				var lastRaiserCommitment = playerCommitments[lastRaise.player];
 				var secondToLastRaiserCommitment = playerCommitments[secondToLastRaiseOrBet.player];
