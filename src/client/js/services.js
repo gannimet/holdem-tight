@@ -603,7 +603,16 @@
 		 */
 		function assignTurn(isNewBettingRound) {
 			if (isNewBettingRound) {
-				self.whoseTurnItIs = earliestNonFinishedPlayer();
+				var numberOfActivePlayers = self.players.length - self.finishedPlayers.length;
+
+				if (numberOfActivePlayers > 2) {
+					self.whoseTurnItIs = earliestNonFinishedPlayer();
+				} else {
+					// special rule for heads up: the big blind
+					// starts to act post-flop
+					self.whoseTurnItIs = nextNonFinishedPlayerAfter(
+						self.getCurrentHand().roles.smallBlind, false);
+				}
 
 				// Tell the world about the new player's turn
 				$rootScope.$broadcast(HOLDEM_EVENTS.TURN_ASSIGNED, self.whoseTurnItIs);
