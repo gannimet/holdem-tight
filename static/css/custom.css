@@ -20,7 +20,7 @@
   padding: 0 !important;
 }
 #game-table .player-panel {
-  background-color: #28d444;
+  background-color: #12a3ee;
   border-radius: 5px;
   position: absolute;
   color: #ffffff;
@@ -64,8 +64,8 @@
   font-size: 20px;
   text-align: center;
   padding: 3px 0;
-  background-color: #e7faea;
-  color: #28d444;
+  background-color: #e8f6fd;
+  color: #12a3ee;
 }
 #game-table .player-panel .check-fold-button {
   position: absolute;
@@ -97,12 +97,12 @@
   text-align: center;
 }
 #game-table .player-panel:hover {
-  background-color: #187e28;
+  background-color: #0a6290;
 }
 #game-table .dealer-panel {
   position: absolute;
   top: 515px;
-  left: 410px;
+  left: 385px;
   border: 2px solid #000;
   border-top-left-radius: 60px;
   border-top-right-radius: 60px;
@@ -112,7 +112,7 @@
 }
 #game-table #player-1 {
   top: 485px;
-  left: 200px;
+  left: 190px;
 }
 #game-table #player-2 {
   top: 365px;
@@ -124,32 +124,32 @@
 }
 #game-table #player-4 {
   top: 30px;
-  left: 200px;
+  left: 190px;
 }
 #game-table #player-5 {
   top: 0;
-  left: 410px;
+  left: 385px;
 }
 #game-table #player-6 {
   top: 30px;
-  left: 620px;
+  left: 580px;
 }
 #game-table #player-7 {
   top: 150px;
-  left: 820px;
+  left: 770px;
 }
 #game-table #player-8 {
   top: 365px;
-  left: 820px;
+  left: 770px;
 }
 #game-table #player-9 {
   top: 485px;
-  left: 620px;
+  left: 580px;
 }
 #game-table #community-cards {
   position: absolute;
   top: 230px;
-  left: 245px;
+  left: 220px;
   width: 510px;
   height: 130.68px;
 }
@@ -192,7 +192,7 @@
 #game-table #pot-panel {
   position: absolute;
   top: 390.68px;
-  left: 245px;
+  left: 220px;
   width: 510px;
   height: 80px;
   text-align: center;
@@ -201,7 +201,7 @@
 #control-panel {
   position: absolute;
   top: 20px;
-  left: 1060px;
-  width: 300px;
+  left: 1010px;
+  width: 250px;
   margin-right: 30px;
 }

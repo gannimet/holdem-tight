@@ -20,7 +20,7 @@
 				$scope.isBigBlind = false;
 
 				/*
-				 * UI Event handlers and other function for the UI
+				 * UI Event handlers and other functions for the UI
 				 * for this directive
 				 */
 				$scope.deletePlayer = function() {
@@ -60,6 +60,10 @@
 					if (whoseTurnItIs === playerIndex) {
 						console.log('It is our player\'s turn (' + whoseTurnItIs + ')');
 					}
+				});
+
+				$scope.$on(HOLDEM_EVENTS.NEXT_HAND_DEALT, function(event, handNr) {
+					$scope.mostRecentAction = undefined;
 				});
 
 				/*

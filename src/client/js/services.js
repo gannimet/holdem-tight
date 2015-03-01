@@ -100,13 +100,13 @@
 				pot: pot
 			});
 			
-			assignRoles();
-			self.whoseTurnItIs = this.getCurrentHand().roles.smallBlind;
-			recordBlindActions();
-
 			// Tell the world about the new hand
 			$rootScope.$broadcast(HOLDEM_EVENTS.NEXT_HAND_DEALT, newHandNr);
 			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, this.currentBettingRound);
+			
+			assignRoles();
+			self.whoseTurnItIs = this.getCurrentHand().roles.smallBlind;
+			recordBlindActions();
 		};
 
 		/**
@@ -586,10 +586,15 @@
 				}
 			} else {
 				// Shift all roles one player forward
+				var isHeadsUp = (self.players.length - self.finishedPlayers.length) === 2;
+				var dealerPosition = nextNonFinishedPlayerAfter(previousHand.roles.dealer, false);
+				var smallBlindPosition = nextNonFinishedPlayerAfter(dealerPosition, isHeadsUp);
+				var bigBlindPosition = nextNonFinishedPlayerAfter(smallBlindPosition, false);
+
 				currentHand.roles = {
-					dealer: (previousHand.roles.dealer + 1) % self.players.length,
-					smallBlind: (previousHand.roles.smallBlind + 1) % self.players.length,
-					bigBlind: (previousHand.roles.bigBlind + 1) % self.players.length
+					dealer: dealerPosition,
+					smallBlind: smallBlindPosition,
+					bigBlind: bigBlindPosition
 				};
 			}
 
