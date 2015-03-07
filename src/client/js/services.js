@@ -555,6 +555,85 @@
 			return sidePots;
 		};
 
+		this.getAmountToCallForPlayer = function(player) {
+			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+			var biggestCommitment = getBiggestCommitment(playerCommitments);
+
+			if (player == biggestCommitment.player) {
+				// the raiser is now the caller?
+				// something's not quite right here
+				return false;
+			}
+
+			if (biggestCommitment.amount === 0) {
+				// there was no bet yet, so there can
+				// not be a call now
+				return false;
+			}
+
+			var previousCallerCommitment = playerCommitments[player] || 0;
+			return Math.min(
+				this.players[player].stack,
+				biggestCommitment.amount - previousCallerCommitment
+			);
+		};
+
+		this.getAmountToMinRaiseForPlayer = function(player) {
+			var allBetsAndRaises = getAllActionsOfCurrentBettingRound([
+				HOLDEM_ACTIONS.BET, HOLDEM_ACTIONS.RAISE]);
+			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+
+			if (allBetsAndRaises.length === 0) {
+				// no bet yet, must min bet the big blind
+				// (or less if it's an all in)
+				return Math.min(
+					this.players[player].stack,
+					this.getCurrentHand().blinds.bigBlind
+				);
+			}
+
+			// there has been at least one bet,
+			// if we are the last raiser, there's no point in raising again
+			var lastRaise = allBetsAndRaises[allBetsAndRaises.length - 1];
+			if (player === lastRaise.player) {
+				return false;
+			}
+
+			if (allBetsAndRaises.length === 1) {
+				// only one bet so far, so either double
+				// it or move all in with less
+				var lastBet = allBetsAndRaises[0];
+				return Math.min(
+					this.players[player].stack,
+					lastBet.amount * 2
+				);
+			} else {
+				// at least a bet and a raise so far
+				// either double the raise or shove
+				var secondToLastRaiseOrBet = allBetsAndRaises[allBetsAndRaises.length - 2];
+
+				// get absolute commitments by previous two raisers/betters
+				var lastRaiserCommitment = playerCommitments[lastRaise.player];
+				var secondToLastRaiserCommitment = playerCommitments[secondToLastRaiseOrBet.player];
+				var ourCommitment = playerCommitments[player] || 0;
+
+				var bigBlind = this.getCurrentHand().blinds.bigBlind;
+				var minRaise = lastRaiserCommitment +
+					Math.max(lastRaiserCommitment - secondToLastRaiserCommitment, bigBlind) -
+					ourCommitment;
+
+				if ((minRaise + ourCommitment) <= lastRaiserCommitment) {
+					// it wouldn't even be a raise at all
+					return false;
+				}
+
+				return Math.min(
+					this.players[player].stack,
+					minRaise
+				);
+			}
+		};
+
 		// Private utility functions
 
 		/**
@@ -839,29 +918,7 @@
 				return false;
 			}
 
-			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
-			var biggestCommitment = getBiggestCommitment(playerCommitments);
-
-			if (call.player == biggestCommitment.player) {
-				// the raiser is now the caller?
-				// something's not quite right here
-				return false;
-			}
-
-			var previousCallerCommitment = playerCommitments[call.player] || 0;
-			if (self.players[call.player].stack === call.amount) {
-				// this call puts the player all in, so it's fine
-				return true;
-			} else {
-				// he's not all in with this call, so he has to call
-				// the exact difference to the biggest commitment
-				if (call.amount == (biggestCommitment.amount - previousCallerCommitment)) {
-					return true;
-				}
-			}
-
-			// Call was incorrect
-			return false;
+			return self.getAmountToCallForPlayer(call.player) === call.amount;
 		}
 
 		/**
@@ -877,26 +934,17 @@
 
 			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
 			var biggestCommitment = getBiggestCommitment(playerCommitments);
-			
-			if (!biggestCommitment || biggestCommitment.amount === 0) {
-				// no bet yet
-				if (bet.amount >= self.getCurrentHand().blinds.bigBlind) {
-					// bet has at least the size of the big blind
-					
-					// bet may not exceed player's stack size
-					return bet.amount <= self.players[bet.player].stack;
-				} else {
-					// bet less than the big blind, this is only legal
-					// if it is a small blind bet …
-					if (isSmallBlind) {
-						return bet.player === self.getCurrentHand().roles.smallBlind;
-					}
-					// … or, if it is an all in bet
-					return bet.amount === self.players[bet.player].stack;
-				}
+
+			if (biggestCommitment && biggestCommitment.amount > 0) {
+				// there has been a bet before, so no more bets are allowed
+				return false;
 			}
 
-			return false;
+			if (isSmallBlind) {
+				return bet.amount === self.getCurrentHand().blinds.smallBlind;
+			}
+
+			return bet.amount >= self.getAmountToMinRaiseForPlayer(bet.player);
 		}
 
 		/**
@@ -910,58 +958,7 @@
 				return false;
 			}
 
-			var allBetsAndRaises = getAllActionsOfCurrentBettingRound([
-				HOLDEM_ACTIONS.BET, HOLDEM_ACTIONS.RAISE]);
-			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
-
-			if (allBetsAndRaises.length > 0) {
-				// there has been at least one bet
-				if (raise.amount === self.players[raise.player].stack) {
-					// player is all in, in which case it is legal
-					// to raise by less than the min raise, as long as
-					// it is still more than the previous bet/raise
-					var lastRaiseOrBet = allBetsAndRaises[allBetsAndRaises.length - 1];
-					var lastRaiserOrBetterCommitment = (playerCommitments[lastRaiseOrBet.player] || 0);
-					var ourHypotheticalTotalCommitment = (playerCommitments[raise.player] || 0) + raise.amount;
-
-					return ourHypotheticalTotalCommitment > lastRaiserOrBetterCommitment;
-				}
-			} else {
-				// not even a bet yet, so this can't be a raise
-				return false;
-			}
-
-			if (allBetsAndRaises.length === 1) {
-				// only one bet so far, this means our raise
-				// has to be double the amount of that bet
-				if (raise.amount >= 2 * allBetsAndRaises[0].amount) {
-					// raise was big enough
-					if (raise.amount <= self.players[raise.player].stack) {
-						// but smaller than the player's stack
-						// looks ok
-						return true;
-					}
-				}
-			} else if (allBetsAndRaises.length > 1) {
-				// there was at least a bet and a raise, possibly re-raises
-				var lastRaise = allBetsAndRaises[allBetsAndRaises.length - 1];
-				var secondToLastRaiseOrBet = allBetsAndRaises[allBetsAndRaises.length - 2];
-				
-				// get absolute commitments by previous two raisers/betters
-				var lastRaiserCommitment = playerCommitments[lastRaise.player];
-				var secondToLastRaiserCommitment = playerCommitments[secondToLastRaiseOrBet.player];
-
-				// the difference between these two total commitment is the
-				// minimum amount to raise
-				var minRaise = lastRaiserCommitment - secondToLastRaiserCommitment;
-				var hypotheticalPlayerCommitmentWithThisRaise =
-					(playerCommitments[raise.player] || 0) + raise.amount;
-				var raiseSize = hypotheticalPlayerCommitmentWithThisRaise - lastRaiserCommitment;
-
-				return raiseSize >= minRaise;
-			}
-
-			return false;
+			return raise.amount >= self.getAmountToMinRaiseForPlayer(raise.player);
 		}
 
 		/**

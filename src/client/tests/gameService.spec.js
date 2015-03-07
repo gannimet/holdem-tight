@@ -942,5 +942,45 @@ describe('unit test for holdem game service', function() {
 				eligiblePlayers: [0, 1]
 			});
 		});
+
+		it('should calculate right amounts to call and min raise', function() {
+			gameService.addPlayer({
+				name: 'Dankwart',
+				stack: 2000
+			});
+			gameService.addPlayer({
+				name: 'Reinhold',
+				stack: 1500
+			});
+			gameService.addPlayer({
+				name: 'Humberto',
+				stack: 1000
+			});
+			gameService.startGame();
+
+			expect(gameService.whoseTurnItIs).toEqual(0);
+
+			expect(gameService.getAmountToCallForPlayer(0)).toEqual(20);
+			expect(gameService.getAmountToMinRaiseForPlayer(0)).toEqual(40);
+			expect(gameService.getAmountToCallForPlayer(1)).toEqual(10);
+			expect(gameService.getAmountToMinRaiseForPlayer(1)).toEqual(30);
+			expect(gameService.getAmountToCallForPlayer(2)).toBe(false);
+			expect(gameService.getAmountToMinRaiseForPlayer(2)).toBe(false);
+
+			gameService.recordAction({
+				player: 0,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 200
+			});
+
+			expect(gameService.whoseTurnItIs).toEqual(1);
+
+			expect(gameService.getAmountToCallForPlayer(0)).toBe(false);
+			expect(gameService.getAmountToMinRaiseForPlayer(0)).toBe(false);
+			expect(gameService.getAmountToCallForPlayer(1)).toEqual(190);
+			expect(gameService.getAmountToMinRaiseForPlayer(1)).toEqual(370);
+			expect(gameService.getAmountToCallForPlayer(2)).toEqual(180);
+			expect(gameService.getAmountToMinRaiseForPlayer(2)).toEqual(360);
+		});
 	});
 });
