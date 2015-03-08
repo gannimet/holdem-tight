@@ -582,12 +582,13 @@
 			var allBetsAndRaises = getAllActionsOfCurrentBettingRound([
 				HOLDEM_ACTIONS.BET, HOLDEM_ACTIONS.RAISE]);
 			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+			var ourStack = this.players[player].stack;
 
 			if (allBetsAndRaises.length === 0) {
 				// no bet yet, must min bet the big blind
 				// (or less if it's an all in)
 				return Math.min(
-					this.players[player].stack,
+					ourStack,
 					this.getCurrentHand().blinds.bigBlind
 				);
 			}
@@ -604,7 +605,7 @@
 				// it or move all in with less
 				var lastBet = allBetsAndRaises[0];
 				return Math.min(
-					this.players[player].stack,
+					ourStack,
 					lastBet.amount * 2
 				);
 			} else {
@@ -622,13 +623,14 @@
 					Math.max(lastRaiserCommitment - secondToLastRaiserCommitment, bigBlind) -
 					ourCommitment;
 
-				if ((minRaise + ourCommitment) <= lastRaiserCommitment) {
+				if ((minRaise + ourCommitment) <= lastRaiserCommitment ||
+						(ourStack + ourCommitment) <= lastRaiserCommitment) {
 					// it wouldn't even be a raise at all
 					return false;
 				}
 
 				return Math.min(
-					this.players[player].stack,
+					ourStack,
 					minRaise
 				);
 			}
@@ -944,7 +946,8 @@
 				return bet.amount === self.getCurrentHand().blinds.smallBlind;
 			}
 
-			return bet.amount >= self.getAmountToMinRaiseForPlayer(bet.player);
+			return bet.amount >= self.getAmountToMinRaiseForPlayer(bet.player) &&
+				bet.amount <= self.players[bet.player].stack;
 		}
 
 		/**
@@ -958,7 +961,8 @@
 				return false;
 			}
 
-			return raise.amount >= self.getAmountToMinRaiseForPlayer(raise.player);
+			return raise.amount >= self.getAmountToMinRaiseForPlayer(raise.player) &&
+				raise.amount <= self.players[raise.player].stack;
 		}
 
 		/**

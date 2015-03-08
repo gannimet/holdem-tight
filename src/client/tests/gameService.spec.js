@@ -981,6 +981,25 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.getAmountToMinRaiseForPlayer(1)).toEqual(370);
 			expect(gameService.getAmountToCallForPlayer(2)).toEqual(180);
 			expect(gameService.getAmountToMinRaiseForPlayer(2)).toEqual(360);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 1,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 1491
+			})).toThrow();
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 1,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 1490
+			})).not.toThrow();
+
+			expect(gameService.getAmountToCallForPlayer(0)).toEqual(1300);
+			expect(gameService.getAmountToMinRaiseForPlayer(0)).toEqual(1800);
+			expect(gameService.getAmountToCallForPlayer(1)).toBe(false);
+			expect(gameService.getAmountToMinRaiseForPlayer(1)).toBe(false);
+			expect(gameService.getAmountToCallForPlayer(2)).toEqual(980);
+			expect(gameService.getAmountToMinRaiseForPlayer(2)).toBe(false);
 		});
 	});
 });
