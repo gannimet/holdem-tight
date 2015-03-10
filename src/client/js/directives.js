@@ -11,8 +11,8 @@
 				seatNr: '=seatNr'
 			},
 			controller: [
-					'$scope', '$timeout', 'gameService', 'HOLDEM_EVENTS',
-					function($scope, $timeout, gameService, HOLDEM_EVENTS) {
+					'$scope', '$timeout', 'gameService', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS', 'uiService',
+					function($scope, $timeout, gameService, HOLDEM_EVENTS, HOLDEM_ACTIONS, uiService) {
 				var playerIndex = $scope.seatNr - 1;
 
 				$scope.isDealer = false;
@@ -29,6 +29,88 @@
 
 				$scope.isGameStarted = function() {
 					return gameService.gameStarted;
+				};
+
+				$scope.isCheckingAnOption = function() {
+					return gameService.isCheckingAnOptionForPlayer(playerIndex);
+				};
+
+				$scope.isBettingAnOption = function() {
+					return gameService.isBettingAnOptionForPlayer(playerIndex);
+				};
+
+				$scope.checkFold = function() {
+					if ($scope.isCheckingAnOption()) {
+						// let's try a check
+						try {
+							gameService.recordAction({
+								player: playerIndex,
+								action: HOLDEM_ACTIONS.CHECK
+							});
+						} catch (e) {
+							uiService.errorMessage(e);
+						}
+					} else {
+						// we have to fold then
+						try {
+							gameService.recordAction({
+								player: playerIndex,
+								action: HOLDEM_ACTIONS.FOLD
+							});
+						} catch (e) {
+							uiService.errorMessage(e);
+						}
+					}
+				};
+
+				$scope.call = function() {
+					var amountToCall = gameService.getAmountToCallForPlayer(playerIndex);
+
+					if (!amountToCall) {
+						uiService.errorMessage('A call is not a viable option.');
+						return;
+					}
+
+					try {
+						gameService.recordAction({
+							player: playerIndex,
+							action: HOLDEM_ACTIONS.CALL,
+							amount: amountToCall
+						});
+					} catch (e) {
+						uiService.errorMessage(e);
+					}
+				};
+
+				$scope.betRaise = function() {
+					betRaiseAmount = parseInt($scope.betRaise.amount);
+					if (isNaN(betRaiseAmount)) {
+						uiService.errorMessage('Bet/raise amount is not numeric.');
+					}
+
+					if ($scope.isBettingAnOption()) {
+						// try to bet
+						try {
+							gameService.recordAction({
+								player: playerIndex,
+								action: HOLDEM_ACTIONS.BET,
+								amount: betRaiseAmount
+							});
+						} catch (e) {
+							uiService.errorMessage(e);
+						}
+					} else {
+						// we have to raise then
+						try {
+							gameService.recordAction({
+								player: playerIndex,
+								action: HOLDEM_ACTIONS.RAISE,
+								amount: betRaiseAmount
+							});
+						} catch (e) {
+							uiService.errorMessage(e);
+						}
+					}
 				};
 
 				/*
@@ -53,17 +135,26 @@
 					if (action.player === playerIndex) {
 						$scope.mostRecentAction = action;
 					}
+
+					if (gameService.isCurrentBettingRoundFinished()) {
+						disableAllControls();
+					}
 				});
 
 				$scope.$on(HOLDEM_EVENTS.TURN_ASSIGNED, function(event, whoseTurnItIs) {
 					// Is it our player's turn?
 					if (whoseTurnItIs === playerIndex) {
-						console.log('It is our player\'s turn (' + whoseTurnItIs + ')');
+						// TODO
 					}
 				});
 
 				$scope.$on(HOLDEM_EVENTS.NEXT_HAND_DEALT, function(event, handNr) {
 					$scope.mostRecentAction = undefined;
+				});
+
+				$scope.$on(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, function(event, bettingRound) {
+					$scope.enableAllControls();
+					$scope.mostRecentAction = null;
 				});
 
 				/*
@@ -84,6 +175,14 @@
 					$timeout(function() {
 						$scope.player = player;
 					});
+				}
+
+				function disableAllControls() {
+					$scope.disabled = true;
+				}
+
+				function enableAllControls() {
+					$scope.disabled = false;
 				}
 			}]
 		};

@@ -18,10 +18,16 @@
 		};
 	}]);
 
-	holdemFilters.filter('playerAction', [function() {
+	holdemFilters.filter('playerAction', ['HOLDEM_ACTIONS', function(HOLDEM_ACTIONS) {
 		return function(action) {
 			if (action) {
-				return action.action + ' ' + action.amount;
+				var actionName = action.action;
+
+				if (actionName === HOLDEM_ACTIONS.CHECK || actionName === HOLDEM_ACTIONS.FOLD) {
+					return action.action;
+				} else {
+					return action.action + ' ' + action.amount;
+				}
 			}
 		};
 	}]);
@@ -48,6 +54,26 @@
 				}
 
 				return 'Current betting round: ' + bettingRoundStr;
+			}
+		};
+	}]);
+
+	holdemFilters.filter('checkOrFoldLabel', [function() {
+		return function(isCheckingPossible) {
+			if (isCheckingPossible) {
+				return 'CHECK';
+			} else {
+				return 'FOLD';
+			}
+		};
+	}]);
+
+	holdemFilters.filter('betOrRaiseLabel', [function() {
+		return function(isBettingPossible) {
+			if (isBettingPossible) {
+				return 'BET';
+			} else {
+				return 'RAISE';
 			}
 		};
 	}]);

@@ -1001,5 +1001,213 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.getAmountToCallForPlayer(2)).toEqual(980);
 			expect(gameService.getAmountToMinRaiseForPlayer(2)).toBe(false);
 		});
+
+		it('should know when betting round is finished when all players call', function() {
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.addPlayer();
+
+			gameService.startGame();
+
+			expect(gameService.whoseTurnItIs).toEqual(3);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 3,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 20
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 0,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 20
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 1,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 10
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.CHECK
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+		});
+
+		it('should know when betting round is finished when (some) players fold', function() {
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.addPlayer();
+
+			gameService.startGame();
+
+			expect(gameService.whoseTurnItIs).toEqual(3);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 3,
+				action: HOLDEM_ACTIONS.FOLD
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 4,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 20
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 5,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 20
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 0,
+				action: HOLDEM_ACTIONS.FOLD
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 1,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 10
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.CHECK
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+
+			expect(gameService.advanceBettingRound.bind(gameService)).not.toThrow();
+
+			expect(gameService.whoseTurnItIs).toEqual(1);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 1,
+				action: HOLDEM_ACTIONS.CHECK
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.CHECK
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 4,
+				action: HOLDEM_ACTIONS.CHECK
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 5,
+				action: HOLDEM_ACTIONS.BET,
+				amount: 100
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 1,
+				action: HOLDEM_ACTIONS.FOLD
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 100
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 4,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 100
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+
+			expect(gameService.advanceBettingRound.bind(gameService)).not.toThrow();
+
+			expect(gameService.whoseTurnItIs).toEqual(2);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.CHECK
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 4,
+				action: HOLDEM_ACTIONS.CHECK
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 5,
+				action: HOLDEM_ACTIONS.CHECK
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+
+			expect(gameService.advanceBettingRound.bind(gameService)).not.toThrow();
+
+			expect(gameService.whoseTurnItIs).toEqual(2);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.BET,
+				amount: 200
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 4,
+				action: HOLDEM_ACTIONS.FOLD
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 5,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 400
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 400
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 5,
+				action: HOLDEM_ACTIONS.RAISE,
+				amount: 400
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(false);
+
+			expect(gameService.recordAction.bind(gameService, {
+				player: 2,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 200
+			})).not.toThrow();
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+			
+			expect(gameService.doesHandRequireMoreAction()).toBe(false);
+		});
 	});
 });

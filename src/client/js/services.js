@@ -21,6 +21,7 @@
 				return false;
 			}
 
+			player = player || {};
 			player.name = player.name || 'Player ' + (this.players.length + 1);
 			player.stack = player.stack || 1500;
 
@@ -237,8 +238,11 @@
 		 */
 		this.isCurrentBettingRoundFinished = function() {
 			var thisRoundActions = getAllActionsOfCurrentBettingRound();
+			var thisRoundFolds = getAllActionsOfCurrentBettingRound(HOLDEM_ACTIONS.FOLD);
+
 			var numberOfActivePlayers = this.players.length -
-				this.finishedPlayers.length - this.getCurrentHand().foldedPlayers.length;
+				this.finishedPlayers.length - this.getCurrentHand().foldedPlayers.length +
+				thisRoundFolds.length;
 
 			// Every player needs to have had at least one chance to
 			// act in this hand (and blind actions pre-flop don't count)
@@ -296,6 +300,11 @@
 			// the betting round has to be finished first
 			if (!this.isCurrentBettingRoundFinished()) {
 				return true;
+			}
+
+			if (this.currentBettingRound === HOLDEM_BETTING_ROUNDS.RIVER &&
+					this.isCurrentBettingRoundFinished()) {
+				return false;
 			}
 
 			// there need to be at least two players with chips left
@@ -636,6 +645,31 @@
 			}
 		};
 
+		this.isCheckingAnOptionForPlayer = function(player) {
+			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+			var biggestCommitment = getBiggestCommitment(playerCommitments);
+
+			if (!biggestCommitment || biggestCommitment.amount === 0) {
+				// no one has committed any chips yet
+				// looks good to check
+				return true;
+			}
+
+			// it is also OK to check if you already committed the biggest amount
+			if (playerCommitments[player] === biggestCommitment.amount) {
+				return true;
+			}
+
+			return false;
+		};
+
+		this.isBettingAnOptionForPlayer = function(player) {
+			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
+			var biggestCommitment = getBiggestCommitment(playerCommitments);
+
+			return !biggestCommitment || biggestCommitment.amount === 0;
+		};
+
 		// Private utility functions
 
 		/**
@@ -934,11 +968,7 @@
 				return false;
 			}
 
-			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
-			var biggestCommitment = getBiggestCommitment(playerCommitments);
-
-			if (biggestCommitment && biggestCommitment.amount > 0) {
-				// there has been a bet before, so no more bets are allowed
+			if (!self.isBettingAnOptionForPlayer(bet.player)) {
 				return false;
 			}
 
@@ -976,21 +1006,7 @@
 				return false;
 			}
 
-			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
-			var biggestCommitment = getBiggestCommitment(playerCommitments);
-
-			if (!biggestCommitment || biggestCommitment.amount === 0) {
-				// no one has committed any chips yet
-				// looks good to check
-				return true;
-			}
-
-			// it is also OK to check if you already committed the biggest amount
-			if (playerCommitments[check.player] === biggestCommitment.amount) {
-				return true;
-			}
-
-			return false;
+			return self.isCheckingAnOptionForPlayer(check.player);
 		}
 
 		/**

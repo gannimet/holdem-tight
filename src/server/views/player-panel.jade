@@ -16,7 +16,23 @@
 
 	// Action buttons and controls
 	.action-controls(data-ng-if='player && isGameStarted()')
-		button.form-control.btn.btn-sm.btn-info.check-fold-button CHECK
-		button.form-control.btn.btn-sm.btn-warning.call-button CALL
-		button.form-control.btn.btn-sm.btn-danger.raise-button RAISE
-		input.form-control.raise-amount-txt(type='text', data-ng-model='raiseAmount')
+		button.form-control.btn.btn-sm.btn-info.check-fold-button(
+			data-ng-click='checkFold()',
+			data-ng-bind='isCheckingAnOption() | checkOrFoldLabel',
+			data-ng-disabled='disabled'
+		)
+		button.form-control.btn.btn-sm.btn-warning.call-button(
+			data-ng-click='call()',
+			data-ng-disabled='disabled'
+		) CALL
+		form(data-ng-submit='betRaise()')
+			input.form-control.raise-amount-txt(
+				type='text',
+				data-ng-model='betRaise.amount',
+				data-ng-disabled='disabled'
+			)
+			button.form-control.btn.btn-sm.btn-danger.raise-button(
+				type='submit',
+				data-ng-bind='isBettingAnOption() | betOrRaiseLabel',
+				data-ng-disabled='disabled'
+			)
