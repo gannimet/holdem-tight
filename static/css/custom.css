@@ -8,6 +8,12 @@
 /* Measurements of the pot panel */
 /* Measurements of control panel */
 /* Colors */
+.nav,
+.pagination,
+.carousel,
+.panel-title a {
+  cursor: pointer;
+}
 #game-table {
   position: absolute;
   top: 20px;

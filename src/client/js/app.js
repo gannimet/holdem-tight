@@ -7,7 +7,8 @@
 		'holdemControllers',
 		'holdemServices',
 		'holdemDirectives',
-		'holdemConstants'
+		'holdemConstants',
+		'ui.bootstrap'
 	]);
 
 	holdemApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {

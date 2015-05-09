@@ -28,6 +28,8 @@
 				} else {
 					return action.action + ' ' + action.amount;
 				}
+			} else {
+				return '';
 			}
 		};
 	}]);

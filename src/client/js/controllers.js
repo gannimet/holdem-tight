@@ -3,8 +3,8 @@
 	var holdemControllers = angular.module('holdemControllers', []);
 
 	holdemControllers.controller('GameCtrl',
-			['$scope', 'gameService', 'uiService', 'HOLDEM_EVENTS',
-			function($scope, gameService, uiService, HOLDEM_EVENTS) {
+			['$scope', 'gameService', 'uiService', 'HOLDEM_EVENTS', '$modal',
+			function($scope, gameService, uiService, HOLDEM_EVENTS, $modal) {
 		$scope.gameStarted = false;
 		$scope.handNr = null;
 
@@ -12,19 +12,10 @@
 		 * UI event handlers and utility functions
 		 */
 		$scope.addPlayer = function() {
-			uiService.promptForInput(
-				'Player name',
-				'Add player',
-				'Cancel',
-				function(clickedOK, playerName) {
-					if (clickedOK) {
-						gameService.addPlayer({
-							name: playerName,
-							stack: 1500
-						});
-
-						$scope.players = gameService.players;
-					}
+			uiService.promptForNewPlayer(
+				function(player) {
+					gameService.addPlayer(player);
+					$scope.players = gameService.players;
 				}
 			);
 		};
@@ -55,6 +46,19 @@
 		$scope.$on(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, function(event, bettingRound) {
 			$scope.currentBettingRound = bettingRound;
 		});
+	}]);
+
+	holdemControllers.controller('AddPlayerController',
+			['$scope', '$modalInstance',
+			function($scope, $modalInstance) {
+		$scope.ok = function() {
+			$scope.player.stack = parseInt($scope.player.stack);
+			$modalInstance.close($scope.player);
+		};
+
+		$scope.cancel = function() {
+			$modalInstance.dismiss('cancel');
+		};
 	}]);
 
 })(window);

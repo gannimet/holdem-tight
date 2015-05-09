@@ -1071,7 +1071,7 @@
 		}
 	}]);
 
-	holdemServices.factory('uiService', [function() {
+	holdemServices.factory('uiService', ['$modal', function($modal) {
 		return {
 
 			successMessage: function(message) {
@@ -1086,15 +1086,16 @@
 				alertify.info(message);
 			},
 
-			promptForInput: function(promptTxt, okBtnText, cancelBtnText, callback) {
-				alertify.set({
-					labels: {
-						ok: okBtnText,
-						cancel: cancelBtnText
-					}
+			promptForNewPlayer: function(callback) {
+				var modalInstance = $modal.open({
+					animation: true,
+					templateUrl: '/partials/add-player',
+					controller: 'AddPlayerController',
+					size: 'sm',
+					backdrop: true
 				});
 
-				alertify.prompt(promptTxt, callback);
+				modalInstance.result.then(callback);
 			}
 
 		};

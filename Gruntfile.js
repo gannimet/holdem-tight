@@ -80,6 +80,17 @@ module.exports = function(grunt) {
 						flatten: true
 					}
 				]
+			},
+			angular_bootstrap: {
+				files: [
+					{
+						expand: true,
+						cwd: 'bower_components/angular-bootstrap/',
+						src: ['ui-bootstrap-tpls.min.js'],
+						dest: 'static/js/',
+						flatten: true
+					}
+				]
 			}
 		},
 		jshint: {

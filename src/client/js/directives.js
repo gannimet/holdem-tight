@@ -153,7 +153,7 @@
 				});
 
 				$scope.$on(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, function(event, bettingRound) {
-					$scope.enableAllControls();
+					enableAllControls();
 					$scope.mostRecentAction = null;
 				});
 
