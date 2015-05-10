@@ -52,7 +52,10 @@
 			['$scope', '$modalInstance',
 			function($scope, $modalInstance) {
 		$scope.ok = function() {
-			$scope.player.stack = parseInt($scope.player.stack);
+			if ($scope.player)  {
+				$scope.player.stack = parseInt($scope.player.stack);
+			}
+			
 			$modalInstance.close($scope.player);
 		};
 

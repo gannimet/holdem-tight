@@ -1,15 +1,16 @@
-.modal-header
-	h3.modal-title Add player
-.modal-body
-	form.form-horizontal
-		.form-group
-			label.col-sm-2.control-label(for='player-name-field') Name
-			.col-sm-10
-				input.form-control#player-name-field(type='text', placeholder='Player name', data-ng-model='player.name')
-		.form-group
-			label.col-sm-2.control-label(for='player-stack-field') Stack
-			.col-sm-10
-				input.form-control#player-stack-field(type='number', placeholder='Player stack', data-ng-model='player.stack')
-.modal-footer
-	button.btn.btn-danger(data-ng-click='cancel()') Cancel
-	button.btn.btn-primary(data-ng-click='ok()') Add player
+form(data-ng-submit='ok()')
+	.modal-header
+		h3.modal-title Add player
+	.modal-body
+		.form-horizontal
+			.form-group
+				label.col-sm-2.control-label(for='player-name-field') Name
+				.col-sm-10
+					input.form-control#player-name-field(type='text', placeholder='Player name', data-ng-model='player.name', autofocus='true')
+			.form-group
+				label.col-sm-2.control-label(for='player-stack-field') Stack
+				.col-sm-10
+					input.form-control#player-stack-field(type='number', placeholder='Player stack', data-ng-model='player.stack')
+	.modal-footer
+		button.btn.btn-danger(type='button', data-ng-click='cancel()') Cancel
+		button.btn.btn-primary(type='submit') Add player
