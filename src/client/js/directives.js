@@ -15,9 +15,11 @@
 					function($scope, $timeout, gameService, HOLDEM_EVENTS, HOLDEM_ACTIONS, uiService) {
 				var playerIndex = $scope.seatNr - 1;
 
-				$scope.isDealer = false;
-				$scope.isSmallBlind = false;
-				$scope.isBigBlind = false;
+				$scope.playerInfo = {
+					isDealer: false,
+					isSmallBlind: false,
+					isBigBlind: false
+				};
 
 				/*
 				 * UI Event handlers and other functions for the UI
@@ -125,15 +127,15 @@
 				});
 
 				$scope.$on(HOLDEM_EVENTS.ROLES_ASSIGNED, function(event, roles) {
-					$scope.isDealer     = playerIndex === roles.dealer;
-					$scope.isSmallBlind = playerIndex === roles.smallBlind;
-					$scope.isBigBlind   = playerIndex === roles.bigBlind;
+					$scope.playerInfo.isDealer     = playerIndex === roles.dealer;
+					$scope.playerInfo.isSmallBlind = playerIndex === roles.smallBlind;
+					$scope.playerInfo.isBigBlind   = playerIndex === roles.bigBlind;
 				});
 
 				$scope.$on(HOLDEM_EVENTS.ACTION_PERFORMED, function(event, action) {
 					// Did our player perform the action?
 					if (action.player === playerIndex) {
-						$scope.mostRecentAction = action;
+						$scope.playerInfo.mostRecentAction = action;
 					}
 
 					if (gameService.isCurrentBettingRoundFinished()) {
@@ -149,12 +151,12 @@
 				});
 
 				$scope.$on(HOLDEM_EVENTS.NEXT_HAND_DEALT, function(event, handNr) {
-					$scope.mostRecentAction = undefined;
+					$scope.playerInfo.mostRecentAction = undefined;
 				});
 
 				$scope.$on(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, function(event, bettingRound) {
 					enableAllControls();
-					$scope.mostRecentAction = null;
+					$scope.playerInfo.mostRecentAction = null;
 				});
 
 				/*

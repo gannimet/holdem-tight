@@ -1096,6 +1096,26 @@
 				});
 
 				modalInstance.result.then(callback);
+			},
+
+			confirmDecision: function(message, okText, cancelText, positiveCallback, negativeCallback) {
+				alertify.set({
+					labels: {
+						ok: okText,
+						cancel: cancelText
+					}
+				});
+				alertify.confirm(message, function(e) {
+					if (e) {
+						if (positiveCallback) {
+							positiveCallback();
+						}
+					} else {
+						if (negativeCallback) {
+							negativeCallback();
+						}
+					}
+				});
 			}
 
 		};

@@ -4,15 +4,15 @@
 	// Delete player button
 	button.btn.btn-xs.btn-danger.player-delete-button.pull-right(data-ng-if='player && !isGameStarted()', data-ng-click='deletePlayer()') X
 	// Role buttons
-	span.pull-right.button-badge.dealer-button(data-ng-if='isDealer')
-	span.pull-right.button-badge.small-blind-button(data-ng-if='isSmallBlind')
-	span.pull-right.button-badge.big-blind-button(data-ng-if='isBigBlind')
+	span.pull-right.button-badge.dealer-button(data-ng-if='playerInfo.isDealer')
+	span.pull-right.button-badge.small-blind-button(data-ng-if='playerInfo.isSmallBlind')
+	span.pull-right.button-badge.big-blind-button(data-ng-if='playerInfo.isBigBlind')
 
 	// Stack
 	span.player-chip-stack(data-ng-bind='player.stack | stackSize')
 
 	// Action info
-	.current-action(data-ng-if='player && isGameStarted()', data-ng-bind='mostRecentAction | playerAction')
+	.current-action(data-ng-if='player && isGameStarted()', data-ng-bind='playerInfo.mostRecentAction | playerAction')
 
 	// Action buttons and controls
 	.action-controls(data-ng-if='player && isGameStarted()')
