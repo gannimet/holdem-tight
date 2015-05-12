@@ -2,7 +2,9 @@
 
 	var holdemDirectives = angular.module('holdemDirectives', []);
 
-	holdemDirectives.directive('playerPanel', [function() {
+	holdemDirectives.directive('playerPanel',
+			['HOLDEM_EVENTS', 'gameService', 'HOLDEM_ACTIONS', 'uiService', '$timeout',
+			function(HOLDEM_EVENTS, gameService, HOLDEM_ACTIONS, uiService, $timeout) {
 		return {
 			restrict: 'E',
 			templateUrl: '/partials/player-panel',
@@ -10,9 +12,25 @@
 			scope: {
 				seatNr: '=seatNr'
 			},
+			link: function(scope, element, attrs) {
+				var playerIndex = scope.seatNr - 1;
+				scope.$on(HOLDEM_EVENTS.TURN_ASSIGNED, function(event, whoseTurnItIs) {
+					// Is it our player's turn?
+					if (whoseTurnItIs === playerIndex) {
+						element.addClass('has-turn');
+						// have to use $timeout here, because
+						// ng-if prevents finding the element
+						$timeout(function() {
+							element.find('input.raise-amount-txt').focus();
+						});
+					} else {
+						element.removeClass('has-turn');
+					}
+				});
+			},
 			controller: [
-					'$scope', '$timeout', 'gameService', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS', 'uiService',
-					function($scope, $timeout, gameService, HOLDEM_EVENTS, HOLDEM_ACTIONS, uiService) {
+					'$scope', '$timeout',
+					function($scope, $timeout) {
 				var playerIndex = $scope.seatNr - 1;
 
 				$scope.playerInfo = {
@@ -140,13 +158,6 @@
 
 					if (gameService.isCurrentBettingRoundFinished()) {
 						disableAllControls();
-					}
-				});
-
-				$scope.$on(HOLDEM_EVENTS.TURN_ASSIGNED, function(event, whoseTurnItIs) {
-					// Is it our player's turn?
-					if (whoseTurnItIs === playerIndex) {
-						// TODO
 					}
 				});
 

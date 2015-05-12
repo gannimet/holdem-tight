@@ -58,6 +58,7 @@
 @mintGreen: #28d444;
 @playerPanelThemeColor: @iceBlue;
 @playerPanelFontColor: #fff;
+@playerPanelTurnColor: #3FBF7F;
 
 // Angular bootstrap requires this
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
@@ -164,8 +165,8 @@
 		}
 	}
 
-	.player-panel:hover {
-		background-color: darken(@playerPanelThemeColor, 20%);
+	.player-panel.has-turn {
+		background-color: @playerPanelTurnColor;
 	}
 
 	.dealer-panel {

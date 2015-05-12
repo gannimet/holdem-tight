@@ -102,8 +102,8 @@
   height: 35px;
   text-align: center;
 }
-#game-table .player-panel:hover {
-  background-color: #0a6290;
+#game-table .player-panel.has-turn {
+  background-color: #3fbf7f;
 }
 #game-table .dealer-panel {
   position: absolute;
