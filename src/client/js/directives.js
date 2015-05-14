@@ -21,10 +21,14 @@
 						// have to use $timeout here, because
 						// ng-if prevents finding the element
 						$timeout(function() {
+							element.find('input, button').prop('disabled', false);
 							element.find('input.raise-amount-txt').focus();
 						});
 					} else {
 						element.removeClass('has-turn');
+						$timeout(function() {
+							element.find('input, button').prop('disabled', true);
+						});
 					}
 				});
 			},
@@ -57,6 +61,10 @@
 
 				$scope.isBettingAnOption = function() {
 					return gameService.isBettingAnOptionForPlayer(playerIndex);
+				};
+
+				$scope.getAmountToCall = function() {
+					return gameService.getAmountToCallForPlayer(playerIndex);
 				};
 
 				$scope.checkFold = function() {
@@ -116,6 +124,7 @@
 								action: HOLDEM_ACTIONS.BET,
 								amount: betRaiseAmount
 							});
+							delete $scope.betRaise;
 						} catch (e) {
 							uiService.errorMessage(e);
 						}
@@ -127,6 +136,7 @@
 								action: HOLDEM_ACTIONS.RAISE,
 								amount: betRaiseAmount
 							});
+							delete $scope.betRaise;
 						} catch (e) {
 							uiService.errorMessage(e);
 						}

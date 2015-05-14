@@ -21,18 +21,19 @@
 			data-ng-bind='isCheckingAnOption() | checkOrFoldLabel',
 			data-ng-disabled='disabled'
 		)
-		button.form-control.btn.btn-sm.btn-warning.call-button(
+		button.form-control.btn.btn-sm.btn-info.call-button(
 			data-ng-click='call()',
 			data-ng-disabled='disabled'
-		) CALL
+			data-ng-bind='getAmountToCall() | callLabel'
+		)
 		form(data-ng-submit='betRaise()')
 			input.form-control.raise-amount-txt(
-				type='text',
+				type='number',
 				data-ng-model='betRaise.amount',
 				data-ng-disabled='disabled'
 			)
-			button.form-control.btn.btn-sm.btn-danger.raise-button(
+			button.form-control.btn.btn-sm.btn-info.raise-button(
 				type='submit',
-				data-ng-bind='isBettingAnOption() | betOrRaiseLabel',
+				data-ng-bind='isBettingAnOption() | betOrRaiseLabel:betRaise.amount',
 				data-ng-disabled='disabled'
 			)

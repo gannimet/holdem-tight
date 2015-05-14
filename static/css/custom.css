@@ -103,7 +103,7 @@
   text-align: center;
 }
 #game-table .player-panel.has-turn {
-  background-color: #3fbf7f;
+  background-color: #3fbfb4;
 }
 #game-table .dealer-panel {
   position: absolute;
@@ -115,6 +115,10 @@
   border-bottom: none;
   text-align: center;
   font-size: 200%;
+}
+#game-table .dealer-panel .dealer-text {
+  position: relative;
+  top: 30px;
 }
 #game-table #player-1 {
   top: 485px;

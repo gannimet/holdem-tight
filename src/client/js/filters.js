@@ -71,11 +71,21 @@
 	}]);
 
 	holdemFilters.filter('betOrRaiseLabel', [function() {
-		return function(isBettingPossible) {
+		return function(isBettingPossible, amount) {
 			if (isBettingPossible) {
-				return 'BET';
+				return 'BET' + (amount ? ' ' + amount : '');
 			} else {
-				return 'RAISE';
+				return 'RAISE ' + (amount ? ' ' + amount : '');
+			}
+		};
+	}]);
+
+	holdemFilters.filter('callLabel', [function() {
+		return function(amount) {
+			if (amount) {
+				return 'CALL ' + amount;
+			} else {
+				return 'CALL';
 			}
 		};
 	}]);
