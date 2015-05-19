@@ -27,12 +27,14 @@
 		button.btn.btn-warning.form-control(type='button', data-ng-click='nextHand()', data-ng-if='gameStarted') Next hand
 	.panel.panel-primary(data-ng-if='handNr')
 		.panel-heading
-			h2.panel-title Game info
+			h2.panel-title Game panel
 		.panel-body
 			.hand-nr(data-ng-bind='handNr | handNrFilter')
 			.betting-round-info
 				span(data-ng-bind='currentBettingRound | bettingRound')  
 				button.btn.btn-sm.btn-success(data-ng-click='advanceBettingRound()') Next
+			.blind-info Blinds: 
+				strong(data-ng-bind='currentBlinds | blinds')
 		.panel-footer Time left in level: 
 			strong 10:34
 			span.pull-right

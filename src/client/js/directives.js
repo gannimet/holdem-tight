@@ -21,13 +21,13 @@
 						// have to use $timeout here, because
 						// ng-if prevents finding the element
 						$timeout(function() {
-							element.find('input, button').prop('disabled', false);
+							element.find('.action-controls input, .action-controls button').prop('disabled', false);
 							element.find('input.raise-amount-txt').focus();
 						});
 					} else {
 						element.removeClass('has-turn');
 						$timeout(function() {
-							element.find('input, button').prop('disabled', true);
+							element.find('.action-controls input, .action-controls button').prop('disabled', true);
 						});
 					}
 				});
@@ -47,6 +47,10 @@
 				 * UI Event handlers and other functions for the UI
 				 * for this directive
 				 */
+				$scope.showHoleCards = function() {
+					uiService.promptForHoleCards(playerIndex);
+				};
+
 				$scope.deletePlayer = function() {
 					gameService.deletePlayer(playerIndex);
 				};
@@ -207,6 +211,74 @@
 				function enableAllControls() {
 					$scope.disabled = false;
 				}
+			}]
+		};
+	}]);
+
+	holdemDirectives.directive('cardpicker',
+			['$timeout', 'cardImageService',
+			function($timeout, cardImageService) {
+		return {
+			restrict: 'E',
+			templateUrl: '/partials/cardpicker',
+			replace: true,
+			require: 'ngModel',
+			scope: {},
+			link: function(scope, element, attrs, ngModel) {
+				scope.madeSelection = function() {
+					var suit = scope.selectedCard.suit;
+					var rank = scope.selectedCard.rank;
+
+					if (suit && rank) {
+						element.find('.card-thumbnail').attr('src', cardImageService.getCardImagePath(rank, suit));
+						ngModel.$setViewValue(scope.selectedCard);
+					}
+				};
+
+				$timeout(function() {
+					// $timeout is necessary because elements inside
+					// ng-repeat haven't been created during execution
+					// of link function
+					element.find('.suit-radio-button').change(function() {
+						var suit = $(this).val();
+						scope.selectedCard.suit = suit;
+						scope.madeSelection();
+					});
+
+					element.find('.rank-radio-button').change(function() {
+						var rank = $(this).val();
+						scope.selectedCard.rank = rank;
+						scope.madeSelection();
+					});
+				});
+			},
+			controller: ['$scope', function($scope) {
+				$scope.suits = [
+					{ abbreviation: 'C', name: 'Clubs', code: 'clubs' },
+					{ abbreviation: 'D', name: 'Diamonds', code: 'diamonds' },
+					{ abbreviation: 'H', name: 'Hearts', code: 'hearts' },
+					{ abbreviation: 'S', name: 'Spades', code: 'spades' }
+				];
+
+				$scope.ranks = [
+					{ abbreviation: 'A', name: 'Ace', code: 'ace' },
+					{ abbreviation: '2', name: 'Deuce', code: '2' },
+					{ abbreviation: '3', name: 'Trey', code: '3' },
+					{ abbreviation: '4', name: 'Four', code: '4' },
+					{ abbreviation: '5', name: 'Five', code: '5' },
+					{ abbreviation: '6', name: 'Six', code: '6' },
+					{ abbreviation: '7', name: 'Seven', code: '7' },
+					{ abbreviation: '8', name: 'Eight', code: '8' },
+					{ abbreviation: '9', name: 'Nine', code: '9' },
+					{ abbreviation: 'T', name: 'Ten', code: '10' },
+					{ abbreviation: 'J', name: 'Jack', code: 'jack' },
+					{ abbreviation: 'Q', name: 'Queen', code: 'queen' },
+					{ abbreviation: 'K', name: 'King', code: 'king' },
+				];
+
+				$scope.getCardImagePath = cardImageService.getCardImagePath;
+
+				$scope.selectedCard = {};
 			}]
 		};
 	}]);

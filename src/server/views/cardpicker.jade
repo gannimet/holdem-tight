@@ -1,0 +1,22 @@
+.row
+	.col-xs-10
+		.row
+			.col-xs-12
+				strong Suit
+		.row
+			.col-xs-12
+				.btn-group(data-toggle='buttons')
+					label.btn.btn-default(data-ng-repeat='suit in suits')
+						input.suit-radio-button(type='radio', name='suit', value='{{suit.code}}')
+						span(data-ng-bind='suit.abbreviation')
+		.row.top10
+			.col-xs-12
+				strong Rank
+		.row
+			.col-xs-12
+				.btn-group(data-toggle='buttons')
+					label.btn.btn-default(data-ng-repeat='rank in ranks')
+						input.rank-radio-button(type='radio', name='rank', value='{{rank.code}}')
+						span(data-ng-bind='rank.abbreviation')
+	.col-xs-2.no-padding-left
+		img.card-thumbnail(src='/img/card_placeholder.png')

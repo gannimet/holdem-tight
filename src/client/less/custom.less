@@ -7,6 +7,8 @@
 @playerPanelHeight: 160px;
 @buttonWidth: 25px;
 @buttonHeight: @buttonWidth;
+@assignCardWidth: 16px;
+@assignCardHeight: @assignCardWidth;
 // Action controls
 @actionControlWidth: @playerPanelWidth / 2 - 5px;
 @actionControlHeight: 35px;
@@ -25,7 +27,7 @@
 @allHorizontalGaps: @firstHorizontalGap + @secondHorizontalGap;
 
 /* Vertical gap between upper and lower half of player panels */
-@midwayGapHeight: 55px;
+@midwayGapHeight: 35px;
 
 /* Horizontal center of table to align stuff centrally */
 @horizontalCenter: @allHorizontalGaps + 2.5 * @playerPanelWidth;
@@ -58,7 +60,7 @@
 @mintGreen: #28d444;
 @playerPanelThemeColor: @iceBlue;
 @playerPanelFontColor: #fff;
-@playerPanelTurnColor: #3FBFB4;
+@playerPanelTurnColor: #3FCF74;
 
 // Angular bootstrap requires this
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
@@ -96,10 +98,18 @@
 			left: 3px;
 		}
 
+		.button-badge, .assign-card-badge {
+			margin: 3px 3px 0 0;
+		}
+
 		.button-badge {
 			width: @buttonWidth;
 			height: @buttonHeight;
-			margin: 3px 3px 0 0;
+		}
+
+		.assign-card-badge {
+			width: @assignCardWidth;
+			height: @assignCardHeight;
 		}
 
 		.small-blind-button {
@@ -276,7 +286,7 @@
 		#river {
 			top: 0;
 			left: 4 * @cardWidth + 2 * @flopGap + 2 * @streetGap;
-			background: url('/img/5_of_clubs.svg');
+			background: url('/img/assign_card.png');
 			background-size: @cardWidth @cardHeight;
 		}
 
@@ -301,3 +311,18 @@
 	width: @controlPanelWidth;
 	margin-right: @siteMarginHorizontal;
 }
+
+.card-thumbnail {
+	height: 120px;
+}
+
+.no-padding-left {
+	padding-left: 0 !important;
+}
+
+.top5 { margin-top:5px; }
+.top7 { margin-top:7px; }
+.top10 { margin-top:10px; }
+.top15 { margin-top:15px; }
+.top20 { margin-top:20px; }
+.top30 { margin-top:30px; }

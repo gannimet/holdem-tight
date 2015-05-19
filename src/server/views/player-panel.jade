@@ -1,12 +1,15 @@
 .player-panel
-	// Player name
-	span.player-name(data-ng-bind='player.name')
+	// Player name and assign card button
+	span.player-name(data-ng-if='player', data-ng-bind='player.name')
 	// Delete player button
 	button.btn.btn-xs.btn-danger.player-delete-button.pull-right(data-ng-if='player && !isGameStarted()', data-ng-click='deletePlayer()') X
 	// Role buttons
 	span.pull-right.button-badge.dealer-button(data-ng-if='playerInfo.isDealer')
 	span.pull-right.button-badge.small-blind-button(data-ng-if='playerInfo.isSmallBlind')
 	span.pull-right.button-badge.big-blind-button(data-ng-if='playerInfo.isBigBlind')
+	span.pull-right.assign-cards-badge(data-ng-if='player && isGameStarted()')
+		button.btn-xs.btn-link(data-ng-click='showHoleCards()')
+			img(src='/img/card-icon.png')
 
 	// Stack
 	span.player-chip-stack(data-ng-bind='player.stack | stackSize')

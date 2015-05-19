@@ -14,6 +14,10 @@
 		this.gameFinished = false;
 		this.currentBettingRound = null;
 		this.whoseTurnItIs = undefined;
+		this.currentBlinds = {
+			smallBlind: 10,
+			bigBlind: 20
+		};
 		
 		// Public API
 		this.addPlayer = function(player) {
@@ -92,12 +96,15 @@
 
 			this.allHands.push({
 				handNr: newHandNr,
-				blinds: {
-					smallBlind: 10,
-					bigBlind: 20
-				},
+				blinds: this.currentBlinds,
 				foldedPlayers: [],
 				actions: [],
+				board: {
+					flop: [],
+					turn: null,
+					river: null
+				},
+				holeCards: {},
 				pot: pot
 			});
 			
@@ -1098,6 +1105,21 @@
 				modalInstance.result.then(callback);
 			},
 
+			promptForHoleCards: function(playerIndex) {
+				var modalInstance = $modal.open({
+					animation: true,
+					templateUrl: '/partials/assign-hole-cards',
+					controller: 'HoleCardsController',
+					size: 'md',
+					backdrop: true,
+					resolve: {
+						player: function() {
+							return playerIndex;
+						}
+					}
+				});
+			},
+
 			confirmDecision: function(message, okText, cancelText, positiveCallback, negativeCallback) {
 				alertify.set({
 					labels: {
@@ -1118,6 +1140,12 @@
 				});
 			}
 
+		};
+	}]);
+
+	holdemServices.service('cardImageService', [function() {
+		this.getCardImagePath = function(rank, suit) {
+			return '/img/' + rank + '_of_' + suit + '.svg';
 		};
 	}]);
 

@@ -7,6 +7,7 @@
 			function($scope, gameService, uiService, HOLDEM_EVENTS, $modal) {
 		$scope.gameStarted = false;
 		$scope.handNr = null;
+		$scope.currentBlinds = gameService.currentBlinds;
 
 		/*
 		 * UI event handlers and utility functions
@@ -73,6 +74,20 @@
 			}
 
 			$modalInstance.close($scope.player);
+		};
+
+		$scope.cancel = function() {
+			$modalInstance.dismiss('cancel');
+		};
+	}]);
+
+	holdemControllers.controller('HoleCardsController',
+			['$scope', '$modalInstance', 'player', 'gameService',
+			function($scope, $modalInstance, player, gameService) {
+		$scope.player = gameService.players[player];
+
+		$scope.ok = function() {
+			$modalInstance.close();
 		};
 
 		$scope.cancel = function() {
