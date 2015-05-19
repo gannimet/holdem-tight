@@ -228,6 +228,12 @@
 .no-padding-left {
   padding-left: 0 !important;
 }
+.red {
+  color: red;
+}
+.black {
+  color: black;
+}
 .top5 {
   margin-top: 5px;
 }
@@ -245,4 +251,7 @@
 }
 .top30 {
   margin-top: 30px;
+}
+.space5 {
+  margin-left: 5px;
 }

@@ -2,12 +2,13 @@ form(data-ng-submit='ok()')
 	.modal-header
 		h3.modal-title Hole cards of {{player.name}}
 	.modal-body
+		h4 First card
 		.card1-area
 			cardpicker(data-ng-model='card1')
-		.top20
-			strong Selection:
-			span(data-ng-bind='card1.rank')
-			span(data-ng-bind='card1.suit')
+		hr
+		h4.top20 Second card
+		.card2-area
+			cardpicker(data-ng-model='card2')
 	.modal-footer
 		button.btn.btn-danger(type='button', data-ng-click='cancel()') Cancel
 		button.btn.btn-primary(type='submit') Save hole cards

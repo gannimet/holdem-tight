@@ -239,25 +239,35 @@
 					// $timeout is necessary because elements inside
 					// ng-repeat haven't been created during execution
 					// of link function
+
+					function opticalSugar(radioButtonElement) {
+						$(radioButtonElement).parent().siblings().removeClass('btn-info').addClass('btn-default');
+						$(radioButtonElement).parent().removeClass('btn-default').addClass('btn-info');
+					}
+
 					element.find('.suit-radio-button').change(function() {
 						var suit = $(this).val();
 						scope.selectedCard.suit = suit;
 						scope.madeSelection();
+
+						opticalSugar(this);
 					});
 
 					element.find('.rank-radio-button').change(function() {
 						var rank = $(this).val();
 						scope.selectedCard.rank = rank;
 						scope.madeSelection();
+
+						opticalSugar(this);
 					});
 				});
 			},
 			controller: ['$scope', function($scope) {
 				$scope.suits = [
-					{ abbreviation: 'C', name: 'Clubs', code: 'clubs' },
-					{ abbreviation: 'D', name: 'Diamonds', code: 'diamonds' },
-					{ abbreviation: 'H', name: 'Hearts', code: 'hearts' },
-					{ abbreviation: 'S', name: 'Spades', code: 'spades' }
+					{ abbreviation: 'C', name: 'Clubs', code: 'clubs', icon: '♣', color: 'black' },
+					{ abbreviation: 'D', name: 'Diamonds', code: 'diamonds', icon: '♦', color: 'red' },
+					{ abbreviation: 'H', name: 'Hearts', code: 'hearts', icon: '♥', color: 'red' },
+					{ abbreviation: 'S', name: 'Spades', code: 'spades', icon: '♠', color: 'black' }
 				];
 
 				$scope.ranks = [
