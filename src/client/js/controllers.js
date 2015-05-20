@@ -85,6 +85,10 @@
 			['$scope', '$modalInstance', 'player', 'gameService',
 			function($scope, $modalInstance, player, gameService) {
 		$scope.player = gameService.players[player];
+		$scope.card1 = {
+			suit: { abbreviation: 'H', name: 'Hearts', code: 'hearts', icon: '♥', color: 'red' },
+			rank: { abbreviation: 'Q', name: 'Queen', code: 'queen' }
+		};
 
 		$scope.ok = function() {
 			$modalInstance.close();

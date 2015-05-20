@@ -1,4 +1,4 @@
-.row
+.row.cardpicker
 	.col-xs-10
 		.row
 			.col-xs-12
@@ -8,8 +8,8 @@
 				.btn-group(data-toggle='buttons')
 					label.btn.btn-default(data-ng-repeat='suit in suits')
 						input.suit-radio-button(type='radio', name='suit', value='{{suit.code}}')
-						span.red(data-ng-bind='suit.icon', data-ng-if='suit.color == "red"')
-						span.black(data-ng-bind='suit.icon', data-ng-if='suit.color == "black"')
+						span.card-icon.red(data-ng-bind='suit.icon', data-ng-if='suit.color == "red"')
+						span.card-icon.black(data-ng-bind='suit.icon', data-ng-if='suit.color == "black"')
 						span.space5
 						span(data-ng-bind='suit.name')
 		.row.top10

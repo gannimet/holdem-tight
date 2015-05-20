@@ -216,8 +216,8 @@
 	}]);
 
 	holdemDirectives.directive('cardpicker',
-			['$timeout', 'cardImageService',
-			function($timeout, cardImageService) {
+			['$timeout', 'cardService',
+			function($timeout, cardService) {
 		return {
 			restrict: 'E',
 			templateUrl: '/partials/cardpicker',
@@ -225,20 +225,20 @@
 			require: 'ngModel',
 			scope: {},
 			link: function(scope, element, attrs, ngModel) {
-				scope.madeSelection = function() {
-					var suit = scope.selectedCard.suit;
-					var rank = scope.selectedCard.rank;
-
-					if (suit && rank) {
-						element.find('.card-thumbnail').attr('src', cardImageService.getCardImagePath(rank, suit));
-						ngModel.$setViewValue(scope.selectedCard);
-					}
-				};
-
 				$timeout(function() {
 					// $timeout is necessary because elements inside
 					// ng-repeat haven't been created during execution
 					// of link function
+
+					function madeSelection() {
+						var suit = scope.selectedCard.suit;
+						var rank = scope.selectedCard.rank;
+
+						if (suit && rank) {
+							element.find('.card-thumbnail').attr('src', cardService.getCardImagePath(rank, suit));
+							ngModel.$setViewValue(scope.selectedCard);
+						}
+					}
 
 					function opticalSugar(radioButtonElement) {
 						$(radioButtonElement).parent().siblings().removeClass('btn-info').addClass('btn-default');
@@ -246,47 +246,37 @@
 					}
 
 					element.find('.suit-radio-button').change(function() {
-						var suit = $(this).val();
-						scope.selectedCard.suit = suit;
-						scope.madeSelection();
+						var suitCode = $(this).val();
+						scope.selectedCard.suit = cardService.getSuitByCode(suitCode);
+						madeSelection();
 
 						opticalSugar(this);
 					});
 
 					element.find('.rank-radio-button').change(function() {
-						var rank = $(this).val();
-						scope.selectedCard.rank = rank;
-						scope.madeSelection();
+						var rankCode = $(this).val();
+						scope.selectedCard.rank = cardService.getRankByCode(rankCode);
+						madeSelection();
 
 						opticalSugar(this);
 					});
+
+					// If a model value is already given,
+					// initialize the UI with it
+					var oldValue = ngModel.$viewValue;
+
+					if (oldValue) {
+						element.find('.suit-radio-button[value=' + oldValue.suit.code + ']').prop('checked', true).trigger('change');
+						element.find('.rank-radio-button[value=' + oldValue.rank.code + ']').prop('checked', true).trigger('change');
+					}
 				});
 			},
 			controller: ['$scope', function($scope) {
-				$scope.suits = [
-					{ abbreviation: 'C', name: 'Clubs', code: 'clubs', icon: '♣', color: 'black' },
-					{ abbreviation: 'D', name: 'Diamonds', code: 'diamonds', icon: '♦', color: 'red' },
-					{ abbreviation: 'H', name: 'Hearts', code: 'hearts', icon: '♥', color: 'red' },
-					{ abbreviation: 'S', name: 'Spades', code: 'spades', icon: '♠', color: 'black' }
-				];
+				$scope.suits = cardService.allSuits;
 
-				$scope.ranks = [
-					{ abbreviation: 'A', name: 'Ace', code: 'ace' },
-					{ abbreviation: '2', name: 'Deuce', code: '2' },
-					{ abbreviation: '3', name: 'Trey', code: '3' },
-					{ abbreviation: '4', name: 'Four', code: '4' },
-					{ abbreviation: '5', name: 'Five', code: '5' },
-					{ abbreviation: '6', name: 'Six', code: '6' },
-					{ abbreviation: '7', name: 'Seven', code: '7' },
-					{ abbreviation: '8', name: 'Eight', code: '8' },
-					{ abbreviation: '9', name: 'Nine', code: '9' },
-					{ abbreviation: 'T', name: 'Ten', code: '10' },
-					{ abbreviation: 'J', name: 'Jack', code: 'jack' },
-					{ abbreviation: 'Q', name: 'Queen', code: 'queen' },
-					{ abbreviation: 'K', name: 'King', code: 'king' },
-				];
+				$scope.ranks = cardService.allRanks;
 
-				$scope.getCardImagePath = cardImageService.getCardImagePath;
+				$scope.getCardImagePath = cardService.getCardImagePath;
 
 				$scope.selectedCard = {};
 			}]

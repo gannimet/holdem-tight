@@ -6,12 +6,12 @@ describe('unit test for holdem game service', function() {
 	beforeEach(module('holdemConstants'));
 
 	// Load the service under test
-	beforeEach(inject(function(_$rootScope_, _gameService_, _HOLDEM_EVENTS_, _HOLDEM_BETTING_ROUNDS_, _HOLDEM_ACTIONS_) {
-		gameService = _gameService_;
-		$rootScope = _$rootScope_;
-		HOLDEM_EVENTS = _HOLDEM_EVENTS_;
-		HOLDEM_BETTING_ROUNDS = _HOLDEM_BETTING_ROUNDS_;
-		HOLDEM_ACTIONS = _HOLDEM_ACTIONS_;
+	beforeEach(inject(function($injector) {
+		gameService = $injector.get('gameService');
+		$rootScope = $injector.get('$rootScope');
+		HOLDEM_EVENTS = $injector.get('HOLDEM_EVENTS');
+		HOLDEM_BETTING_ROUNDS = $injector.get('HOLDEM_BETTING_ROUNDS');
+		HOLDEM_ACTIONS = $injector.get('HOLDEM_ACTIONS');
 	}));
 
 	describe('game mechanics', function() {
