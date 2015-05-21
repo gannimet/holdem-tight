@@ -20,7 +20,9 @@ describe('unit test for card service', function() {
 
 			expect(cardService.getCardImagePath(rank, suit)).toEqual('/img/3_of_hearts.svg');
 		});
+	});
 
+	describe('getting rank and suit by code', function() {
 		it('should get correct suit by code', function() {
 			var suit = cardService.getSuitByCode('diamonds');
 
@@ -37,6 +39,30 @@ describe('unit test for card service', function() {
 			expect(rank).toEqual({ abbreviation: 'Q', name: 'Queen', code: 'queen' });
 
 			expect(cardService.getRankByCode('invalidrank')).toBeUndefined();
+		});
+	});
+
+	describe('determining cards as equal', function() {
+		it('should determine cards as equal', function() {
+			expect(cardService.areCardsEqual(
+				{ suit: 'clubs', rank: '8' },
+				{ suit: 'clubs', rank: '8' }
+			)).toBe(true);
+			expect(cardService.areCardsEqual(
+				{ suit: 'hearts', rank: 'ace' },
+				{ suit: 'hearts', rank: 'ace' }
+			)).toBe(true);
+		});
+
+		it('should determine cards as NOT equal', function() {
+			expect(cardService.areCardsEqual(
+				{ suit: 'clubs', rank: '8' },
+				{ suit: 'hearts', rank: '8' }
+			)).toBe(false);
+			expect(cardService.areCardsEqual(
+				{ suit: 'hearts', rank: 'queen' },
+				{ suit: 'hearts', rank: 'ace' }
+			)).toBe(false);
 		});
 	});
 });

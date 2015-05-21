@@ -3,8 +3,8 @@
 	var holdemServices = angular.module('holdemServices', []);
 
 	holdemServices.service('gameService',
-			['$rootScope', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS', 'HOLDEM_BETTING_ROUNDS',
-			function($rootScope, HOLDEM_EVENTS, HOLDEM_ACTIONS, HOLDEM_BETTING_ROUNDS) {
+			['$rootScope', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS', 'HOLDEM_BETTING_ROUNDS', 'cardService',
+			function($rootScope, HOLDEM_EVENTS, HOLDEM_ACTIONS, HOLDEM_BETTING_ROUNDS, cardService) {
 		// Instance variables
 		var self = this;
 		this.players = [];
@@ -104,7 +104,7 @@
 					turn: null,
 					river: null
 				},
-				holeCards: {},
+				holeCards: [],
 				pot: pot
 			});
 			
@@ -115,6 +115,59 @@
 			assignRoles();
 			self.whoseTurnItIs = this.getCurrentHand().roles.smallBlind;
 			recordBlindActions();
+		};
+
+		/**
+		 * Returns the hole cards of the player specified by playerIndex in the current hand
+		 * @param {Integer} playerIndex - index of player whose cards shall be retrieved
+		 */
+		this.getHoleCardsOfPlayerInCurrentHand = function(playerIndex) {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw 'Game not started yet';
+			}
+
+			var holeCardsInCurrentHand = this.getCurrentHand().holeCards;
+
+			for (var i = 0; i < holeCardsInCurrentHand.length; i++) {
+				if (holeCardsInCurrentHand[i].player === playerIndex) {
+					return holeCardsInCurrentHand[i].cards;
+				}
+			}
+		};
+
+		/**
+		 * Assign hole cards to a player in the current hand
+		 * @param {Integer} playerIndex - index of player to assign cards to
+		 * @param {Object} card1 - card object with rank and suit
+		 * @param {Object} card2 - card object with rank and suit
+		 */
+		this.assignHoleCardsToPlayer = function(playerIndex, card1, card2) {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw 'Game not started yet';
+			}
+
+			if (this.isPlayerFinished(playerIndex)) {
+				throw 'Player with index ' + playerIndex + ' is already finished.';
+			}
+
+			if (cardService.areCardsEqual(card1, card2)) {
+				throw 'Cards are the same';
+			}
+
+			var oldHoleCards = this.getHoleCardsOfPlayerInCurrentHand(playerIndex);
+
+			if (oldHoleCards) {
+				// Remove existing elements
+				oldHoleCards.length = 0;
+				// Add new ones
+				oldHoleCards.push(card1);
+				oldHoleCards.push(card2);
+			} else {
+				this.getCurrentHand().holeCards.push({
+					player: playerIndex,
+					cards: [card1, card2]
+				});
+			}
 		};
 
 		/**
@@ -1144,7 +1197,6 @@
 	}]);
 
 	holdemServices.service('cardService', [function() {
-
 		this.getCardImagePath = function(rank, suit) {
 			return '/img/' + rank.code + '_of_' + suit.code + '.svg';
 		};
@@ -1192,6 +1244,10 @@
 			}
 		};
 
+		this.areCardsEqual = function(card1, card2) {
+			return card1.suit === card2.suit &&
+				card1.rank === card2.rank;
+		};
 	}]);
 
 })(window);

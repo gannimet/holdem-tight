@@ -1210,4 +1210,37 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.doesHandRequireMoreAction()).toBe(false);
 		});
 	});
+
+	describe('assignment of hole cards', function() {
+		it('should assign cards to a player and retrieve them back', function() {
+			var card1 = { suit: 'clubs', rank: '9' };
+			var card2 = { suit: 'spades', rank: 'ace' };
+			var card3 = { suit: 'hearts', rank: 'queen' };
+
+			// Assignment before game start should not be allowed
+			expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card2)).toThrow();
+
+			gameService.addPlayer();
+			gameService.addPlayer();
+
+			gameService.startGame();
+
+			expect(gameService.getHoleCardsOfPlayerInCurrentHand(0)).toBeUndefined();
+			expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toBeUndefined();
+			expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card2)).not.toThrow();
+			expect(gameService.getHoleCardsOfPlayerInCurrentHand(0)).toBeUndefined();
+			expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toEqual([
+				{ suit: 'clubs', rank: '9' },
+				{ suit: 'spades', rank: 'ace' }
+			]);
+
+			expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card3)).not.toThrow();
+			expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toEqual([
+				{ suit: 'clubs', rank: '9' },
+				{ suit: 'hearts', rank: 'queen' }
+			]);
+
+			expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card1)).toThrow();
+		});
+	});
 });
