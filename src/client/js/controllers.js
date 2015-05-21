@@ -82,16 +82,19 @@
 	}]);
 
 	holdemControllers.controller('HoleCardsController',
-			['$scope', '$modalInstance', 'player', 'gameService',
-			function($scope, $modalInstance, player, gameService) {
+			['$scope', '$modalInstance', 'player', 'card1', 'card2', 'gameService',
+			function($scope, $modalInstance, player, card1, card2, gameService) {
 		$scope.player = gameService.players[player];
-		$scope.card1 = {
-			suit: { abbreviation: 'H', name: 'Hearts', code: 'hearts', icon: '♥', color: 'red' },
-			rank: { abbreviation: 'Q', name: 'Queen', code: 'queen' }
-		};
+		$scope.card1 = card1;
+		$scope.card2 = card2;
 
 		$scope.ok = function() {
-			$modalInstance.close();
+			try {
+				gameService.assignHoleCardsToPlayer(player, $scope.card1, $scope.card2);
+				$modalInstance.close();
+			} catch (error) {
+				$scope.error = error;
+			}
 		};
 
 		$scope.cancel = function() {

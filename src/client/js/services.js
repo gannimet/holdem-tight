@@ -142,16 +142,28 @@
 		 * @param {Object} card2 - card object with rank and suit
 		 */
 		this.assignHoleCardsToPlayer = function(playerIndex, card1, card2) {
+			if (!card1 || !card2) {
+				throw {
+					message: 'Both cards need to be defined.'
+				};
+			}
+
 			if (!this.gameStarted || !this.getCurrentHand()) {
-				throw 'Game not started yet';
+				throw {
+					message: 'Game not started yet.'
+				};
 			}
 
 			if (this.isPlayerFinished(playerIndex)) {
-				throw 'Player with index ' + playerIndex + ' is already finished.';
+				throw {
+					message: this.players[playerIndex].name + ' is already finished.'
+				};
 			}
 
 			if (cardService.areCardsEqual(card1, card2)) {
-				throw 'Cards are the same';
+				throw {
+					message: 'Cards have to be different.'
+				};
 			}
 
 			var oldHoleCards = this.getHoleCardsOfPlayerInCurrentHand(playerIndex);
@@ -1158,7 +1170,7 @@
 				modalInstance.result.then(callback);
 			},
 
-			promptForHoleCards: function(playerIndex) {
+			promptForHoleCards: function(playerIndex, card1, card2) {
 				var modalInstance = $modal.open({
 					animation: true,
 					templateUrl: '/partials/assign-hole-cards',
@@ -1168,6 +1180,12 @@
 					resolve: {
 						player: function() {
 							return playerIndex;
+						},
+						card1: function() {
+							return card1;
+						},
+						card2: function() {
+							return card2;
 						}
 					}
 				});
@@ -1198,7 +1216,7 @@
 
 	holdemServices.service('cardService', [function() {
 		this.getCardImagePath = function(rank, suit) {
-			return '/img/' + rank.code + '_of_' + suit.code + '.svg';
+			return '/img/' + rank + '_of_' + suit + '.svg';
 		};
 
 		this.allSuits = [

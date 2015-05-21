@@ -18,7 +18,7 @@ describe('unit test for card service', function() {
 				code: 'hearts'
 			};
 
-			expect(cardService.getCardImagePath(rank, suit)).toEqual('/img/3_of_hearts.svg');
+			expect(cardService.getCardImagePath(rank.code, suit.code)).toEqual('/img/3_of_hearts.svg');
 		});
 	});
 

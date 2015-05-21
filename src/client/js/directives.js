@@ -48,7 +48,12 @@
 				 * for this directive
 				 */
 				$scope.showHoleCards = function() {
-					uiService.promptForHoleCards(playerIndex);
+					var holeCards = gameService.getHoleCardsOfPlayerInCurrentHand(playerIndex);
+					uiService.promptForHoleCards(
+						playerIndex,
+						holeCards ? holeCards[0] : undefined,
+						holeCards ? holeCards[1] : undefined
+					);
 				};
 
 				$scope.deletePlayer = function() {
@@ -247,7 +252,7 @@
 
 					element.find('.suit-radio-button').change(function() {
 						var suitCode = $(this).val();
-						scope.selectedCard.suit = cardService.getSuitByCode(suitCode);
+						scope.selectedCard.suit = suitCode;
 						madeSelection();
 
 						opticalSugar(this);
@@ -255,7 +260,7 @@
 
 					element.find('.rank-radio-button').change(function() {
 						var rankCode = $(this).val();
-						scope.selectedCard.rank = cardService.getRankByCode(rankCode);
+						scope.selectedCard.rank = rankCode;
 						madeSelection();
 
 						opticalSugar(this);
@@ -266,8 +271,8 @@
 					var oldValue = ngModel.$viewValue;
 
 					if (oldValue) {
-						element.find('.suit-radio-button[value=' + oldValue.suit.code + ']').prop('checked', true).trigger('change');
-						element.find('.rank-radio-button[value=' + oldValue.rank.code + ']').prop('checked', true).trigger('change');
+						element.find('.suit-radio-button[value=' + oldValue.suit + ']').prop('checked', true).trigger('change');
+						element.find('.rank-radio-button[value=' + oldValue.rank + ']').prop('checked', true).trigger('change');
 					}
 				});
 			},

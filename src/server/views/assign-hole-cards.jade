@@ -2,6 +2,9 @@ form(data-ng-submit='ok()')
 	.modal-header
 		h3.modal-title Hole cards of {{player.name}}
 	.modal-body
+		.padding5.bg-danger.rounded3(data-ng-if='error')
+			span.red.glyphicon.glyphicon-ban-circle
+			span.space5(data-ng-bind='error.message')
 		h4 First card
 		.card1-area
 			cardpicker(data-ng-model='card1')
