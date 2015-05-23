@@ -245,7 +245,7 @@
 						}
 					}
 
-					function opticalSugar(radioButtonElement) {
+					function switchButtonAppearance(radioButtonElement) {
 						$(radioButtonElement).parent().siblings().removeClass('btn-info').addClass('btn-default');
 						$(radioButtonElement).parent().removeClass('btn-default').addClass('btn-info');
 					}
@@ -255,7 +255,7 @@
 						scope.selectedCard.suit = suitCode;
 						madeSelection();
 
-						opticalSugar(this);
+						switchButtonAppearance(this);
 					});
 
 					element.find('.rank-radio-button').change(function() {
@@ -263,7 +263,7 @@
 						scope.selectedCard.rank = rankCode;
 						madeSelection();
 
-						opticalSugar(this);
+						switchButtonAppearance(this);
 					});
 
 					// If a model value is already given,
@@ -271,8 +271,14 @@
 					var oldValue = ngModel.$viewValue;
 
 					if (oldValue) {
-						element.find('.suit-radio-button[value=' + oldValue.suit + ']').prop('checked', true).trigger('change');
-						element.find('.rank-radio-button[value=' + oldValue.rank + ']').prop('checked', true).trigger('change');
+						element.find('.suit-radio-button[value=' + oldValue.suit + ']')
+							.prop('checked', true)
+							.trigger('click')
+							.trigger('change');
+						element.find('.rank-radio-button[value=' + oldValue.rank + ']')
+							.prop('checked', true)
+							.trigger('click')
+							.trigger('change');
 					}
 				});
 			},

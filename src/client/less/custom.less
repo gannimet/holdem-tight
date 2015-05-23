@@ -65,6 +65,14 @@
 // Angular bootstrap requires this
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
+// Vendor prefixes
+.transition(@property, @time) {
+	-webkit-transition: @property @time ease-in-out;
+	-moz-transition: @property @time ease-in-out;
+	-o-transition: @property @time ease-in-out;
+	transition: @property @time ease-in-out;
+}
+
 #game-table {
 
 	position: absolute;
@@ -249,45 +257,47 @@
 		height: @boardHeight;
 
 		.card {
-			background-color: #eee;
 			position: absolute;
 			width: @cardWidth;
 			height: @cardHeight;
+
+			img {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: @cardWidth;
+				height: @cardHeight;
+				.transition(opacity, 0.3s);
+			}
+
+			img.vanishing:hover {
+				opacity: 0;
+			}
 		}
 
 		#flop-1 {
 			top: 0;
 			left: 0;
-			background: url('/img/3_of_diamonds.svg');
-			background-size: @cardWidth @cardHeight;
 		}
 
 		#flop-2 {
 			top: 0;
 			left: @cardWidth + @flopGap;
-			background: url('/img/3_of_spades.svg');
-			background-size: @cardWidth @cardHeight;
 		}
 
 		#flop-3 {
 			top: 0;
 			left: 2 * @cardWidth + 2 * @flopGap;
-			background: url('/img/king_of_diamonds.svg');
-			background-size: @cardWidth @cardHeight;
 		}
 
 		#turn {
 			top: 0;
 			left: 3 * @cardWidth + 2 * @flopGap + @streetGap;
-			background: url('/img/7_of_hearts.svg');
-			background-size: @cardWidth @cardHeight;
 		}
 
 		#river {
 			top: 0;
 			left: 4 * @cardWidth + 2 * @flopGap + 2 * @streetGap;
-			background: url('/img/assign_card.png');
-			background-size: @cardWidth @cardHeight;
 		}
 
 	}

@@ -182,6 +182,10 @@
 			}
 		};
 
+		this.assignFlopCards = function(card1, card2, card3) {
+			// TODO implement
+		};
+
 		/**
 		 * Advances play to the next betting round, if this is legal
 		 * (i.e. if the previous betting round has been finished)
