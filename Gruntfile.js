@@ -149,6 +149,19 @@ module.exports = function(grunt) {
 					destination: 'doc'
 				}
 			}
+		},
+		jade: {
+			compile: {
+				files: [
+					{
+						cwd: 'src/server/views/',
+						src: '**/*.jade',
+						dest: 'src/server/views/',
+						expand: true,
+						ext: '.html'
+					}
+				]
+			}
 		}
 	});
 
@@ -159,9 +172,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-jsdoc');
 
-	var buildTasks = ['copy', 'jshint', 'concat', 'uglify', 'less', 'clean:concatenated'];
+	var buildTasks = ['copy', 'jshint', 'concat', 'uglify', 'less', 'clean:concatenated', 'jade'];
 
 	grunt.registerTask('build', buildTasks);
 	grunt.registerTask('default', ['build']);

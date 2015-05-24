@@ -171,40 +171,43 @@
   height: 130.68px;
 }
 #game-table #community-cards .card {
-  background-color: #eee;
   position: absolute;
   width: 90px;
   height: 130.68px;
 }
+#game-table #community-cards .card img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90px;
+  height: 130.68px;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -moz-transition: opacity 0.3s ease-in-out;
+  -o-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
+#game-table #community-cards .card img.vanishing:hover {
+  opacity: 0;
+}
 #game-table #community-cards #flop-1 {
   top: 0;
   left: 0;
-  background: url('/img/3_of_diamonds.svg');
-  background-size: 90px 130.68px;
 }
 #game-table #community-cards #flop-2 {
   top: 0;
   left: 100px;
-  background: url('/img/3_of_spades.svg');
-  background-size: 90px 130.68px;
 }
 #game-table #community-cards #flop-3 {
   top: 0;
   left: 200px;
-  background: url('/img/king_of_diamonds.svg');
-  background-size: 90px 130.68px;
 }
 #game-table #community-cards #turn {
   top: 0;
   left: 310px;
-  background: url('/img/7_of_hearts.svg');
-  background-size: 90px 130.68px;
 }
 #game-table #community-cards #river {
   top: 0;
   left: 420px;
-  background: url('/img/assign_card.png');
-  background-size: 90px 130.68px;
 }
 #game-table #pot-panel {
   position: absolute;

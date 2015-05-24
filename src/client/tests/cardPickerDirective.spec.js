@@ -1,8 +1,7 @@
 describe('unit test for cardpicker directive', function() {
 	var $compile, $scope, element, $httpBackend;
 
-	console.info(angular.module);
-	beforeEach(angular.module('holdemDirectives'));
+	beforeEach(module('holdemDirectives'));
 	beforeEach(module('holdemServices'));
 	beforeEach(angular.mock.module('ngMockE2E'));
 
@@ -10,7 +9,6 @@ describe('unit test for cardpicker directive', function() {
 		$scope = $injector.get('$rootScope');
 		$compile = $injector.get('$compile');
 		$httpBackend = $injector.get('$httpBackend');
-		$httpBackend.whenGET(/partials\/.*/).passThrough();
 	}));
 
 	it('should work', function() {
@@ -21,7 +19,6 @@ describe('unit test for cardpicker directive', function() {
 		};
 
 		$compile(element)($scope);
-		$httpBackend.flush();
 		$scope.$digest();
 
 		console.info(element);
