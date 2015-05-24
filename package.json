@@ -27,6 +27,7 @@
     "karma": "~0.12.24",
     "karma-chrome-launcher": "^0.1.5",
     "karma-jasmine": "^0.2.2",
+    "karma-jasmine-jquery": "^0.1.1",
     "karma-ng-html2js-preprocessor": "^0.1.2",
     "mocha": "^2.0.1",
     "should": "^4.1.0"

@@ -23,7 +23,21 @@ describe('unit test for cardpicker directive', function() {
 	}));
 
 	it('should generate the right number of radio buttons', function() {
-		expect(element[0].querySelector('.suit-btn-group').children.length).toEqual(4);
-		expect(element[0].querySelector('.rank-btn-group').children.length).toEqual(13);
+		expect(element.find('.suit-btn-group').children().length).toEqual(4);
+		expect(element.find('.rank-btn-group').children().length).toEqual(13);
+	});
+
+	it('should assign the correct class to selected radio buttons', function() {
+		expect(element.find('.suit-btn-group input[value=clubs]').parent()).toHaveClass('btn-info');
+		expect(element.find('.suit-btn-group input[value=clubs]').parent()).not.toHaveClass('btn-default');
+		expect(element.find('.rank-btn-group input[value=ace]').parent()).toHaveClass('btn-info');
+		expect(element.find('.rank-btn-group input[value=ace]').parent()).not.toHaveClass('btn-default');
+	});
+
+	it('should assign the correct class to non-selected radio buttons', function() {
+		expect(element.find('.suit-btn-group input[value=clubs]').parent().siblings()).toHaveClass('btn-default');
+		expect(element.find('.suit-btn-group input[value=clubs]').parent().siblings()).not.toHaveClass('btn-info');
+		expect(element.find('.rank-btn-group input[value=ace]').parent().siblings()).toHaveClass('btn-default');
+		expect(element.find('.rank-btn-group input[value=ace]').parent().siblings()).not.toHaveClass('btn-info');
 	});
 });
