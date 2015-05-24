@@ -5,7 +5,7 @@
 				strong Suit
 		.row
 			.col-xs-12
-				.btn-group(data-toggle='buttons')
+				.btn-group.suit-btn-group(data-toggle='buttons')
 					label.btn.btn-default(data-ng-repeat='suit in suits')
 						input.suit-radio-button(type='radio', name='suit', value='{{suit.code}}')
 						span.card-icon.red(data-ng-bind='suit.icon', data-ng-if='suit.color == "red"')
@@ -17,7 +17,7 @@
 				strong Rank
 		.row
 			.col-xs-12
-				.btn-group(data-toggle='buttons')
+				.btn-group.rank-btn-group(data-toggle='buttons')
 					label.btn.btn-default(data-ng-repeat='rank in ranks')
 						input.rank-radio-button(type='radio', name='rank', value='{{rank.code}}')
 						span(data-ng-bind='rank.abbreviation')

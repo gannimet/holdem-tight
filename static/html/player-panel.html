@@ -1,0 +1,20 @@
+
+<div class="player-panel">
+  <!-- Player name and assign card button--><span data-ng-if="player" data-ng-bind="player.name" class="player-name"></span>
+  <!-- Delete player button-->
+  <button data-ng-if="player &amp;&amp; !isGameStarted()" data-ng-click="deletePlayer()" class="btn btn-xs btn-danger player-delete-button pull-right">X</button>
+  <!-- Role buttons--><span data-ng-if="playerInfo.isDealer" class="pull-right button-badge dealer-button"></span><span data-ng-if="playerInfo.isSmallBlind" class="pull-right button-badge small-blind-button"></span><span data-ng-if="playerInfo.isBigBlind" class="pull-right button-badge big-blind-button"></span><span data-ng-if="player &amp;&amp; isGameStarted()" class="pull-right assign-cards-badge">
+    <button data-ng-click="showHoleCards()" class="btn-xs btn-link"><img src="/img/card-icon.png"/></button></span>
+  <!-- Stack--><span data-ng-bind="player.stack | stackSize" class="player-chip-stack"></span>
+  <!-- Action info-->
+  <div data-ng-if="player &amp;&amp; isGameStarted()" data-ng-bind="playerInfo.mostRecentAction | playerAction" class="current-action"></div>
+  <!-- Action buttons and controls-->
+  <div data-ng-if="player &amp;&amp; isGameStarted()" class="action-controls">
+    <button data-ng-click="checkFold()" data-ng-bind="isCheckingAnOption() | checkOrFoldLabel" data-ng-disabled="disabled" class="form-control btn btn-sm btn-info check-fold-button"></button>
+    <button data-ng-click="call()" data-ng-disabled="disabled" data-ng-bind="getAmountToCall() | callLabel" class="form-control btn btn-sm btn-info call-button"></button>
+    <form data-ng-submit="betRaise()">
+      <input type="number" data-ng-model="betRaise.amount" data-ng-disabled="disabled" class="form-control raise-amount-txt"/>
+      <button type="submit" data-ng-bind="isBettingAnOption() | betOrRaiseLabel:betRaise.amount" data-ng-disabled="disabled" class="form-control btn btn-sm btn-info raise-button"></button>
+    </form>
+  </div>
+</div>

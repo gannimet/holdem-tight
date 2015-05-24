@@ -105,7 +105,14 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			sripts: {
-				files: ['Gruntfile.js', 'src/client/js/**/*.js', 'src/client/less/**/*.less', 'src/server/**/*.js', 'src/client/tests/**/*.js'],
+				files: [
+					'Gruntfile.js',
+					'src/client/js/**/*.js',
+					'src/client/less/**/*.less',
+					'src/server/**/*.js',
+					'src/client/tests/**/*.js',
+					'src/server/views/**/*.jade'
+				],
 				tasks: ['build']
 			}
 		},
@@ -152,11 +159,15 @@ module.exports = function(grunt) {
 		},
 		jade: {
 			compile: {
+				options: {
+					pretty: true,
+					client: false
+				},
 				files: [
 					{
 						cwd: 'src/server/views/',
 						src: '**/*.jade',
-						dest: 'src/server/views/',
+						dest: 'static/html/',
 						expand: true,
 						ext: '.html'
 					}

@@ -225,7 +225,7 @@
 			function($timeout, cardService) {
 		return {
 			restrict: 'E',
-			templateUrl: '/partials/cardpicker',
+			templateUrl: '/html/cardpicker.html',
 			replace: true,
 			require: 'ngModel',
 			scope: {},

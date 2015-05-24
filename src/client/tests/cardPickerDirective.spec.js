@@ -1,17 +1,15 @@
 describe('unit test for cardpicker directive', function() {
-	var $compile, $scope, element, $httpBackend;
+	var $compile, $scope, element, $timeout;
 
 	beforeEach(module('holdemDirectives'));
 	beforeEach(module('holdemServices'));
-	beforeEach(angular.mock.module('ngMockE2E'));
+	beforeEach(module('templates'));
 
 	beforeEach(inject(function($injector) {
 		$scope = $injector.get('$rootScope');
 		$compile = $injector.get('$compile');
-		$httpBackend = $injector.get('$httpBackend');
-	}));
+		$timeout = $injector.get('$timeout');
 
-	it('should work', function() {
 		element = angular.element('<cardpicker data-ng-model="card"></cardpicker>');
 		$scope.card = {
 			rank: 'ace',
@@ -19,8 +17,13 @@ describe('unit test for cardpicker directive', function() {
 		};
 
 		$compile(element)($scope);
+		angular.element(document.body).append(element);
 		$scope.$digest();
+		$timeout.flush();
+	}));
 
-		console.info(element);
+	it('should generate the right number of radio buttons', function() {
+		expect(element[0].querySelector('.suit-btn-group').children.length).toEqual(4);
+		expect(element[0].querySelector('.rank-btn-group').children.length).toEqual(13);
 	});
 });

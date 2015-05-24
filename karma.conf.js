@@ -12,8 +12,10 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+        'bower_components/jquery/dist/jquery.min.js',
         'bower_components/angular/angular.js',
         'bower_components/angular-mocks/angular-mocks.js',
+        'static/html/*.html',
         'src/client/js/**/*.js',
         'src/client/tests/**/*.js'
     ],
@@ -23,7 +25,14 @@ module.exports = function(config) {
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {},
+    preprocessors: {
+        'static/html/*.html': ['ng-html2js']
+    },
+
+    ngHtml2JsPreprocessor: {
+        moduleName: 'templates',
+        stripPrefix: 'static'
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -49,6 +58,12 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: false,
+
+    plugins: [
+        'karma-jasmine',
+        'karma-chrome-launcher',
+        'karma-ng-html2js-preprocessor'
+    ]
   });
 };
