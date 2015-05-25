@@ -11,7 +11,7 @@
 						span.card-icon.red(data-ng-bind='suit.icon', data-ng-if='suit.color == "red"')
 						span.card-icon.black(data-ng-bind='suit.icon', data-ng-if='suit.color == "black"')
 						span.space5
-						span(data-ng-bind='suit.name')
+						span.suit-name(data-ng-bind='suit.name')
 		.row.top10
 			.col-xs-12
 				strong Rank
@@ -20,6 +20,6 @@
 				.btn-group.rank-btn-group(data-toggle='buttons')
 					label.btn.btn-default(data-ng-repeat='rank in ranks')
 						input.rank-radio-button(type='radio', name='rank', value='{{rank.code}}')
-						span(data-ng-bind='rank.abbreviation')
+						span.rank-name(data-ng-bind='rank.abbreviation')
 	.col-xs-2.no-padding-left
 		img.card-thumbnail(src='/img/card_placeholder.png')

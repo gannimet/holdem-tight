@@ -15,10 +15,17 @@ module.exports = function(config) {
         'bower_components/jquery/dist/jquery.min.js',
         'bower_components/angular/angular.js',
         'bower_components/angular-mocks/angular-mocks.js',
-        'static/html/*.html',
+        {
+            pattern: 'static/html/*.html',
+            watched: false
+        },
         'src/client/js/**/*.js',
         'src/client/tests/**/*.js'
     ],
+
+    proxies: {
+        '/img/': 'http://localhost:3000/img/'
+    },
 
     // list of files to exclude
     exclude: [],
