@@ -15,6 +15,7 @@ module.exports = function(config) {
         'bower_components/jquery/dist/jquery.min.js',
         'bower_components/angular/angular.js',
         'bower_components/angular-mocks/angular-mocks.js',
+        'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
         {
             pattern: 'static/html/*.html',
             watched: false

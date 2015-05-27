@@ -10,7 +10,7 @@ describe('unit test for cardpicker directive', function() {
 		$compile = $injector.get('$compile');
 		$timeout = $injector.get('$timeout');
 
-		element = angular.element('<cardpicker data-ng-model="card"></cardpicker>');
+		element = angular.element('<data-cardpicker data-ng-model="card"></data-cardpicker>');
 		$scope.card = {
 			rank: 'ace',
 			suit: 'clubs'
@@ -23,7 +23,7 @@ describe('unit test for cardpicker directive', function() {
 	}));
 
 	function select(radioButtonElement) {
-		radioButtonElement.prop('checked', true).trigger('click').trigger('change');
+		radioButtonElement.click();
 	}
 
 	describe('test radio buttons', function() {

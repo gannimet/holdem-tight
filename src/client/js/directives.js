@@ -7,7 +7,7 @@
 			function(HOLDEM_EVENTS, gameService, HOLDEM_ACTIONS, uiService, $timeout) {
 		return {
 			restrict: 'E',
-			templateUrl: '/partials/player-panel',
+			templateUrl: '/html/player-panel.html',
 			replace: true,
 			scope: {
 				seatNr: '=seatNr'

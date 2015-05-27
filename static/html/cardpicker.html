@@ -8,7 +8,7 @@
       <div class="col-xs-12">
         <div data-toggle="buttons" class="btn-group suit-btn-group">
           <label data-ng-repeat="suit in suits" class="btn btn-default">
-            <input type="radio" name="suit" value="{{suit.code}}" class="suit-radio-button"/><span data-ng-bind="suit.icon" data-ng-if="suit.color == &quot;red&quot;" class="card-icon red"></span><span data-ng-bind="suit.icon" data-ng-if="suit.color == &quot;black&quot;" class="card-icon black"></span><span class="space5"></span><span data-ng-bind="suit.name" class="suit-name"></span>
+            <input type="radio" name="suit" value="{{suit.code}}" class="suit-radio-button"/><span data-ng-bind="suit.icon" data-ng-class="{red: suit.color == &quot;red&quot;, black: suit.color == &quot;black&quot;}" class="card-icon"></span><span class="space5"></span><span data-ng-bind="suit.name" class="suit-name"></span>
           </label>
         </div>
       </div>
