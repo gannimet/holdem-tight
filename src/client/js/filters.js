@@ -10,7 +10,7 @@
 		};
 	}]);
 
-	holdemFilters.filter('handNrFilter', [function() {
+	holdemFilters.filter('handNr', [function() {
 		return function(handNr) {
 			if (typeof(handNr) === 'number') {
 				return 'Hand #' + handNr;
@@ -75,7 +75,7 @@
 			if (isBettingPossible) {
 				return 'BET' + (amount ? ' ' + amount : '');
 			} else {
-				return 'RAISE ' + (amount ? ' ' + amount : '');
+				return 'RAISE' + (amount ? ' ' + amount : '');
 			}
 		};
 	}]);

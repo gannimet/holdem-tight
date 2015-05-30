@@ -39,7 +39,7 @@
 		.panel-heading
 			h2.panel-title Game panel
 		.panel-body
-			.hand-nr(data-ng-bind='handNr | handNrFilter')
+			.hand-nr(data-ng-bind='handNr | handNr')
 			.betting-round-info
 				span(data-ng-bind='currentBettingRound | bettingRound')  
 				button.btn.btn-sm.btn-success(data-ng-click='advanceBettingRound()') Next
