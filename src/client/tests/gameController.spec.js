@@ -1,5 +1,6 @@
 describe('unit test for game controller', function() {
-	var scope, gameService, uiService, HOLDEM_EVENTS, $modal;
+	var scope, gameService, uiService, HOLDEM_EVENTS,
+		HOLDEM_BETTING_ROUNDS, $modal, $rootScope;
 
 	var mockGameService = {
 		players: [],
@@ -9,6 +10,18 @@ describe('unit test for game controller', function() {
 		},
 		addPlayer: function(player) {
 			this.players.push(player);
+		},
+		startGame: function() {
+			$rootScope.$broadcast(HOLDEM_EVENTS.GAME_STARTED);
+		},
+		advanceBettingRound: function() {
+			$rootScope.$broadcast(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, HOLDEM_BETTING_ROUNDS.FLOP);
+		},
+		doesHandRequireMoreAction: function() {
+			return false;
+		},
+		nextHand: function() {
+			$rootScope.$broadcast(HOLDEM_EVENTS.NEXT_HAND_DEALT, 2);
 		}
 	};
 
@@ -36,7 +49,9 @@ describe('unit test for game controller', function() {
 		gameService = $injector.get('gameService');
 		uiService = $injector.get('uiService');
 		HOLDEM_EVENTS = $injector.get('HOLDEM_EVENTS');
+		HOLDEM_BETTING_ROUNDS = $injector.get('HOLDEM_BETTING_ROUNDS');
 		$modal = $injector.get('$modal');
+		$rootScope = $injector.get('$rootScope');
 
 		$controller = $injector.get('$controller');
 
@@ -57,11 +72,16 @@ describe('unit test for game controller', function() {
 				bigBlind: 20
 			});
 		});
+	});
 
-		it('should assign players to scope', function() {
+	describe('test game functionality', function() {
+		beforeEach(function() {
 			scope.addPlayer();
 			scope.addPlayer();
+			scope.startGame();
+		});
 
+		it('should assign players to scope and start game', function() {
 			expect(scope.players.length).toEqual(2);
 			expect(scope.players[0]).toEqual({
 				name: 'Player 1',
@@ -71,6 +91,18 @@ describe('unit test for game controller', function() {
 				name: 'Player 2',
 				stack: 1500
 			});
+		});
+
+		it('should change state due to scope events', function() {
+			expect(scope.gameStarted).toBe(true);
+
+			scope.advanceBettingRound();
+
+			expect(scope.currentBettingRound).toEqual(HOLDEM_BETTING_ROUNDS.FLOP);
+
+			scope.nextHand();
+
+			expect(scope.handNr).toEqual(2);
 		});
 	});
 });
