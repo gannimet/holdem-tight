@@ -19,12 +19,12 @@
 
 	// Action buttons and controls
 	.action-controls(data-ng-if='player && isGameStarted()')
-		button.form-control.btn.btn-sm.btn-info.check-fold-button(
+		button.form-control.btn.btn-sm.btn-danger.check-fold-button(
 			data-ng-click='checkFold()',
 			data-ng-bind='isCheckingAnOption() | checkOrFoldLabel',
 			data-ng-disabled='disabled'
 		)
-		button.form-control.btn.btn-sm.btn-info.call-button(
+		button.form-control.btn.btn-sm.btn-warning.call-button(
 			data-ng-click='call()',
 			data-ng-disabled='disabled'
 			data-ng-bind='getAmountToCall() | callLabel'
@@ -35,7 +35,7 @@
 				data-ng-model='betRaise.amount',
 				data-ng-disabled='disabled'
 			)
-			button.form-control.btn.btn-sm.btn-info.raise-button(
+			button.form-control.btn.btn-sm.btn-primary.raise-button(
 				type='submit',
 				data-ng-bind='isBettingAnOption() | betOrRaiseLabel:betRaise.amount',
 				data-ng-disabled='disabled'

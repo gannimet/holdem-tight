@@ -186,6 +186,10 @@
 			// TODO implement
 		};
 
+		this.assignTurnCard = function(card) {};
+
+		this.assignRiverCard = function(card) {};
+
 		/**
 		 * Advances play to the next betting round, if this is legal
 		 * (i.e. if the previous betting round has been finished)

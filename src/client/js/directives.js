@@ -294,4 +294,20 @@
 		};
 	}]);
 
+	holdemDirectives.directive('communityCards', [function() {
+		return {
+			restrict: 'E',
+			templateUrl: '/html/community-cards.html',
+			replace: true,
+			require: 'ngModel',
+			scope: {},
+			link: function(scope, element, attrs, ngModel) {
+				// TODO
+			},
+			controller: ['$scope', function() {
+				// TODO
+			}]
+		};
+	}]);
+
 })(window);

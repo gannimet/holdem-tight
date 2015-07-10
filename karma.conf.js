@@ -16,6 +16,7 @@ module.exports = function(config) {
         'bower_components/angular/angular.js',
         'bower_components/angular-mocks/angular-mocks.js',
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
+        './node_modules/phantomjs-polyfill/bind-polyfill.js',
         {
             pattern: 'static/html/*.html',
             watched: false
@@ -62,7 +63,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: [/*'Chrome'*/'PhantomJS'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -72,7 +73,8 @@ module.exports = function(config) {
         'karma-jasmine',
         'karma-jasmine-jquery',
         'karma-chrome-launcher',
-        'karma-ng-html2js-preprocessor'
+        'karma-ng-html2js-preprocessor',
+        'karma-phantomjs-launcher'
     ]
   });
 };
