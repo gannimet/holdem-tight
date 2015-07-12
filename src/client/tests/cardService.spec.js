@@ -64,5 +64,29 @@ describe('unit test for card service', function() {
 				{ suit: 'hearts', rank: 'ace' }
 			)).toBe(false);
 		});
+
+		it('should determine null and undefined cards as NOT equal', function() {
+			expect(cardService.areCardsEqual(
+				null,
+				{ suit: 'diamonds', rank: 'king' }
+			)).toBe(false);
+			expect(cardService.areCardsEqual(
+				{ suit: 'clubs', rank: 'ace' },
+				null
+			)).toBe(false);
+			expect(cardService.areCardsEqual(null, null)).toBe(false);
+
+			expect(cardService.areCardsEqual(
+				undefined,
+				{ suit: 'diamonds', rank: 'king' }
+			)).toBe(false);
+			expect(cardService.areCardsEqual(
+				{ suit: 'clubs', rank: 'ace' },
+				undefined
+			)).toBe(false);
+			expect(cardService.areCardsEqual(undefined, null)).toBe(false);
+			expect(cardService.areCardsEqual(null, undefined)).toBe(false);
+			expect(cardService.areCardsEqual(undefined, undefined)).toBe(false);
+		});
 	});
 });

@@ -100,7 +100,7 @@
 				foldedPlayers: [],
 				actions: [],
 				board: {
-					flop: [],
+					flop: [null, null, null],
 					turn: null,
 					river: null
 				},
@@ -166,8 +166,8 @@
 				};
 			}
 
+			// player could already have hole cards assigned
 			var oldHoleCards = this.getHoleCardsOfPlayerInCurrentHand(playerIndex);
-
 			if (oldHoleCards) {
 				// Remove existing elements
 				oldHoleCards.length = 0;
@@ -182,13 +182,39 @@
 			}
 		};
 
-		this.assignFlopCards = function(card1, card2, card3) {
-			// TODO implement
+		this.getFlopCardsInCurrentHand = function() {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw 'Game not started yet';
+			}
+
+			return this.getCurrentHand().board.flop;
 		};
 
-		this.assignTurnCard = function(card) {};
+		this.assignFlopCards = function(card1, card2, card3) {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw {
+					message: 'Game not started yet.'
+				};
+			}
 
-		this.assignRiverCard = function(card) {};
+			if (cardService.areCardsEqual(card1, card2) ||
+					cardService.areCardsEqual(card2, card3) ||
+					cardService.areCardsEqual(card1, card3)) {
+				throw {
+					message: 'All cards have to be mutually different.'
+				};
+			}
+
+			this.getCurrentHand().board.flop = [card1, card2, card3];
+		};
+
+		this.assignTurnCard = function(card) {
+
+		};
+
+		this.assignRiverCard = function(card) {
+
+		};
 
 		/**
 		 * Advances play to the next betting round, if this is legal
@@ -1199,6 +1225,27 @@
 				});
 			},
 
+			promptForFlopCards: function(card1, card2, card3) {
+				$modal.open({
+					animation: true,
+					templateUrl: '/partials/assign-flop-cards',
+					controller: 'FlopCardsController',
+					size: 'md',
+					backdrop: true,
+					resolve: {
+						card1: function() {
+							return card1;
+						},
+						card2: function() {
+							return card2;
+						},
+						card3: function() {
+							return card3;
+						}
+					}
+				});
+			},
+
 			confirmDecision: function(message, okText, cancelText, positiveCallback, negativeCallback) {
 				alertify.set({
 					labels: {
@@ -1271,6 +1318,15 @@
 		};
 
 		this.areCardsEqual = function(card1, card2) {
+			if (!card1 || !card2) {
+				return false;
+			}
+
+			if (!angular.isDefined(card1.suit) || !angular.isDefined(card1.rank) ||
+					!angular.isDefined(card2.suit) || !angular.isDefined(card2.rank)) {
+				return false;
+			}
+
 			return card1.suit === card2.suit &&
 				card1.rank === card2.rank;
 		};

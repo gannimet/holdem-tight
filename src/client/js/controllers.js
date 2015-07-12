@@ -49,6 +49,17 @@
 			gameService.advanceBettingRound();
 		};
 
+		$scope.showFlopCards = function() {
+			try {
+				var flopCards = gameService.getFlopCardsInCurrentHand();
+				uiService.promptForFlopCards(
+					flopCards[0], flopCards[1], flopCards[2]
+				);
+			} catch (error) {
+				uiService.errorMessage(error);
+			}
+		};
+
 		/*
 		 * Broadcast event handlers
 		 */
@@ -91,6 +102,27 @@
 		$scope.ok = function() {
 			try {
 				gameService.assignHoleCardsToPlayer(player, $scope.card1, $scope.card2);
+				$modalInstance.close();
+			} catch (error) {
+				$scope.error = error;
+			}
+		};
+
+		$scope.cancel = function() {
+			$modalInstance.dismiss('cancel');
+		};
+	}]);
+
+	holdemControllers.controller('FlopCardsController',
+			['$scope', '$modalInstance', 'card1', 'card2', 'card3', 'gameService',
+			function($scope, $modalInstance, card1, card2, card3, gameService) {
+		$scope.card1 = card1;
+		$scope.card2 = card2;
+		$scope.card3 = card3;
+
+		$scope.ok = function() {
+			try {
+				gameService.assignFlopCards($scope.card1, $scope.card2, $scope.card3);
 				$modalInstance.close();
 			} catch (error) {
 				$scope.error = error;

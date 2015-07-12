@@ -11,18 +11,18 @@
 	.dealer-panel
 		span.dealer-text DEALER
 	#community-cards
-		.card#flop-1.assigned
+		.card#flop-1.unassigned(data-ng-click='showFlopCards()') // or .assigned
 			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/3_of_diamonds.svg')
-		.card#flop-2.assigned
+			img.vanishing(src='/img/assign_card.png')
+		.card#flop-2.unassigned
 			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/3_of_spades.svg')
-		.card#flop-3.assigned
+			img.vanishing(src='/img/assign_card.png')
+		.card#flop-3.unassigned
 			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/king_of_diamonds.svg')
-		.card#turn.assigned
+			img.vanishing(src='/img/assign_card.png')
+		.card#turn.unassigned
 			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/7_of_hearts.svg')
+			img.vanishing(src='/img/assign_card.png')
 		.card#river.unassigned
 			img(src='/img/assign_card_hover.png')
 			img.vanishing(src='/img/assign_card.png')
