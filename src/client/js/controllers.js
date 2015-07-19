@@ -8,6 +8,7 @@
 		$scope.gameStarted = false;
 		$scope.handNr = null;
 		$scope.currentBlinds = gameService.currentBlinds;
+		$scope.communityCards = [null, null, null, null, null];
 
 		/*
 		 * UI event handlers and utility functions
@@ -49,17 +50,6 @@
 			gameService.advanceBettingRound();
 		};
 
-		$scope.showFlopCards = function() {
-			try {
-				var flopCards = gameService.getFlopCardsInCurrentHand();
-				uiService.promptForFlopCards(
-					flopCards[0], flopCards[1], flopCards[2]
-				);
-			} catch (error) {
-				uiService.errorMessage(error);
-			}
-		};
-
 		/*
 		 * Broadcast event handlers
 		 */
@@ -73,6 +63,20 @@
 
 		$scope.$on(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, function(event, bettingRound) {
 			$scope.currentBettingRound = bettingRound;
+		});
+
+		$scope.$on(HOLDEM_EVENTS.FLOP_CARDS_ASSIGNED, function(event, cards) {
+			for (var i = 0; i < 3; i++) {
+				$scope.communityCards[i] = cards[i];
+			}
+		});
+
+		$scope.$on(HOLDEM_EVENTS.TURN_CARD_ASSIGNED, function(card) {
+			$scope.communityCards[3] = card;
+		});
+
+		$scope.$on(HOLDEM_EVENTS.RIVER_CARD_ASSIGNED, function(card) {
+			$scope.communityCards[4] = card;
 		});
 	}]);
 

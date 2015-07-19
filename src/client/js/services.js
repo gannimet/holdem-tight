@@ -180,6 +180,9 @@
 					cards: [card1, card2]
 				});
 			}
+
+			// Tell the world about the assigned hole card
+			$rootScope.$broadcast(HOLDEM_EVENTS.HOLE_CARD_ASSIGNED, playerIndex, [card1, card2]);
 		};
 
 		this.getFlopCardsInCurrentHand = function() {
@@ -206,14 +209,35 @@
 			}
 
 			this.getCurrentHand().board.flop = [card1, card2, card3];
+
+			// Tell the world about the new flop
+			$rootScope.$broadcast(HOLDEM_EVENTS.FLOP_CARDS_ASSIGNED, [card1, card2, card3]);
 		};
 
 		this.assignTurnCard = function(card) {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw {
+					message: 'Game not started yet.'
+				};
+			}
 
+			this.getCurrentHand().board.turn = card;
+
+			// Tell the world about the new flop
+			$rootScope.$broadcast(HOLDEM_EVENTS.TURN_CARD_ASSIGNED, card);
 		};
 
 		this.assignRiverCard = function(card) {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw {
+					message: 'Game not started yet.'
+				};
+			}
 
+			this.getCurrentHand().board.river = card;
+
+			// Tell the world about the new flop
+			$rootScope.$broadcast(HOLDEM_EVENTS.RIVER_CARD_ASSIGNED, river);
 		};
 
 		/**

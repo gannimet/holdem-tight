@@ -67,14 +67,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
-
-    plugins: [
-        'karma-jasmine',
-        'karma-jasmine-jquery',
-        'karma-chrome-launcher',
-        'karma-ng-html2js-preprocessor',
-        'karma-phantomjs-launcher'
-    ]
+    singleRun: false
+    
   });
 };

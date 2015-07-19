@@ -22,10 +22,10 @@ describe('unit test for playerPanel directive', function() {
 
 		$compile(element)($scope);
 		angular.element(document.body).append(element);
-		$timeout.flush();
-
+		
 		$compile(secondElement)($scope);
 		angular.element(document.body).append(secondElement);
+		
 		$timeout.flush();
 	}));
 

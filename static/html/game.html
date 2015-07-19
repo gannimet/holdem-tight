@@ -10,13 +10,7 @@
   <data-player-panel id="player-8" seat-nr="8"></data-player-panel>
   <data-player-panel id="player-9" seat-nr="9"></data-player-panel>
   <div class="dealer-panel"><span class="dealer-text">DEALER</span></div>
-  <div id="community-cards">
-    <div id="flop-1" data-ng-click="showFlopCards()" class="card unassigned">// or .assigned<img src="/img/assign_card_hover.png"/><img src="/img/assign_card.png" class="vanishing"/></div>
-    <div id="flop-2" class="card unassigned"><img src="/img/assign_card_hover.png"/><img src="/img/assign_card.png" class="vanishing"/></div>
-    <div id="flop-3" class="card unassigned"><img src="/img/assign_card_hover.png"/><img src="/img/assign_card.png" class="vanishing"/></div>
-    <div id="turn" class="card unassigned"><img src="/img/assign_card_hover.png"/><img src="/img/assign_card.png" class="vanishing"/></div>
-    <div id="river" class="card unassigned"><img src="/img/assign_card_hover.png"/><img src="/img/assign_card.png" class="vanishing"/></div>
-  </div>
+  <data-community-cards data-ng-model="communityCards"></data-community-cards>
   <div id="pot-panel">Pot: 430</div>
 </div>
 <div id="control-panel">
