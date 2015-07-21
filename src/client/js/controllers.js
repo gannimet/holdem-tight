@@ -71,11 +71,11 @@
 			}
 		});
 
-		$scope.$on(HOLDEM_EVENTS.TURN_CARD_ASSIGNED, function(card) {
+		$scope.$on(HOLDEM_EVENTS.TURN_CARD_ASSIGNED, function(event, card) {
 			$scope.communityCards[3] = card;
 		});
 
-		$scope.$on(HOLDEM_EVENTS.RIVER_CARD_ASSIGNED, function(card) {
+		$scope.$on(HOLDEM_EVENTS.RIVER_CARD_ASSIGNED, function(event, card) {
 			$scope.communityCards[4] = card;
 		});
 	}]);
@@ -117,16 +117,30 @@
 		};
 	}]);
 
-	holdemControllers.controller('FlopCardsController',
-			['$scope', '$modalInstance', 'card1', 'card2', 'card3', 'gameService',
-			function($scope, $modalInstance, card1, card2, card3, gameService) {
+	holdemControllers.controller('CommunityCardsController',
+			['$scope', '$modalInstance', 'street', 'card1', 'card2', 'card3', 'gameService',
+			function($scope, $modalInstance, street, card1, card2, card3, gameService) {
+		$scope.street = street;
 		$scope.card1 = card1;
 		$scope.card2 = card2;
 		$scope.card3 = card3;
 
 		$scope.ok = function() {
 			try {
-				gameService.assignFlopCards($scope.card1, $scope.card2, $scope.card3);
+				switch ($scope.street) {
+					case 'flop':
+						gameService.assignFlopCards($scope.card1, $scope.card2, $scope.card3);
+						break;
+					case 'turn':
+						gameService.assignTurnCard($scope.card1);
+						break;
+					case 'river':
+						gameService.assignRiverCard($scope.card1);
+						break;
+					default:
+						throw 'Illegal street';
+				}
+
 				$modalInstance.close();
 			} catch (error) {
 				$scope.error = error;

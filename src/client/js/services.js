@@ -214,6 +214,14 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.FLOP_CARDS_ASSIGNED, [card1, card2, card3]);
 		};
 
+		this.getTurnCardInCurrentHand = function() {
+			if (!this.gameStarted || !this.getCurrentHand) {
+				throw 'Game not started yet';
+			}
+
+			return this.getCurrentHand().board.turn;
+		};
+
 		this.assignTurnCard = function(card) {
 			if (!this.gameStarted || !this.getCurrentHand()) {
 				throw {
@@ -227,6 +235,14 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.TURN_CARD_ASSIGNED, card);
 		};
 
+		this.getRiverCardInCurrentHand = function() {
+			if (!this.gameStarted || !this.getCurrentHand) {
+				throw 'Game not started yet';
+			}
+
+			return this.getCurrentHand().board.river;
+		};
+
 		this.assignRiverCard = function(card) {
 			if (!this.gameStarted || !this.getCurrentHand()) {
 				throw {
@@ -237,7 +253,7 @@
 			this.getCurrentHand().board.river = card;
 
 			// Tell the world about the new flop
-			$rootScope.$broadcast(HOLDEM_EVENTS.RIVER_CARD_ASSIGNED, river);
+			$rootScope.$broadcast(HOLDEM_EVENTS.RIVER_CARD_ASSIGNED, card);
 		};
 
 		/**
@@ -1249,14 +1265,17 @@
 				});
 			},
 
-			promptForFlopCards: function(card1, card2, card3) {
+			promptForCommunityCards: function(street, card1, card2, card3) {
 				$modal.open({
 					animation: true,
-					templateUrl: '/partials/assign-flop-cards',
-					controller: 'FlopCardsController',
+					templateUrl: '/partials/assign-community-cards',
+					controller: 'CommunityCardsController',
 					size: 'md',
 					backdrop: true,
 					resolve: {
+						street: function() {
+							return street;
+						},
 						card1: function() {
 							return card1;
 						},
