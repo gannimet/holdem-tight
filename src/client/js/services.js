@@ -185,6 +185,12 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.HOLE_CARD_ASSIGNED, playerIndex, [card1, card2]);
 		};
 
+		/**
+		 * Get flop cards associated with current hand
+		 * @return {Object[]} list of card objects in the flop. Elements of that list
+		 * can be null
+		 * @throws if game is not yet started or there is no current hand
+		 */
 		this.getFlopCardsInCurrentHand = function() {
 			if (!this.gameStarted || !this.getCurrentHand()) {
 				throw 'Game not started yet';
@@ -193,6 +199,10 @@
 			return this.getCurrentHand().board.flop;
 		};
 
+		/**
+		 * Assign three card objects (possibly null) as flop cards of the current hand.
+		 * @throws if game is not yet started or there is no current hand
+		 */
 		this.assignFlopCards = function(card1, card2, card3) {
 			if (!this.gameStarted || !this.getCurrentHand()) {
 				throw {
@@ -214,6 +224,11 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.FLOP_CARDS_ASSIGNED, [card1, card2, card3]);
 		};
 
+		/**
+		 * Get turn card associated with current hand
+		 * @return {Object} turn card (possibly null)
+		 * @throws if game is not yet started or there is no current hand
+		 */
 		this.getTurnCardInCurrentHand = function() {
 			if (!this.gameStarted || !this.getCurrentHand) {
 				throw 'Game not started yet';
@@ -222,6 +237,10 @@
 			return this.getCurrentHand().board.turn;
 		};
 
+		/**
+		 * Assign card object (possibly null) as turn card of the current hand.
+		 * @throws if game is not yet started or there is no current hand
+		 */
 		this.assignTurnCard = function(card) {
 			if (!this.gameStarted || !this.getCurrentHand()) {
 				throw {
@@ -235,6 +254,11 @@
 			$rootScope.$broadcast(HOLDEM_EVENTS.TURN_CARD_ASSIGNED, card);
 		};
 
+		/**
+		 * Get river card associated with current hand
+		 * @return {Object} river card (possibly null)
+		 * @throws if game is not yet started or there is no current hand
+		 */
 		this.getRiverCardInCurrentHand = function() {
 			if (!this.gameStarted || !this.getCurrentHand) {
 				throw 'Game not started yet';
@@ -243,6 +267,10 @@
 			return this.getCurrentHand().board.river;
 		};
 
+		/**
+		 * Assign card object (possibly null) as river card of the current hand.
+		 * @throws if game is not yet started or there is no current hand
+		 */
 		this.assignRiverCard = function(card) {
 			if (!this.gameStarted || !this.getCurrentHand()) {
 				throw {

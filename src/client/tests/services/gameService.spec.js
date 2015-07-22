@@ -1211,36 +1211,95 @@ describe('unit test for holdem game service', function() {
 		});
 	});
 
-	describe('assignment of hole cards', function() {
-		it('should assign cards to a player and retrieve them back', function() {
-			var card1 = { suit: 'clubs', rank: '9' };
-			var card2 = { suit: 'spades', rank: 'ace' };
-			var card3 = { suit: 'hearts', rank: 'queen' };
+	describe('assigning cards', function() {
+		describe('assignment of hole cards', function() {
+			it('should assign cards to a player and retrieve them back', function() {
+				var card1 = { suit: 'clubs', rank: '9' };
+				var card2 = { suit: 'spades', rank: 'ace' };
+				var card3 = { suit: 'hearts', rank: 'queen' };
 
-			// Assignment before game start should not be allowed
-			expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card2)).toThrow();
+				// Assignment before game start should not be allowed
+				expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card2)).toThrow();
 
-			gameService.addPlayer();
-			gameService.addPlayer();
+				gameService.addPlayer();
+				gameService.addPlayer();
 
-			gameService.startGame();
+				gameService.startGame();
 
-			expect(gameService.getHoleCardsOfPlayerInCurrentHand(0)).toBeUndefined();
-			expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toBeUndefined();
-			expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card2)).not.toThrow();
-			expect(gameService.getHoleCardsOfPlayerInCurrentHand(0)).toBeUndefined();
-			expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toEqual([
-				{ suit: 'clubs', rank: '9' },
-				{ suit: 'spades', rank: 'ace' }
-			]);
+				expect(gameService.getHoleCardsOfPlayerInCurrentHand(0)).toBeUndefined();
+				expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toBeUndefined();
+				expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card2)).not.toThrow();
+				expect(gameService.getHoleCardsOfPlayerInCurrentHand(0)).toBeUndefined();
+				expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toEqual([
+					{ suit: 'clubs', rank: '9' },
+					{ suit: 'spades', rank: 'ace' }
+				]);
 
-			expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card3)).not.toThrow();
-			expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toEqual([
-				{ suit: 'clubs', rank: '9' },
-				{ suit: 'hearts', rank: 'queen' }
-			]);
+				expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card3)).not.toThrow();
+				expect(gameService.getHoleCardsOfPlayerInCurrentHand(1)).toEqual([
+					{ suit: 'clubs', rank: '9' },
+					{ suit: 'hearts', rank: 'queen' }
+				]);
 
-			expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card1)).toThrow();
+				expect(gameService.assignHoleCardsToPlayer.bind(gameService, 1, card1, card1)).toThrow();
+			});
+		});
+
+		describe('assignment of community cards', function() {
+			it('should throw before game start', function() {
+				var card1 = { suit: 'clubs', rank: '9' };
+				var card2 = { suit: 'spades', rank: 'ace' };
+				var card3 = { suit: 'hearts', rank: 'queen' };
+
+				expect(gameService.assignFlopCards.bind(gameService, card1, card2, card3)).toThrow();
+			});
+
+			it('should assign and retrieve flop cards', function() {
+				var card1 = { suit: 'clubs', rank: '9' };
+				var card2 = { suit: 'spades', rank: 'ace' };
+				var card3 = { suit: 'hearts', rank: 'queen' };
+
+				gameService.addPlayer();
+				gameService.addPlayer();
+
+				gameService.startGame();
+
+				expect(gameService.assignFlopCards.bind(gameService, card1, card2, card3)).not.toThrow();
+				expect(gameService.getCurrentHand().board.flop).toEqual([card1, card2, card3]);
+
+				expect(gameService.getFlopCardsInCurrentHand.bind(gameService)).not.toThrow();
+				expect(gameService.getFlopCardsInCurrentHand()).toEqual([card1, card2, card3]);
+			});
+
+			it('should assign and retrieve turn card', function() {
+				var card = { suit: 'clubs', rank: '9' };
+
+				gameService.addPlayer();
+				gameService.addPlayer();
+
+				gameService.startGame();
+
+				expect(gameService.assignTurnCard.bind(gameService, card)).not.toThrow();
+				expect(gameService.getCurrentHand().board.turn).toEqual(card);
+
+				expect(gameService.getTurnCardInCurrentHand.bind(gameService)).not.toThrow();
+				expect(gameService.getTurnCardInCurrentHand()).toEqual(card);
+			});
+
+			it('should assign and retrieve river card', function() {
+				var card = { suit: 'clubs', rank: '9' };
+
+				gameService.addPlayer();
+				gameService.addPlayer();
+
+				gameService.startGame();
+
+				expect(gameService.assignRiverCard.bind(gameService, card)).not.toThrow();
+				expect(gameService.getCurrentHand().board.river).toEqual(card);
+
+				expect(gameService.getRiverCardInCurrentHand.bind(gameService)).not.toThrow();
+				expect(gameService.getRiverCardInCurrentHand()).toEqual(card);
+			});
 		});
 	});
 });
