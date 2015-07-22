@@ -10,22 +10,7 @@
 	data-player-panel#player-9(seat-nr='9')
 	.dealer-panel
 		span.dealer-text DEALER
-	#community-cards
-		.card#flop-1.assigned
-			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/3_of_diamonds.svg')
-		.card#flop-2.assigned
-			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/3_of_spades.svg')
-		.card#flop-3.assigned
-			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/king_of_diamonds.svg')
-		.card#turn.assigned
-			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/7_of_hearts.svg')
-		.card#river.unassigned
-			img(src='/img/assign_card_hover.png')
-			img.vanishing(src='/img/assign_card.png')
+	data-community-cards(data-ng-model='communityCards')
 	#pot-panel Pot: 430
 
 #control-panel

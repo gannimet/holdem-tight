@@ -13,7 +13,11 @@
 		TURN_ASSIGNED: 'turnAssigned',
 		PLAYER_WON_MONEY: 'playerWonMoney',
 		PLAYER_FINISHED: 'playerFinished',
-		PLAYER_WON_TOURNAMENT: 'playerWonTournament'
+		PLAYER_WON_TOURNAMENT: 'playerWonTournament',
+		HOLE_CARD_ASSIGNED: 'holeCardAssigned',
+		FLOP_CARDS_ASSIGNED: 'flopCardsAssigned',
+		TURN_CARD_ASSIGNED: 'turnCardAssigned',
+		RIVER_CARD_ASSIGNED: 'riverCardAssigned',
 	});
 
 	holdemConstants.constant('HOLDEM_ACTIONS', {

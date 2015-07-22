@@ -100,7 +100,7 @@
 				foldedPlayers: [],
 				actions: [],
 				board: {
-					flop: [],
+					flop: [null, null, null],
 					turn: null,
 					river: null
 				},
@@ -166,8 +166,8 @@
 				};
 			}
 
+			// player could already have hole cards assigned
 			var oldHoleCards = this.getHoleCardsOfPlayerInCurrentHand(playerIndex);
-
 			if (oldHoleCards) {
 				// Remove existing elements
 				oldHoleCards.length = 0;
@@ -180,15 +180,109 @@
 					cards: [card1, card2]
 				});
 			}
+
+			// Tell the world about the assigned hole card
+			$rootScope.$broadcast(HOLDEM_EVENTS.HOLE_CARD_ASSIGNED, playerIndex, [card1, card2]);
 		};
 
+		/**
+		 * Get flop cards associated with current hand
+		 * @return {Object[]} list of card objects in the flop. Elements of that list
+		 * can be null
+		 * @throws if game is not yet started or there is no current hand
+		 */
+		this.getFlopCardsInCurrentHand = function() {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw 'Game not started yet';
+			}
+
+			return this.getCurrentHand().board.flop;
+		};
+
+		/**
+		 * Assign three card objects (possibly null) as flop cards of the current hand.
+		 * @throws if game is not yet started or there is no current hand
+		 */
 		this.assignFlopCards = function(card1, card2, card3) {
-			// TODO implement
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw {
+					message: 'Game not started yet.'
+				};
+			}
+
+			if (cardService.areCardsEqual(card1, card2) ||
+					cardService.areCardsEqual(card2, card3) ||
+					cardService.areCardsEqual(card1, card3)) {
+				throw {
+					message: 'All cards have to be mutually different.'
+				};
+			}
+
+			this.getCurrentHand().board.flop = [card1, card2, card3];
+
+			// Tell the world about the new flop
+			$rootScope.$broadcast(HOLDEM_EVENTS.FLOP_CARDS_ASSIGNED, [card1, card2, card3]);
 		};
 
-		this.assignTurnCard = function(card) {};
+		/**
+		 * Get turn card associated with current hand
+		 * @return {Object} turn card (possibly null)
+		 * @throws if game is not yet started or there is no current hand
+		 */
+		this.getTurnCardInCurrentHand = function() {
+			if (!this.gameStarted || !this.getCurrentHand) {
+				throw 'Game not started yet';
+			}
 
-		this.assignRiverCard = function(card) {};
+			return this.getCurrentHand().board.turn;
+		};
+
+		/**
+		 * Assign card object (possibly null) as turn card of the current hand.
+		 * @throws if game is not yet started or there is no current hand
+		 */
+		this.assignTurnCard = function(card) {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw {
+					message: 'Game not started yet.'
+				};
+			}
+
+			this.getCurrentHand().board.turn = card;
+
+			// Tell the world about the new flop
+			$rootScope.$broadcast(HOLDEM_EVENTS.TURN_CARD_ASSIGNED, card);
+		};
+
+		/**
+		 * Get river card associated with current hand
+		 * @return {Object} river card (possibly null)
+		 * @throws if game is not yet started or there is no current hand
+		 */
+		this.getRiverCardInCurrentHand = function() {
+			if (!this.gameStarted || !this.getCurrentHand) {
+				throw 'Game not started yet';
+			}
+
+			return this.getCurrentHand().board.river;
+		};
+
+		/**
+		 * Assign card object (possibly null) as river card of the current hand.
+		 * @throws if game is not yet started or there is no current hand
+		 */
+		this.assignRiverCard = function(card) {
+			if (!this.gameStarted || !this.getCurrentHand()) {
+				throw {
+					message: 'Game not started yet.'
+				};
+			}
+
+			this.getCurrentHand().board.river = card;
+
+			// Tell the world about the new flop
+			$rootScope.$broadcast(HOLDEM_EVENTS.RIVER_CARD_ASSIGNED, card);
+		};
 
 		/**
 		 * Advances play to the next betting round, if this is legal
@@ -1199,6 +1293,30 @@
 				});
 			},
 
+			promptForCommunityCards: function(street, card1, card2, card3) {
+				$modal.open({
+					animation: true,
+					templateUrl: '/partials/assign-community-cards',
+					controller: 'CommunityCardsController',
+					size: 'md',
+					backdrop: true,
+					resolve: {
+						street: function() {
+							return street;
+						},
+						card1: function() {
+							return card1;
+						},
+						card2: function() {
+							return card2;
+						},
+						card3: function() {
+							return card3;
+						}
+					}
+				});
+			},
+
 			confirmDecision: function(message, okText, cancelText, positiveCallback, negativeCallback) {
 				alertify.set({
 					labels: {
@@ -1271,6 +1389,15 @@
 		};
 
 		this.areCardsEqual = function(card1, card2) {
+			if (!card1 || !card2) {
+				return false;
+			}
+
+			if (!angular.isDefined(card1.suit) || !angular.isDefined(card1.rank) ||
+					!angular.isDefined(card2.suit) || !angular.isDefined(card2.rank)) {
+				return false;
+			}
+
 			return card1.suit === card2.suit &&
 				card1.rank === card2.rank;
 		};

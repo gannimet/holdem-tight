@@ -294,18 +294,68 @@
 		};
 	}]);
 
-	holdemDirectives.directive('communityCards', [function() {
+	holdemDirectives.directive('communityCards', [
+			'HOLDEM_EVENTS', 'uiService',
+			function(HOLDEM_EVENTS, uiService) {
 		return {
 			restrict: 'E',
 			templateUrl: '/html/community-cards.html',
 			replace: true,
-			require: 'ngModel',
-			scope: {},
-			link: function(scope, element, attrs, ngModel) {
-				// TODO
+			scope: {
+				cards: '=ngModel'
 			},
-			controller: ['$scope', function() {
-				// TODO
+			controller: ['$scope', function($scope) {
+				$scope.showFlopCards = function() {
+					try {
+						uiService.promptForCommunityCards(
+							'flop', $scope.cards[0], $scope.cards[1], $scope.cards[2]
+						);
+					} catch (error) {
+						uiService.errorMessage(error);
+					}
+				};
+
+				$scope.showTurnCard = function() {
+					try {
+						uiService.promptForCommunityCards('turn', $scope.cards[3]);
+					} catch (error) {
+						uiService.errorMessage(error);
+					}
+				};
+
+				$scope.showRiverCard = function() {
+					try {
+						uiService.promptForCommunityCards('river', $scope.cards[4]);
+					} catch (error) {
+						uiService.errorMessage(error);
+					}
+				};
+			}]
+		};
+	}]);
+
+	holdemDirectives.directive('boardCard', [
+			'cardService',
+			function(cardService) {
+		return {
+			restrict: 'E',
+			templateUrl: '/html/board-card.html',
+			replace: true,
+			scope: {
+				card: '=ngModel'
+			},
+			controller: ['$scope', function($scope) {
+				var defaultImagePath = '/img/assign_card.png';
+
+				$scope.getDisplayImagePath = function() {
+					if (!$scope.card) {
+						return defaultImagePath;
+					} else {
+						return cardService.getCardImagePath(
+							$scope.card.rank, $scope.card.suit
+						);
+					}
+				};
 			}]
 		};
 	}]);
