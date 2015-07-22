@@ -295,8 +295,8 @@
 	}]);
 
 	holdemDirectives.directive('communityCards', [
-			'HOLDEM_EVENTS', 'gameService', 'uiService',
-			function(HOLDEM_EVENTS, gameService, uiService) {
+			'HOLDEM_EVENTS', 'uiService',
+			function(HOLDEM_EVENTS, uiService) {
 		return {
 			restrict: 'E',
 			templateUrl: '/html/community-cards.html',
@@ -307,9 +307,8 @@
 			controller: ['$scope', function($scope) {
 				$scope.showFlopCards = function() {
 					try {
-						var flopCards = gameService.getFlopCardsInCurrentHand();
 						uiService.promptForCommunityCards(
-							'flop', flopCards[0], flopCards[1], flopCards[2]
+							'flop', $scope.cards[0], $scope.cards[1], $scope.cards[2]
 						);
 					} catch (error) {
 						uiService.errorMessage(error);
@@ -318,8 +317,7 @@
 
 				$scope.showTurnCard = function() {
 					try {
-						var turnCard = gameService.getTurnCardInCurrentHand();
-						uiService.promptForCommunityCards('turn', turnCard);
+						uiService.promptForCommunityCards('turn', $scope.cards[3]);
 					} catch (error) {
 						uiService.errorMessage(error);
 					}
@@ -327,8 +325,7 @@
 
 				$scope.showRiverCard = function() {
 					try {
-						var riverCard = gameService.getRiverCardInCurrentHand();
-						uiService.promptForCommunityCards('river', riverCard);
+						uiService.promptForCommunityCards('river', $scope.cards[4]);
 					} catch (error) {
 						uiService.errorMessage(error);
 					}
