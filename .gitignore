@@ -5,3 +5,6 @@ log/
 mockups/
 doc/
 .idea/
+static/js/
+static/css/
+static/html/
