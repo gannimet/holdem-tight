@@ -21,7 +21,17 @@ module.exports = function(config) {
             pattern: 'static/html/*.html',
             watched: false
         },
-        'src/client/js/**/*.js',
+        'src/client/js/controllers/controllers.js',
+        'src/client/js/controllers/*.js',
+        'src/client/js/services/services.js',
+        'src/client/js/services/*.js',
+        'src/client/js/directives/directives.js',
+        'src/client/js/directives/*.js',
+        'src/client/js/filters/filters.js',
+        'src/client/js/filters/*.js',
+        'src/client/js/constants/constants.js',
+        'src/client/js/constants/*.js',
+        'src/client/js/app.js',
         'src/client/tests/**/*.js'
     ],
 
