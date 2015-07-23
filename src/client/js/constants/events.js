@@ -1,6 +1,6 @@
 (function(window, undefined) {
-
-	var holdemConstants = angular.module('holdemConstants', []);
+	
+	var holdemConstants = angular.module('holdemConstants');
 
 	holdemConstants.constant('HOLDEM_EVENTS', {
 		GAME_STARTED: 'gameStarted',
@@ -18,21 +18,6 @@
 		FLOP_CARDS_ASSIGNED: 'flopCardsAssigned',
 		TURN_CARD_ASSIGNED: 'turnCardAssigned',
 		RIVER_CARD_ASSIGNED: 'riverCardAssigned',
-	});
-
-	holdemConstants.constant('HOLDEM_ACTIONS', {
-		FOLD: 'fold',
-		CALL: 'call',
-		RAISE: 'raise',
-		BET: 'bet',
-		CHECK: 'check'
-	});
-
-	holdemConstants.constant('HOLDEM_BETTING_ROUNDS', {
-		PRE_FLOP: 'pre_flop',
-		FLOP: 'flop',
-		TURN: 'turn',
-		RIVER: 'river'
 	});
 
 })(window);

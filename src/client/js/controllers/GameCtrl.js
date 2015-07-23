@@ -1,6 +1,6 @@
 (function(window, undefined) {
-		
-	var holdemControllers = angular.module('holdemControllers', []);
+
+	var holdemControllers = angular.module('holdemControllers');
 
 	holdemControllers.controller('GameCtrl',
 			['$scope', 'gameService', 'uiService', 'HOLDEM_EVENTS', '$modal',
@@ -78,78 +78,6 @@
 		$scope.$on(HOLDEM_EVENTS.RIVER_CARD_ASSIGNED, function(event, card) {
 			$scope.communityCards[4] = card;
 		});
-	}]);
-
-	holdemControllers.controller('AddPlayerController',
-			['$scope', '$modalInstance',
-			function($scope, $modalInstance) {
-		$scope.ok = function() {
-			if ($scope.player)  {
-				$scope.player.stack = parseInt($scope.player.stack);
-			}
-
-			$modalInstance.close($scope.player);
-		};
-
-		$scope.cancel = function() {
-			$modalInstance.dismiss('cancel');
-		};
-	}]);
-
-	holdemControllers.controller('HoleCardsController',
-			['$scope', '$modalInstance', 'player', 'card1', 'card2', 'gameService',
-			function($scope, $modalInstance, player, card1, card2, gameService) {
-		$scope.player = gameService.players[player];
-		$scope.card1 = card1;
-		$scope.card2 = card2;
-
-		$scope.ok = function() {
-			try {
-				gameService.assignHoleCardsToPlayer(player, $scope.card1, $scope.card2);
-				$modalInstance.close();
-			} catch (error) {
-				$scope.error = error;
-			}
-		};
-
-		$scope.cancel = function() {
-			$modalInstance.dismiss('cancel');
-		};
-	}]);
-
-	holdemControllers.controller('CommunityCardsController',
-			['$scope', '$modalInstance', 'street', 'card1', 'card2', 'card3', 'gameService',
-			function($scope, $modalInstance, street, card1, card2, card3, gameService) {
-		$scope.street = street;
-		$scope.card1 = card1;
-		$scope.card2 = card2;
-		$scope.card3 = card3;
-
-		$scope.ok = function() {
-			try {
-				switch ($scope.street) {
-					case 'flop':
-						gameService.assignFlopCards($scope.card1, $scope.card2, $scope.card3);
-						break;
-					case 'turn':
-						gameService.assignTurnCard($scope.card1);
-						break;
-					case 'river':
-						gameService.assignRiverCard($scope.card1);
-						break;
-					default:
-						throw 'Illegal street';
-				}
-
-				$modalInstance.close();
-			} catch (error) {
-				$scope.error = error;
-			}
-		};
-
-		$scope.cancel = function() {
-			$modalInstance.dismiss('cancel');
-		};
 	}]);
 
 })(window);
