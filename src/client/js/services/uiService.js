@@ -21,7 +21,7 @@
 				var modalInstance = $modal.open({
 					animation: true,
 					templateUrl: '/partials/add-player',
-					controller: 'AddPlayerController',
+					controller: 'AddPlayerCtrl',
 					size: 'sm',
 					backdrop: true
 				});
@@ -33,7 +33,7 @@
 				var modalInstance = $modal.open({
 					animation: true,
 					templateUrl: '/partials/assign-hole-cards',
-					controller: 'HoleCardsController',
+					controller: 'HoleCardsCtrl',
 					size: 'md',
 					backdrop: true,
 					resolve: {
@@ -54,7 +54,7 @@
 				$modal.open({
 					animation: true,
 					templateUrl: '/partials/assign-community-cards',
-					controller: 'CommunityCardsController',
+					controller: 'CommunityCardsCtrl',
 					size: 'md',
 					backdrop: true,
 					resolve: {

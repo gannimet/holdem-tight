@@ -2,7 +2,7 @@
 	
 	var holdemControllers = angular.module('holdemControllers');
 
-	holdemControllers.controller('HoleCardsController',
+	holdemControllers.controller('HoleCardsCtrl',
 			['$scope', '$modalInstance', 'player', 'card1', 'card2', 'gameService',
 			function($scope, $modalInstance, player, card1, card2, gameService) {
 		$scope.player = gameService.players[player];

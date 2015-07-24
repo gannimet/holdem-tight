@@ -2,7 +2,7 @@
 	
 	var holdemControllers = angular.module('holdemControllers');
 
-	holdemControllers.controller('AddPlayerController',
+	holdemControllers.controller('AddPlayerCtrl',
 			['$scope', '$modalInstance',
 			function($scope, $modalInstance) {
 		$scope.ok = function() {

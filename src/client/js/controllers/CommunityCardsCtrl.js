@@ -2,7 +2,7 @@
 	
 	var holdemControllers = angular.module('holdemControllers');
 
-	holdemControllers.controller('CommunityCardsController',
+	holdemControllers.controller('CommunityCardsCtrl',
 			['$scope', '$modalInstance', 'street', 'card1', 'card2', 'card3', 'gameService',
 			function($scope, $modalInstance, street, card1, card2, card3, gameService) {
 		$scope.street = street;

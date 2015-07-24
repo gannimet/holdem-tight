@@ -20,7 +20,7 @@ describe('unit test for add player controller', function() {
 
 		$controller = $injector.get('$controller');
 
-		$controller('AddPlayerController', {
+		$controller('AddPlayerCtrl', {
 			$scope: scope,
 			$modalInstance: $modalInstance
 		});
