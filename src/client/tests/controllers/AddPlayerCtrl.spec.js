@@ -8,15 +8,13 @@ describe('unit test for add player controller', function() {
 	};
 
 	beforeEach(module('holdemControllers'));
-	beforeEach(module('ui.bootstrap'));
-
 	beforeEach(module('holdemServices', function($provide) {
-		$provide.value('modalInstance', mockModalInstanceService);
+		$provide.value('$modalInstance', mockModalInstanceService);
 	}));
 
 	beforeEach(inject(function($injector) {
 		scope = $injector.get('$rootScope').$new();
-		$modalInstance = $injector.get('modalInstance');
+		$modalInstance = $injector.get('$modalInstance');
 
 		$controller = $injector.get('$controller');
 
