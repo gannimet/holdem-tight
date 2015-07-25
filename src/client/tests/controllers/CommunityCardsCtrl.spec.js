@@ -90,6 +90,8 @@ describe('unit test for community cards controller', function() {
 
 				expect($modalInstance.close).toHaveBeenCalled();
 				expect($modalInstance.dismiss).not.toHaveBeenCalled();
+
+				expect(scope.error).toBeUndefined();
 			});
 		});
 
@@ -117,6 +119,8 @@ describe('unit test for community cards controller', function() {
 
 				expect($modalInstance.close).toHaveBeenCalled();
 				expect($modalInstance.dismiss).not.toHaveBeenCalled();
+
+				expect(scope.error).toBeUndefined();
 			});
 		});
 
@@ -144,6 +148,8 @@ describe('unit test for community cards controller', function() {
 
 				expect($modalInstance.close).toHaveBeenCalled();
 				expect($modalInstance.dismiss).not.toHaveBeenCalled();
+
+				expect(scope.error).toBeUndefined();
 			});
 		});
 
