@@ -1302,4 +1302,64 @@ describe('unit test for holdem game service', function() {
 			});
 		});
 	});
+
+	describe('assigning duplicate cards', function() {
+		beforeEach(function() {
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.startGame();
+		});
+
+		it('should not be possible to assign the same card twice in the same hand in different places', function() {
+			gameService.assignRiverCard({ rank: 'king', suit: 'clubs' });
+			
+			expect(gameService.assignHoleCardsToPlayer.bind(
+				gameService,
+				1, { rank: 'king', suit: 'clubs' }, { rank: 'jack', suit: 'hearts' }
+			)).toThrow();
+
+			gameService.assignFlopCards(
+				{ rank: '10', suit: 'diamonds' },
+				{ rank: '8', suit: 'hearts' },
+				{ rank: '4', suit: 'spades' }
+			);
+
+			expect(gameService.assignTurnCard.bind(
+				gameService, { rank: '8', suit: 'hearts' }
+			)).toThrow();
+		});
+
+		it('should be possible to assign the same card when it is merely overriding itself', function() {
+			gameService.assignFlopCards(
+				{ rank: '2', suit: 'hearts' },
+				{ rank: '9', suit: 'clubs' },
+				{ rank: '3', suit: 'hearts' }
+			);
+			gameService.assignTurnCard({ rank: 'ace', suit: 'hearts' });
+			gameService.assignRiverCard({ rank: 'queen', suit: 'hearts' });
+			gameService.assignHoleCardsToPlayer(
+				0,
+				{ rank: '6', suit: 'diamonds' },
+				{ rank: 'jack', suit: 'diamonds' }
+			);
+			
+			expect(gameService.assignFlopCards.bind(
+				gameService,
+				{ rank: '2', suit: 'hearts' },
+				{ rank: 'king', suit: 'spades' },
+				{ rank: '4', suit: 'hearts' }
+			)).not.toThrow();
+			expect(gameService.assignTurnCard.bind(gameService, { rank: 'ace', suit: 'hearts' }))
+				.not.toThrow();
+			expect(gameService.assignRiverCard.bind(gameService, { rank: 'queen', suit: 'hearts' }))
+				.not.toThrow();
+
+			expect(gameService.assignHoleCardsToPlayer.bind(
+				gameService,
+				0,
+				{ rank: '6', suit: 'diamonds' },
+				{ rank: 'jack', suit: 'clubs' }
+			)).not.toThrow();
+		});
+	});
 });

@@ -166,6 +166,14 @@
 				};
 			}
 
+			if (isCardUsedInCurrentHand(card1, 'hole')) {
+				throw card1.rank + ' of ' + card1.suit + ' is already in use in this hand.';
+			}
+
+			if (isCardUsedInCurrentHand(card2, 'hole')) {
+				throw card2.rank + ' of ' + card2.suit + ' is already in use in this hand.';	
+			}
+
 			// player could already have hole cards assigned
 			var oldHoleCards = this.getHoleCardsOfPlayerInCurrentHand(playerIndex);
 			if (oldHoleCards) {
@@ -218,6 +226,18 @@
 				};
 			}
 
+			if (isCardUsedInCurrentHand(card1, 'flop')) {
+				throw card1.rank + ' of ' + card1.suit + ' is already in use in current hand.';
+			}
+
+			if (isCardUsedInCurrentHand(card2, 'flop')) {
+				throw card2.rank + ' of ' + card2.suit + ' is already in use in current hand.';
+			}
+
+			if (isCardUsedInCurrentHand(card3, 'flop')) {
+				throw card3.rank + ' of ' + card3.suit + ' is already in use in current hand.';
+			}
+
 			this.getCurrentHand().board.flop = [card1, card2, card3];
 
 			// Tell the world about the new flop
@@ -248,6 +268,10 @@
 				};
 			}
 
+			if (isCardUsedInCurrentHand(card, 'turn')) {
+				throw card.rank + ' of ' + card.suit + ' is already in use in current hand.';
+			}
+
 			this.getCurrentHand().board.turn = card;
 
 			// Tell the world about the new flop
@@ -276,6 +300,10 @@
 				throw {
 					message: 'Game not started yet.'
 				};
+			}
+
+			if (isCardUsedInCurrentHand(card, 'river')) {
+				throw card.rank + ' of ' + card.suit + ' is already in use in current hand.';
 			}
 
 			this.getCurrentHand().board.river = card;
@@ -1242,6 +1270,64 @@
 				// Tell the world about the winner
 				$rootScope.$broadcast(HOLDEM_EVENTS.PLAYER_WON_TOURNAMENT, winners[0]);
 			}
+		}
+
+		/**
+		 * Whether or not a card is already in use in the current hand
+		 * and can therefore not be assigned anywhere else.
+		 * @param {Object} card - the card to be checked
+		 * @param {string} except - if specified, cards assigned in this
+		 * position will be ignored. Can be one of 'hole', 'flop', 'turn'
+		 * or 'river'
+		 */
+		function isCardUsedInCurrentHand(card, except) {
+			var currentHand = self.getCurrentHand();
+			var alreadyUsed = false;
+
+			// Is it used in hole cards?
+			if (except !== 'hole') {
+				for (var i = 0; i < currentHand.holeCards.length; i++) {
+					var actualHoleCards = currentHand.holeCards[i].cards;
+
+					if (actualHoleCards.length > 0) {
+						if (cardService.areCardsEqual(actualHoleCards[0], card)) {
+							return true;
+						}
+
+						if (actualHoleCards.length > 1) {
+							if (cardService.areCardsEqual(actualHoleCards[1], card)) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			// Is it used on the board?
+			var board = currentHand.board;
+
+			if (except !== 'flop') {
+				var flop = board.flop;
+				if (cardService.areCardsEqual(flop[0], card) ||
+					cardService.areCardsEqual(flop[1], card) ||
+					cardService.areCardsEqual(flop[2], card)) {
+					return true;
+				}
+			}
+
+			if (except !== 'turn') {
+				if (cardService.areCardsEqual(board.turn, card)) {
+					return true;
+				}
+			}
+
+			if (except !== 'river') {
+				if (cardService.areCardsEqual(board.river, card)) {
+					return true;
+				}
+			}
+			
+			return false;
 		}
 	}]);
 
