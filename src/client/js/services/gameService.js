@@ -166,12 +166,16 @@
 				};
 			}
 
-			if (isCardUsedInCurrentHand(card1, 'hole')) {
-				throw card1.rank + ' of ' + card1.suit + ' is already in use in this hand.';
+			if (isCardUsedInCurrentHand(card1, { place: 'hole', player: playerIndex })) {
+				throw {
+					message: card1.rank + ' of ' + card1.suit + ' is already in use in this hand.'
+				};
 			}
 
-			if (isCardUsedInCurrentHand(card2, 'hole')) {
-				throw card2.rank + ' of ' + card2.suit + ' is already in use in this hand.';	
+			if (isCardUsedInCurrentHand(card2, { place: 'hole', player: playerIndex })) {
+				throw {
+					message: card2.rank + ' of ' + card2.suit + ' is already in use in this hand.'
+				};
 			}
 
 			// player could already have hole cards assigned
@@ -226,16 +230,22 @@
 				};
 			}
 
-			if (isCardUsedInCurrentHand(card1, 'flop')) {
-				throw card1.rank + ' of ' + card1.suit + ' is already in use in current hand.';
+			if (isCardUsedInCurrentHand(card1, { place: 'flop' })) {
+				throw {
+					message: card1.rank + ' of ' + card1.suit + ' is already in use in current hand.'
+				};
 			}
 
-			if (isCardUsedInCurrentHand(card2, 'flop')) {
-				throw card2.rank + ' of ' + card2.suit + ' is already in use in current hand.';
+			if (isCardUsedInCurrentHand(card2, { place: 'flop' })) {
+				throw {
+					message: card2.rank + ' of ' + card2.suit + ' is already in use in current hand.'
+				};
 			}
 
-			if (isCardUsedInCurrentHand(card3, 'flop')) {
-				throw card3.rank + ' of ' + card3.suit + ' is already in use in current hand.';
+			if (isCardUsedInCurrentHand(card3, { place: 'flop' })) {
+				throw {
+					message: card3.rank + ' of ' + card3.suit + ' is already in use in current hand.'
+				};
 			}
 
 			this.getCurrentHand().board.flop = [card1, card2, card3];
@@ -268,8 +278,10 @@
 				};
 			}
 
-			if (isCardUsedInCurrentHand(card, 'turn')) {
-				throw card.rank + ' of ' + card.suit + ' is already in use in current hand.';
+			if (isCardUsedInCurrentHand(card, { place: 'turn' })) {
+				throw {
+					message: card.rank + ' of ' + card.suit + ' is already in use in current hand.'
+				};
 			}
 
 			this.getCurrentHand().board.turn = card;
@@ -302,8 +314,10 @@
 				};
 			}
 
-			if (isCardUsedInCurrentHand(card, 'river')) {
-				throw card.rank + ' of ' + card.suit + ' is already in use in current hand.';
+			if (isCardUsedInCurrentHand(card, { place: 'river' })) {
+				throw {
+					message: card.rank + ' of ' + card.suit + ' is already in use in current hand.'
+				};
 			}
 
 			this.getCurrentHand().board.river = card;
@@ -1276,17 +1290,20 @@
 		 * Whether or not a card is already in use in the current hand
 		 * and can therefore not be assigned anywhere else.
 		 * @param {Object} card - the card to be checked
-		 * @param {string} except - if specified, cards assigned in this
-		 * position will be ignored. Can be one of 'hole', 'flop', 'turn'
+		 * @param {Object} except - if specified, cards assigned in this
+		 * position will be ignored.
+		 * @param {string} except.place - Can be one of 'hole', 'flop', 'turn'
 		 * or 'river'
+		 * @param {number} except.player - If the place is 'hole', this specifies
+		 * the player index of the player whose hole cards should be ignored
 		 */
 		function isCardUsedInCurrentHand(card, except) {
 			var currentHand = self.getCurrentHand();
 			var alreadyUsed = false;
 
-			// Is it used in hole cards?
-			if (except !== 'hole') {
-				for (var i = 0; i < currentHand.holeCards.length; i++) {
+			// Is it used in someone else's hole cards?
+			for (var i = 0; i < currentHand.holeCards.length; i++) {
+				if (except.player !== currentHand.holeCards[i].player) {
 					var actualHoleCards = currentHand.holeCards[i].cards;
 
 					if (actualHoleCards.length > 0) {
@@ -1306,7 +1323,7 @@
 			// Is it used on the board?
 			var board = currentHand.board;
 
-			if (except !== 'flop') {
+			if (except.place !== 'flop') {
 				var flop = board.flop;
 				if (cardService.areCardsEqual(flop[0], card) ||
 					cardService.areCardsEqual(flop[1], card) ||
@@ -1315,13 +1332,13 @@
 				}
 			}
 
-			if (except !== 'turn') {
+			if (except.place !== 'turn') {
 				if (cardService.areCardsEqual(board.turn, card)) {
 					return true;
 				}
 			}
 
-			if (except !== 'river') {
+			if (except.place !== 'river') {
 				if (cardService.areCardsEqual(board.river, card)) {
 					return true;
 				}

@@ -1327,6 +1327,13 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.assignTurnCard.bind(
 				gameService, { rank: '8', suit: 'hearts' }
 			)).toThrow();
+
+			gameService.assignHoleCardsToPlayer(
+				0, { rank: '2', suit: 'hearts' }, { rank: '3', suit: 'hearts' }
+			);
+			expect(gameService.assignHoleCardsToPlayer.bind(
+				gameService, 1, { rank: '2', suit: 'hearts' }, { rank: '6', suit: 'hearts' }
+			)).toThrow();
 		});
 
 		it('should be possible to assign the same card when it is merely overriding itself', function() {
