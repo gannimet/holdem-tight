@@ -59,6 +59,7 @@
 
 		$scope.$on(HOLDEM_EVENTS.NEXT_HAND_DEALT, function(event, handNr) {
 			$scope.handNr = handNr;
+			$scope.communityCards = [null, null, null, null, null];
 		});
 
 		$scope.$on(HOLDEM_EVENTS.BETTING_ROUND_ADVANCED, function(event, bettingRound) {
