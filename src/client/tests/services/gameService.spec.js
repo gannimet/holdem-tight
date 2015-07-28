@@ -1040,6 +1040,28 @@ describe('unit test for holdem game service', function() {
 			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
 		});
 
+		it('should not produce an error after betting round advances', function() {
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.startGame();
+
+			gameService.recordAction({
+				player: 0,
+				action: HOLDEM_ACTIONS.CALL,
+				amount: 10
+			});
+			gameService.recordAction({
+				player: 1,
+				action: HOLDEM_ACTIONS.CHECK
+			});
+
+			expect(gameService.isCurrentBettingRoundFinished()).toBe(true);
+			expect(gameService.advanceBettingRound.bind(gameService)).not.toThrow();
+
+			expect(gameService.getAmountToCallForPlayer(0)).toBe(false);
+			expect(gameService.getAmountToCallForPlayer(1)).toBe(false);
+		});
+
 		it('should know when betting round is finished when (some) players fold', function() {
 			gameService.addPlayer();
 			gameService.addPlayer();

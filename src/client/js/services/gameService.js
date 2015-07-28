@@ -784,6 +784,10 @@
 			var playerCommitments = collectPlayerCommitments(getAllActionsOfCurrentBettingRound());
 			var biggestCommitment = getBiggestCommitment(playerCommitments);
 
+			if (!biggestCommitment) {
+				return false;
+			}
+
 			if (player == biggestCommitment.player) {
 				// the raiser is now the caller?
 				// something's not quite right here
