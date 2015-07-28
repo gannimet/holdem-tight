@@ -31,6 +31,36 @@
 						});
 					}
 				});
+
+				// Activate tooltips as soon as hole card badge is available
+				scope.$on(HOLDEM_EVENTS.GAME_STARTED, function(event) {
+					$timeout(function() {
+						var holeCardBadge = element.find('.assign-cards-badge');
+
+						holeCardBadge.tooltipster({
+							content: $('Hello world'),
+							contentAsHtml: true,
+							theme: 'tooltipster-light',
+							functionBefore: function(origin, continueTooltipster) {
+								continueTooltipster();
+
+								origin.tooltipster('content', 'Tschüß welt');
+							}
+						});
+
+						holeCardBadge
+							.bind('mouseenter', function(e) {
+								// holeCardBadge.tooltipster({
+								// 	content: $('<span>Hello world</span>'),
+								// 	contentAsHtml: true
+								// });
+								holeCardBadge.tooltipster('show');
+							})
+							.bind('mouseleave', function(e) {
+								holeCardBadge.tooltipster('hide');
+							});
+					});
+				});
 			},
 			controller: [
 					'$scope', '$timeout',

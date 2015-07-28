@@ -13,6 +13,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
         'bower_components/jquery/dist/jquery.min.js',
+        'bower_components/tooltipster/js/jquery.tooltipster.min.js',
         'bower_components/angular/angular.js',
         'bower_components/angular-mocks/angular-mocks.js',
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',

@@ -48,6 +48,26 @@ module.exports = function(grunt) {
 					}
 				]
 			},
+			tooltipster: {
+				files: [
+					{
+						expand: true,
+						src: 'bower_components/tooltipster/css/tooltipster.css',
+						dest: 'static/css/',
+						flatten: true
+					}, {
+						expand: true,
+						src: 'bower_components/tooltipster/css/themes/tooltipster-light.css',
+						dest: 'static/css/',
+						flatten: true
+					}, {
+						expand: true,
+						src: 'bower_components/tooltipster/js/jquery.tooltipster.min.js',
+						dest: 'static/js/',
+						flatten: true
+					}
+				]
+			},
 			angular: {
 				files: [
 					{
