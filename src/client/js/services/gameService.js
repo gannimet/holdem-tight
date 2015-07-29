@@ -3,8 +3,10 @@
 	var holdemServices = angular.module('holdemServices');
 
 	holdemServices.service('gameService',
-			['$rootScope', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS', 'HOLDEM_BETTING_ROUNDS', 'cardService',
-			function($rootScope, HOLDEM_EVENTS, HOLDEM_ACTIONS, HOLDEM_BETTING_ROUNDS, cardService) {
+			['$rootScope', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS', 'HOLDEM_BETTING_ROUNDS',
+			'cardService', '$filter',
+			function($rootScope, HOLDEM_EVENTS, HOLDEM_ACTIONS, HOLDEM_BETTING_ROUNDS,
+			cardService, $filter) {
 		// Instance variables
 		var self = this;
 		this.players = [];
@@ -168,13 +170,13 @@
 
 			if (isCardUsedInCurrentHand(card1, { place: 'hole', player: playerIndex })) {
 				throw {
-					message: card1.rank + ' of ' + card1.suit + ' is already in use in this hand.'
+					message: $filter('cardInUse')(card1)
 				};
 			}
 
 			if (isCardUsedInCurrentHand(card2, { place: 'hole', player: playerIndex })) {
 				throw {
-					message: card2.rank + ' of ' + card2.suit + ' is already in use in this hand.'
+					message: $filter('cardInUse')(card)
 				};
 			}
 
@@ -232,19 +234,19 @@
 
 			if (isCardUsedInCurrentHand(card1, { place: 'flop' })) {
 				throw {
-					message: card1.rank + ' of ' + card1.suit + ' is already in use in current hand.'
+					message: $filter('cardInUse')(card1)
 				};
 			}
 
 			if (isCardUsedInCurrentHand(card2, { place: 'flop' })) {
 				throw {
-					message: card2.rank + ' of ' + card2.suit + ' is already in use in current hand.'
+					message: $filter('cardInUse')(card2)
 				};
 			}
 
 			if (isCardUsedInCurrentHand(card3, { place: 'flop' })) {
 				throw {
-					message: card3.rank + ' of ' + card3.suit + ' is already in use in current hand.'
+					message: $filter('cardInUse')(card3)
 				};
 			}
 
@@ -280,7 +282,7 @@
 
 			if (isCardUsedInCurrentHand(card, { place: 'turn' })) {
 				throw {
-					message: card.rank + ' of ' + card.suit + ' is already in use in current hand.'
+					message: $filter('cardInUse')(card)
 				};
 			}
 
@@ -316,7 +318,7 @@
 
 			if (isCardUsedInCurrentHand(card, { place: 'river' })) {
 				throw {
-					message: card.rank + ' of ' + card.suit + ' is already in use in current hand.'
+					message: $filter('cardInUse')(card)
 				};
 			}
 

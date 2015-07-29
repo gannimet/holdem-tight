@@ -1,7 +1,7 @@
 describe('unit test for holdem filters', function() {
 	var stackSizeFilter, handNrFilter, bettingRoundFilter, HOLDEM_BETTING_ROUNDS,
 		checkOrFoldLabelFilter, betOrRaiseLabelFilter, callLabelFilter, blindsFilter,
-		cardNameFilter;
+		cardNameFilter, cardInUseFilter;
 
 	beforeEach(module('holdemFilters'));
 	beforeEach(module('holdemConstants'));
@@ -30,14 +30,17 @@ describe('unit test for holdem filters', function() {
 		}));
 
 	beforeEach(inject(function($injector) {
-		stackSizeFilter = $injector.get('$filter')('stackSize');
-		handNrFilter = $injector.get('$filter')('handNr');
-		bettingRoundFilter = $injector.get('$filter')('bettingRound');
-		checkOrFoldLabelFilter = $injector.get('$filter')('checkOrFoldLabel');
-		betOrRaiseLabelFilter = $injector.get('$filter')('betOrRaiseLabel');
-		callLabelFilter = $injector.get('$filter')('callLabel');
-		blindsFilter = $injector.get('$filter')('blinds');
-		cardNameFilter = $injector.get('$filter')('cardName');
+		var $filter = $injector.get('$filter');
+
+		stackSizeFilter = $filter('stackSize');
+		handNrFilter = $filter('handNr');
+		bettingRoundFilter = $filter('bettingRound');
+		checkOrFoldLabelFilter = $filter('checkOrFoldLabel');
+		betOrRaiseLabelFilter = $filter('betOrRaiseLabel');
+		callLabelFilter = $filter('callLabel');
+		blindsFilter = $filter('blinds');
+		cardNameFilter = $filter('cardName');
+		cardInUseFilter = $filter('cardInUse');
 		HOLDEM_BETTING_ROUNDS = $injector.get('HOLDEM_BETTING_ROUNDS');
 	}));
 
@@ -113,6 +116,13 @@ describe('unit test for holdem filters', function() {
 		it('should return the correct readable card name', function() {
 			expect(cardNameFilter({ rank: 'ace', suit: 'diamonds' })).toEqual('Ace of Diamonds');
 			expect(cardNameFilter({ rank: '9', suit: 'clubs' })).toEqual('Nine of Clubs');
+			expect(cardNameFilter(null)).toBeUndefined();
+		});
+	});
+
+	describe('unit test for card in use filter', function() {
+		it('should return the correct message', function() {
+			expect(cardInUseFilter({ rank: 'ace', suit: 'diamonds' })).toEqual('Ace of Diamonds is already in use in this hand.');
 		});
 	});
 });
