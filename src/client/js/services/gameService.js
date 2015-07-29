@@ -176,7 +176,7 @@
 
 			if (isCardUsedInCurrentHand(card2, { place: 'hole', player: playerIndex })) {
 				throw {
-					message: $filter('cardInUse')(card)
+					message: $filter('cardInUse')(card2)
 				};
 			}
 

@@ -106,19 +106,22 @@
 				var html = '';
 
 				if (card1) {
-					html += '<img class="tooltip-thumbnail" src="' + cardService.getCardImagePath(card1.rank, card1.suit) +
-						'" alt="' + 'tbc' + '" />';
+					html += thumbnailHtml(card1);
 				}
 
 				if (card2) {
-					html += '<img class="tooltip-thumbnail" src="' + cardService.getCardImagePath(card2.rank, card2.suit) +
-						'" alt="' + 'tbc' + '" />';
+					html += thumbnailHtml(card2);
 				}
 
 				return $(html);
 			}
 
 		};
+
+		function thumbnailHtml(card) {
+			return '<img class="tooltip-thumbnail" src="' + cardService.getCardImagePath(card.rank, card.suit) +
+				'" alt="' + $filter('cardName')(card) + '" />';
+		}
 	}]);
 
 })(window);
