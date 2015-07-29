@@ -38,27 +38,15 @@
 						var holeCardBadge = element.find('.assign-cards-badge');
 
 						holeCardBadge.tooltipster({
-							content: $('Hello world'),
+							content: $('No hole cards assigned'),
 							contentAsHtml: true,
 							theme: 'tooltipster-light',
 							functionBefore: function(origin, continueTooltipster) {
 								continueTooltipster();
 
-								origin.tooltipster('content', 'Tschüß welt');
+								origin.tooltipster('content', scope.getHoleCardTooltip());
 							}
 						});
-
-						holeCardBadge
-							.bind('mouseenter', function(e) {
-								// holeCardBadge.tooltipster({
-								// 	content: $('<span>Hello world</span>'),
-								// 	contentAsHtml: true
-								// });
-								holeCardBadge.tooltipster('show');
-							})
-							.bind('mouseleave', function(e) {
-								holeCardBadge.tooltipster('hide');
-							});
 					});
 				});
 			},
@@ -180,6 +168,12 @@
 							uiService.errorMessage(e);
 						}
 					}
+				};
+
+				$scope.getHoleCardTooltip = function() {
+					return uiService.getHoleCardTooltip(
+						gameService.getHoleCardsOfPlayerInCurrentHand(playerIndex)
+					);
 				};
 
 				/*

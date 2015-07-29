@@ -2,7 +2,9 @@
 	
 	var holdemServices = angular.module('holdemServices');
 
-	holdemServices.factory('uiService', ['$modal', function($modal) {
+	holdemServices.factory('uiService', [
+			'$modal', 'cardService', '$filter',
+			function($modal, cardService, $filter) {
 		return {
 
 			successMessage: function(message) {
@@ -92,6 +94,28 @@
 						}
 					}
 				});
+			},
+
+			getHoleCardTooltip: function(holeCards) {
+				if (!holeCards || !holeCards.length) {
+					return 'No hole cards assigned';
+				}
+
+				var card1 = holeCards[0];
+				var card2 = holeCards[1];
+				var html = '';
+
+				if (card1) {
+					html += '<img src="' + cardService.getCardImagePath(card1.rank, card1.suit) +
+						'" alt="' + 'tbc' + '" />';
+				}
+
+				if (card2) {
+					html += '<img src="' + cardService.getCardImagePath(card2.rank, card2.suit) +
+						'" alt="' + 'tbc' + '" />';
+				}
+
+				return $(html);
 			}
 
 		};
