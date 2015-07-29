@@ -106,12 +106,12 @@
 				var html = '';
 
 				if (card1) {
-					html += '<img src="' + cardService.getCardImagePath(card1.rank, card1.suit) +
+					html += '<img class="tooltip-thumbnail" src="' + cardService.getCardImagePath(card1.rank, card1.suit) +
 						'" alt="' + 'tbc' + '" />';
 				}
 
 				if (card2) {
-					html += '<img src="' + cardService.getCardImagePath(card2.rank, card2.suit) +
+					html += '<img class="tooltip-thumbnail" src="' + cardService.getCardImagePath(card2.rank, card2.suit) +
 						'" alt="' + 'tbc' + '" />';
 				}
 
