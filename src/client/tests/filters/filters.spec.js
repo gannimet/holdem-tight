@@ -1,9 +1,33 @@
 describe('unit test for holdem filters', function() {
 	var stackSizeFilter, handNrFilter, bettingRoundFilter, HOLDEM_BETTING_ROUNDS,
-		checkOrFoldLabelFilter, betOrRaiseLabelFilter, callLabelFilter, blindsFilter;
+		checkOrFoldLabelFilter, betOrRaiseLabelFilter, callLabelFilter, blindsFilter,
+		cardNameFilter;
 
 	beforeEach(module('holdemFilters'));
 	beforeEach(module('holdemConstants'));
+	beforeEach(module('holdemServices', function($provide) {
+			$provide.value('cardService', {
+				getSuitByCode: function(code) {
+					if (code === 'diamonds') {
+						return { abbreviation: 'D', name: 'Diamonds', code: 'diamonds', icon: '♦', color: 'red' };
+					}
+
+					if (code === 'clubs') {
+						return { abbreviation: 'C', name: 'Clubs', code: 'clubs', icon: '♣', color: 'black' };
+					}
+				},
+
+				getRankByCode: function(code) {
+					if (code === 'ace') {
+						return { abbreviation: 'A', name: 'Ace', code: 'ace' };
+					}
+
+					if (code === '9') {
+						return { abbreviation: '9', name: 'Nine', code: '9' };
+					}
+				}
+			});
+		}));
 
 	beforeEach(inject(function($injector) {
 		stackSizeFilter = $injector.get('$filter')('stackSize');
@@ -13,6 +37,7 @@ describe('unit test for holdem filters', function() {
 		betOrRaiseLabelFilter = $injector.get('$filter')('betOrRaiseLabel');
 		callLabelFilter = $injector.get('$filter')('callLabel');
 		blindsFilter = $injector.get('$filter')('blinds');
+		cardNameFilter = $injector.get('$filter')('cardName');
 		HOLDEM_BETTING_ROUNDS = $injector.get('HOLDEM_BETTING_ROUNDS');
 	}));
 
@@ -81,6 +106,13 @@ describe('unit test for holdem filters', function() {
 				smallBlind: 100,
 				bigBlind: 200
 			})).toEqual('100/200');
+		});
+	});
+
+	describe('unit test for card name filter', function() {
+		it('should return the correct readable card name', function() {
+			expect(cardNameFilter({ rank: 'ace', suit: 'diamonds' })).toEqual('Ace of Diamonds');
+			expect(cardNameFilter({ rank: '9', suit: 'clubs' })).toEqual('Nine of Clubs');
 		});
 	});
 });
