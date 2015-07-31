@@ -9,7 +9,7 @@
   "scripts": {
     "prestart": "grunt build",
     "start": "nodemon src/server/app.js",
-    "test": "mocha src/server/tests/*.js"
+    "test": "grunt test"
   },
   "author": "gannimet <info@colimit.de>",
   "license": "Do what the fuck you want to public license",
@@ -30,14 +30,13 @@
     "karma-jasmine-jquery": "^0.1.1",
     "karma-ng-html2js-preprocessor": "^0.1.2",
     "karma-phantomjs-launcher": "^0.2.0",
-    "mocha": "^2.0.1",
     "phantomjs": "^1.9.17",
-    "phantomjs-polyfill": "0.0.1",
-    "should": "^4.1.0"
+    "phantomjs-polyfill": "0.0.1"
   },
   "dependencies": {
     "express": "^4.10.0",
     "hoyle": "^0.2.2",
-    "jade": "^1.7.0"
+    "jade": "^1.7.0",
+    "body-parser": "~1.13.2"
   }
 }
