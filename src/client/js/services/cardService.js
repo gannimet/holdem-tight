@@ -63,6 +63,15 @@
 			return card1.suit === card2.suit &&
 				card1.rank === card2.rank;
 		};
+
+		this.getCardShortHand = function(card) {
+			var rank = this.getRankByCode(card.rank);
+			var suit = this.getSuitByCode(card.suit);
+
+			if (rank && suit) {
+				return rank.abbreviation + suit.abbreviation.toLowerCase();
+			}
+		};
 	}]);
 
 })(window);

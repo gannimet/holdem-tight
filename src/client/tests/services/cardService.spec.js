@@ -89,4 +89,14 @@ describe('unit test for card service', function() {
 			expect(cardService.areCardsEqual(undefined, undefined)).toBe(false);
 		});
 	});
+
+	describe('getting card shorthands', function() {
+		it('should return the correct shorthands', function() {
+			expect(cardService.getCardShortHand({ rank: 'ace', suit: 'clubs' })).toEqual('Ac');
+			expect(cardService.getCardShortHand({ rank: '2', suit: 'hearts' })).toEqual('2h');
+			expect(cardService.getCardShortHand({ rank: 'queen', suit: 'diamonds' })).toEqual('Qd');
+			expect(cardService.getCardShortHand({ rank: 'ace' })).toBeUndefined();
+			expect(cardService.getCardShortHand({ suit: 'clubs' })).toBeUndefined();
+		});
+	});
 });
