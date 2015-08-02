@@ -20,8 +20,11 @@
   <div class="form-group">
     <button type="button" data-ng-click="startGame()" data-ng-disabled="gameStarted" class="btn btn-primary form-control">Start game</button>
   </div>
-  <div class="form-group">
-    <button type="button" data-ng-click="nextHand()" data-ng-if="gameStarted" class="btn btn-warning form-control">Next hand</button>
+  <div data-ng-if="gameStarted" class="form-group">
+    <button type="button" data-ng-click="nextHand()" class="btn btn-warning form-control">Next hand</button>
+  </div>
+  <div data-ng-if="gameStarted" class="form-group">
+    <button type="button" data-ng-click="evaluateHand()" class="btn btn-warning form-control">Evaluate hand</button>
   </div>
   <div data-ng-if="handNr" class="panel panel-primary">
     <div class="panel-heading">

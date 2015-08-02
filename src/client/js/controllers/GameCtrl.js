@@ -50,6 +50,10 @@
 			gameService.advanceBettingRound();
 		};
 
+		$scope.evaluateShowdown = function() {
+			gameService.evaluateShowdown();
+		};
+
 		/*
 		 * Broadcast event handlers
 		 */

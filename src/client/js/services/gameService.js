@@ -892,6 +892,10 @@
 			return !biggestCommitment || biggestCommitment.amount === 0;
 		};
 
+		this.evaluateShowdown = function() {
+			
+		};
+
 		// Private utility functions
 
 		/**

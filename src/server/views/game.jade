@@ -18,8 +18,10 @@
 		button.btn.btn-success.form-control(type='button', data-ng-click='addPlayer()', data-ng-disabled='gameStarted') Add player
 	.form-group
 		button.btn.btn-primary.form-control(type='button', data-ng-click='startGame()', data-ng-disabled='gameStarted') Start game
-	.form-group
-		button.btn.btn-warning.form-control(type='button', data-ng-click='nextHand()', data-ng-if='gameStarted') Next hand
+	.form-group(data-ng-if='gameStarted')
+		button.btn.btn-warning.form-control(type='button', data-ng-click='nextHand()') Next hand
+	.form-group(data-ng-if='gameStarted')
+		button.btn.btn-info.form-control(type='button', data-ng-click='evaluateShowdown()') Evaluate hand
 	.panel.panel-primary(data-ng-if='handNr')
 		.panel-heading
 			h2.panel-title Game panel

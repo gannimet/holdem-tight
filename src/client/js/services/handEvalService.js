@@ -5,13 +5,15 @@
 	holdemServices.service('handEvalService',
 			['$http',
 			function($http) {
-		this.evaluateHands = function(hands) {
+
+		this.evaluateShowdown = function(hands, board) {
 			$http.post('/api/evaluate', {
 				hands: hands
 			}).then(function(data, status) {
 				console.info('response: ', data);
 			});
 		};
+		
 	}]);
 
 })(window);
