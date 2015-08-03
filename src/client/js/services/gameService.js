@@ -4,9 +4,9 @@
 
 	holdemServices.service('gameService',
 			['$rootScope', 'HOLDEM_EVENTS', 'HOLDEM_ACTIONS', 'HOLDEM_BETTING_ROUNDS',
-			'cardService', '$filter',
+			'cardService', '$filter', 'handEvalService',
 			function($rootScope, HOLDEM_EVENTS, HOLDEM_ACTIONS, HOLDEM_BETTING_ROUNDS,
-			cardService, $filter) {
+			cardService, $filter, handEvalService) {
 		// Instance variables
 		var self = this;
 		this.players = [];
@@ -563,10 +563,7 @@
 
 			// there need to be at least two players left
 			// in the hand
-			var numberOfNonFinishedPlayers = this.players.length - this.finishedPlayers.length;
-			var numberOfNonFoldedPlayers = numberOfNonFinishedPlayers - this.getCurrentHand().foldedPlayers.length;
-
-			return numberOfNonFoldedPlayers >= 2;
+			return getNonFoldedPlayersInCurrentHand().length >= 2;
 		};
 
 		/**
@@ -892,8 +889,63 @@
 			return !biggestCommitment || biggestCommitment.amount === 0;
 		};
 
+		this.isEveryBoardCardAssignedInCurrentHand = function() {
+			var board = this.getCurrentHand().board;
+
+			return board.flop[0] && board.flop[1] && board.flop[2] &&
+				board.turn && board.river;
+		};
+
 		this.evaluateShowdown = function() {
+			if (!this.doesHandRequireShowdown()) {
+				throw 'This hand does not require a showdown (yet).';
+			}
+
+			if (!this.isEveryBoardCardAssignedInCurrentHand()) {
+				throw 'Not all board cards are assigned in the current hand.';
+			}
+
+			// Collect board cards
+			var board = this.getCurrentHand().board;
+			var codifiedBoard = [];
 			
+			for (var i = 0; i < 3; i++) {
+				codifiedBoard.push(cardService.getCardShortHand(board.flop[i]));
+			}
+			codifiedBoard.push(cardService.getCardShortHand(board.turn));
+			codifiedBoard.push(cardService.getCardShortHand(board.river));
+
+			// Collect all hole cards of non-folded players
+			var nonFoldedPlayers = getNonFoldedPlayersInCurrentHand();
+			var codifiedHoleCards = [];
+
+			nonFoldedPlayers.forEach(function(playerIndex) {
+				var currentHoleCards = self.getHoleCardsOfPlayerInCurrentHand(playerIndex);
+
+				if (!currentHoleCards) {
+					throw 'Player ' + playerIndex + ' does not have hole cards assigned.';
+				}
+
+				var card1 = currentHoleCards[0];
+				var card2 = currentHoleCards[1];
+
+				var codified = {
+					playerIndex: playerIndex,
+					cardShortHands: [
+						cardService.getCardShortHand(card1),
+						cardService.getCardShortHand(card2)
+					]
+				};
+
+				codifiedHoleCards.push(codified);
+			});
+
+			// Make eval request
+			handEvalService.evaluateShowdown(codifiedHoleCards, codifiedBoard).then(function(data) {
+				console.info('game result: ', data);
+			}, function(err) {
+				console.info('error: ', err);
+			});
 		};
 
 		// Private utility functions
@@ -1355,6 +1407,20 @@
 			}
 			
 			return false;
+		}
+
+		function getNonFoldedPlayersInCurrentHand() {
+			var nonFolded = [];
+
+			self.players.forEach(function(current, playerIndex) {
+				if (self.finishedPlayers.indexOf(playerIndex) < 0) {
+					if (self.getCurrentHand().foldedPlayers.indexOf(playerIndex) < 0) {
+						nonFolded.push(playerIndex);
+					}
+				}
+			});
+
+			return nonFolded;
 		}
 	}]);
 

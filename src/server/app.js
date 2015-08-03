@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var holdemEvaluator = require('./lib/holdemEvaluator.js');
 
 var app = express();
 
@@ -32,12 +33,11 @@ app.get('/partials/:partialName', function(req, res) {
 
 app.post('/api/evaluate', function(req, res) {
 	var hands = req.body.hands;
+	var board = req.body.board;
 
-	console.info('hands:', hands);
+	var gameResult = holdemEvaluator.evaluate(hands, board);
 
-	res.status(200).json({
-		winner: 'everyone\'s a winner baby'
-	});
+	res.status(200).json(gameResult);
 });
 
 // Catch-all for non-matching URLs

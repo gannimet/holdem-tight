@@ -1,5 +1,5 @@
 describe('unit test for holdem game service', function() {
-	var gameService, $rootScope, HOLDEM_EVENTS, HOLDEM_BETTING_ROUNDS, HOLDEM_ACTIONS;
+	var gameService, handEvalService, $rootScope, HOLDEM_EVENTS, HOLDEM_BETTING_ROUNDS, HOLDEM_ACTIONS, $q;
 
 	// Load dependencies
 	beforeEach(module('holdemServices'));
@@ -8,7 +8,9 @@ describe('unit test for holdem game service', function() {
 	// Load the service under test
 	beforeEach(inject(function($injector) {
 		gameService = $injector.get('gameService');
+		handEvalService = $injector.get('handEvalService');
 		$rootScope = $injector.get('$rootScope');
+		$q = $injector.get('$q');
 		HOLDEM_EVENTS = $injector.get('HOLDEM_EVENTS');
 		HOLDEM_BETTING_ROUNDS = $injector.get('HOLDEM_BETTING_ROUNDS');
 		HOLDEM_ACTIONS = $injector.get('HOLDEM_ACTIONS');
@@ -1389,6 +1391,130 @@ describe('unit test for holdem game service', function() {
 				{ rank: '6', suit: 'diamonds' },
 				{ rank: 'jack', suit: 'clubs' }
 			)).not.toThrow();
+		});
+	});
+
+	describe('evaluating showdowns', function() {
+		describe('with showdown ready hand', function() {
+			beforeEach(function() {
+				gameService.addPlayer();
+				gameService.addPlayer();
+				gameService.addPlayer();
+				gameService.addPlayer();
+				gameService.startGame();
+
+				// Assign all necessary cards
+				gameService.assignHoleCardsToPlayer(0, { rank: '10', suit: 'hearts' }, { rank: '8', suit: 'clubs' });
+				gameService.assignHoleCardsToPlayer(1, { rank: 'queen', suit: 'spades' }, { rank: 'jack', suit: 'spades' });
+				gameService.assignHoleCardsToPlayer(2, { rank: 'ace', suit: 'hearts' }, { rank: '3', suit: 'spades' });
+				gameService.assignHoleCardsToPlayer(3, { rank: 'king', suit: 'diamonds' }, { rank: '6', suit: 'diamonds' });
+				gameService.assignFlopCards(
+					{ rank: 'jack', suit: 'diamonds' }, { rank: '4', suit: 'clubs' }, { rank: '9', suit: 'spades' }
+				);
+				gameService.assignTurnCard({ rank: 'ace', suit: 'diamonds' });
+				gameService.assignRiverCard({ rank: '3', suit: 'hearts' });
+
+				// Act of the way through the hand
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CALL,
+					amount: 20,
+					player: 3
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CALL,
+					amount: 20,
+					player: 0
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CALL,
+					amount: 10,
+					player: 1
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 2
+				});
+				gameService.advanceBettingRound();
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 1
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 2
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 3
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 0
+				});
+				gameService.advanceBettingRound();
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 1
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 2
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 3
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 0
+				});
+				gameService.advanceBettingRound();
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 1
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 2
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 3
+				});
+				gameService.recordAction({
+					action: HOLDEM_ACTIONS.CHECK,
+					player: 0
+				});
+
+				spyOn(handEvalService, 'evaluateShowdown').and.callFake(function(hands, board) {
+					return $q.defer().promise;
+				});
+			});
+
+			it('should correctly call hand evaluation service', function() {
+				expect(gameService.evaluateShowdown.bind(gameService)).not.toThrow();
+				expect(handEvalService.evaluateShowdown).toHaveBeenCalledWith(
+					[
+						{
+							playerIndex: 0,
+							cardShortHands: ['Th', '8c']
+						}, {
+							playerIndex: 1,
+							cardShortHands: ['Qs', 'Js']
+						}, {
+							playerIndex: 2,
+							cardShortHands: ['Ah', '3s']
+						}, {
+							playerIndex: 3,
+							cardShortHands: ['Kd', '6d']
+						}
+					], ['Jd', '4c', '9s', 'Ad', '3h']
+				);
+			});
+		});
+
+		describe('with hand not ready for showdown', function() {
+
 		});
 	});
 });
