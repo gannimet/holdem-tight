@@ -13,7 +13,7 @@ module.exports = {
 		}
 
 		var hoyleHands = undecorate(hoyleHandsDecorated);
-
+		
 		// Find out who won this thing
 		var winners = Hand.pickWinners(hoyleHands);
 
@@ -33,7 +33,7 @@ function undecorate(decoratedHands) {
 	var undecoratedHands = [];
 
 	for (var i = 0; i < decoratedHands.length; i++) {
-		undecoratedHands.push(decoratedHands.hoyleHand);
+		undecoratedHands.push(decoratedHands[i].hoyleHand);
 	}
 
 	return undecoratedHands;
