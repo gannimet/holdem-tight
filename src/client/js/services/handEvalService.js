@@ -7,7 +7,7 @@
 			function($http, $q) {
 
 		this.evaluateShowdown = function(hands, board) {
-			var deferred = $q.defer;
+			var deferred = $q.defer();
 
 			$http.post('/api/evaluate', {
 				hands: hands,
