@@ -36,10 +36,17 @@ module.exports = function(grunt) {
 				files: [
 					{
 						expand: true,
-						cwd: 'bower_components/alertify-js/build/css/',
-						src: ['alertify.css', 'themes/alertify-bootstrap-3.css'],
+						src: 'bower_components/alertify-js/build/css/alertify.css',
 						dest: 'static/css/',
 						flatten: true
+					}, {
+						expand: true,
+						src: 'bower_components/alertify-js/build/css/themes/bootstrap.css',
+						dest: 'static/css/',
+						flatten: true,
+						rename: function(dest, src) {
+							return 'static/css/alertify-bootstrap.css';
+						}
 					}, {
 						expand: true,
 						src: 'bower_components/alertify-js/build/alertify.min.js',
