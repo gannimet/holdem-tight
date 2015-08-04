@@ -892,8 +892,8 @@
 		this.isEveryBoardCardAssignedInCurrentHand = function() {
 			var board = this.getCurrentHand().board;
 
-			return board.flop[0] && board.flop[1] && board.flop[2] &&
-				board.turn && board.river;
+			return !!board.flop[0] && !!board.flop[1] && !!board.flop[2] &&
+				!!board.turn && !!board.river;
 		};
 
 		this.evaluateShowdown = function() {

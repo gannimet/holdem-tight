@@ -1394,6 +1394,52 @@ describe('unit test for holdem game service', function() {
 		});
 	});
 
+	describe('every board card assigned', function() {
+		beforeEach(function() {
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.startGame();
+		});
+
+		it('should return true if board is complete', function() {
+			gameService.assignFlopCards(
+				{ rank: '8', suit: 'diamonds' }, { rank: '6', suit: 'hearts' }, { rank: '9', suit: 'spades' }
+			);
+			gameService.assignTurnCard({ rank: '10', suit: 'clubs' });
+			gameService.assignRiverCard({ rank: '7', suit: 'spades' });
+
+			expect(gameService.isEveryBoardCardAssignedInCurrentHand()).toBe(true);
+		});
+
+		it('should return false if flop is incomplete', function() {
+			gameService.assignFlopCards(
+				{ rank: '8', suit: 'diamonds' }, null, { rank: '9', suit: 'spades' }
+			);
+			gameService.assignTurnCard({ rank: '10', suit: 'clubs' });
+			gameService.assignRiverCard({ rank: '7', suit: 'spades' });
+
+			expect(gameService.isEveryBoardCardAssignedInCurrentHand()).toBe(false);
+		});
+
+		it('should return false if turn is missing', function() {
+			gameService.assignFlopCards(
+				{ rank: '8', suit: 'diamonds' }, { rank: '6', suit: 'hearts' }, { rank: '9', suit: 'spades' }
+			);
+			gameService.assignRiverCard({ rank: '7', suit: 'spades' });
+
+			expect(gameService.isEveryBoardCardAssignedInCurrentHand()).toBe(false);
+		});
+
+		it('should return false if river is missing', function() {
+			gameService.assignFlopCards(
+				{ rank: '8', suit: 'diamonds' }, { rank: '6', suit: 'hearts' }, { rank: '9', suit: 'spades' }
+			);
+			gameService.assignTurnCard({ rank: '10', suit: 'clubs' });
+
+			expect(gameService.isEveryBoardCardAssignedInCurrentHand()).toBe(false);
+		});
+	});
+
 	describe('evaluating showdowns', function() {
 		describe('with showdown ready hand', function() {
 			beforeEach(function() {
@@ -1514,7 +1560,76 @@ describe('unit test for holdem game service', function() {
 		});
 
 		describe('with hand not ready for showdown', function() {
+			beforeEach(function() {
+				gameService.addPlayer();
+				gameService.addPlayer();
+				gameService.startGame();
+			});
 
+			it('should throw if there is still action required', function() {
+				expect(gameService.evaluateShowdown.bind(gameService)).toThrow();
+			});
+
+			describe('missing cards', function() {
+				beforeEach(function() {
+					gameService.recordAction({
+						player: 0,
+						action: HOLDEM_ACTIONS.CALL,
+						amount: 10
+					});
+					gameService.recordAction({
+						player: 1,
+						action: HOLDEM_ACTIONS.CHECK
+					});
+					gameService.advanceBettingRound();
+					gameService.recordAction({
+						player: 1,
+						action: HOLDEM_ACTIONS.CHECK
+					});
+					gameService.recordAction({
+						player: 0,
+						action: HOLDEM_ACTIONS.CHECK
+					});
+					gameService.advanceBettingRound();
+					gameService.recordAction({
+						player: 1,
+						action: HOLDEM_ACTIONS.CHECK
+					});
+					gameService.recordAction({
+						player: 0,
+						action: HOLDEM_ACTIONS.CHECK
+					});
+					gameService.advanceBettingRound();
+					gameService.recordAction({
+						player: 1,
+						action: HOLDEM_ACTIONS.CHECK
+					});
+					gameService.recordAction({
+						player: 0,
+						action: HOLDEM_ACTIONS.CHECK
+					});
+				});
+
+				it('should throw if action is complete but board cards are missing', function() {
+					gameService.assignHoleCardsToPlayer(0, { rank: 'king', suit: 'diamonds' }, { rank: 'queen', suit: 'clubs' });
+					gameService.assignHoleCardsToPlayer(1, { rank: 'jack', suit: 'clubs' }, { rank: '3', suit: 'hearts' });
+					gameService.assignFlopCards(
+						{ rank: '8', suit: 'diamonds' }, { rank: '6', suit: 'hearts' }, { rank: '9', suit: 'spades' }
+					);
+
+					expect(gameService.evaluateShowdown.bind(gameService)).toThrow();
+				});
+
+				it('should throw if action is complete but hole cards are missing', function() {
+					gameService.assignFlopCards(
+						{ rank: '8', suit: 'diamonds' }, { rank: '6', suit: 'hearts' }, { rank: '9', suit: 'spades' }
+					);
+					gameService.assignTurnCard({ rank: '10', suit: 'clubs' });
+					gameService.assignRiverCard({ rank: '7', suit: 'spades' });
+
+					expect(gameService.evaluateShowdown.bind(gameService)).toThrow();
+				});
+			});
 		});
 	});
 });
