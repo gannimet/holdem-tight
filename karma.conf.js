@@ -17,6 +17,7 @@ module.exports = function(config) {
         'bower_components/angular/angular.js',
         'bower_components/angular-mocks/angular-mocks.js',
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
+        'bower_components/alertify-js/build/alertify.min.js',
         './node_modules/phantomjs-polyfill/bind-polyfill.js',
         {
             pattern: 'static/html/*.html',

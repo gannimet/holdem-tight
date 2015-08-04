@@ -16,7 +16,7 @@
 			},
 
 			infoMessage: function(message) {
-				alertify.info(message);
+				alertify.message(message);
 			},
 
 			promptForNewPlayer: function(callback) {
