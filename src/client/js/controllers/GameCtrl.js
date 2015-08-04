@@ -3,8 +3,8 @@
 	var holdemControllers = angular.module('holdemControllers');
 
 	holdemControllers.controller('GameCtrl',
-			['$scope', 'gameService', 'uiService', 'HOLDEM_EVENTS', '$modal',
-			function($scope, gameService, uiService, HOLDEM_EVENTS, $modal) {
+			['$scope', 'gameService', 'uiService', 'HOLDEM_EVENTS', '$modal', '$filter',
+			function($scope, gameService, uiService, HOLDEM_EVENTS, $modal, $filter) {
 		$scope.gameStarted = false;
 		$scope.handNr = null;
 		$scope.currentBlinds = gameService.currentBlinds;
@@ -51,7 +51,18 @@
 		};
 
 		$scope.evaluateShowdown = function() {
-			gameService.evaluateShowdown();
+			gameService.evaluateShowdown().then(function(data) {
+				var tie = data.tie;
+				var winningHand = data.winningHandName;
+				var winningPlayerNames = [];
+				data.winningPlayerIndices.forEach(function(playerIndex) {
+					winningPlayerNames.push(gameService.players[playerIndex].name);
+				});
+
+				uiService.infoMessage($filter('winnersMessage')(tie, winningPlayerNames, winningHand));
+			}, function(err) {
+				uiService.errorMessage(err);
+			});
 		};
 
 		/*

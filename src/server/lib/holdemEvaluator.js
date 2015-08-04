@@ -19,7 +19,7 @@ module.exports = {
 
 		// Construct game result
 		var gameResult = {
-			tie: winners.length !== 1,
+			tie: winners.length > 1,
 			winningHandName: winners[0].name,
 			winningPlayerIndices: getWinningPlayers(winners, hoyleHandsDecorated)
 		};

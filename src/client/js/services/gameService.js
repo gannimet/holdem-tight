@@ -941,11 +941,7 @@
 			});
 
 			// Make eval request
-			handEvalService.evaluateShowdown(codifiedHoleCards, codifiedBoard).then(function(data) {
-				console.info('game result: ', data);
-			}, function(err) {
-				console.info('error: ', err);
-			});
+			return handEvalService.evaluateShowdown(codifiedHoleCards, codifiedBoard);
 		};
 
 		// Private utility functions
