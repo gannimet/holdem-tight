@@ -941,7 +941,11 @@
 			});
 
 			// Make eval request
-			return handEvalService.evaluateShowdown(codifiedHoleCards, codifiedBoard);
+			handEvalService.evaluateShowdown(codifiedHoleCards, codifiedBoard).then(function(data) {
+				
+			}, function(err) {
+				
+			});
 		};
 
 		// Private utility functions
