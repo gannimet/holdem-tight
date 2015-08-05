@@ -1,15 +1,27 @@
 describe('uiService', function() {
-	var uiService;
+	var uiService, $modal, $q, $rootScope;
+
+	var mockModalInstance = {};
+	var mockPlayer = { name: 'Hans', stack: 2000 };
 
 	beforeEach(module('holdemServices'));
 	beforeEach(module('ui.bootstrap'));
 
 	beforeEach(inject(function($injector) {
 		uiService = $injector.get('uiService');
+		$modal = $injector.get('$modal');
+		$q = $injector.get('$q');
+		$rootScope = $injector.get('$rootScope').$new();
 
 		spyOn(alertify, 'success');
 		spyOn(alertify, 'error');
 		spyOn(alertify, 'message');
+
+		var deferred = $q.defer();
+		deferred.resolve(mockPlayer);
+		mockModalInstance.result = deferred.promise;
+
+		spyOn($modal, 'open').and.returnValue(mockModalInstance);
 	}));
 
 	describe('alertify messages', function() {
@@ -39,6 +51,52 @@ describe('uiService', function() {
 	});
 
 	describe('prompts', function() {
-		// TODO
+		beforeEach(function() {
+			$modal.open.calls.reset();
+		});
+
+		it('should prompt for new player and call callback', function() {
+			var mockCallbackObj = {
+				callback: function() {}
+			};
+
+			spyOn(mockCallbackObj, 'callback');
+
+			uiService.promptForNewPlayer(mockCallbackObj.callback);
+
+			$rootScope.$apply();
+
+			expect($modal.open).toHaveBeenCalledWith({
+				animation: true,
+				templateUrl: '/partials/add-player',
+				controller: 'AddPlayerCtrl',
+				size: 'sm',
+				backdrop: true
+			});
+			expect(mockCallbackObj.callback).toHaveBeenCalledWith(mockPlayer);
+		});
+
+		it('should prompt for hole cards', function() {
+			uiService.promptForHoleCards(2, { rank: 'ace', suit: 'clubs' }, { rank: '10', suit: 'hearts' });
+
+			var args = $modal.open.calls.mostRecent().args[0];
+			
+			expect(args.controller).toEqual('HoleCardsCtrl');
+			expect(args.resolve.player()).toEqual(2);
+			expect(args.resolve.card1()).toEqual({ rank: 'ace', suit: 'clubs' });
+			expect(args.resolve.card2()).toEqual({ rank: '10', suit: 'hearts' });
+		});
+
+		it('should prompt for community cards', function() {
+			uiService.promptForCommunityCards('turn', { rank: 'ace', suit: 'clubs' });
+
+			var args = $modal.open.calls.mostRecent().args[0];
+			
+			expect(args.controller).toEqual('CommunityCardsCtrl');
+			expect(args.resolve.street()).toEqual('turn');
+			expect(args.resolve.card1()).toEqual({ rank: 'ace', suit: 'clubs' });
+			expect(args.resolve.card2()).not.toBeDefined();
+			expect(args.resolve.card3()).not.toBeDefined();
+		});
 	});
 });
