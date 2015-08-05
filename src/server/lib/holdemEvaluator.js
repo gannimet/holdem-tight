@@ -5,7 +5,7 @@ module.exports = {
 	evaluate: function(hands, board) {
 		var hoyleHandsDecorated = [];
 		var finalRanking = [];
-		var alreadyRankedIndices = [];
+		var winningHandNames = [];
 
 		for (var i = 0; i < hands.length; i++) {
 			hoyleHandsDecorated.push({
@@ -19,6 +19,9 @@ module.exports = {
 			
 			// Find out who won this thing
 			var winners = Hand.pickWinners(hoyleHands);
+
+			// Add winning hand name to array
+			winningHandNames.push(winners[0].name);
 			
 			// Add winners to the ranking
 			var winningIndices = getWinningPlayerIndices(winners, hoyleHandsDecorated);
@@ -42,7 +45,8 @@ module.exports = {
 
 		// Construct game result
 		var gameResult = {
-			playerRanking: finalRanking
+			playerRanking: finalRanking,
+			winningHandNames: winningHandNames
 		};
 
 		return gameResult;
