@@ -1,5 +1,5 @@
 describe('unit test for holdem game service', function() {
-	var gameService, handEvalService, $rootScope, HOLDEM_EVENTS, HOLDEM_BETTING_ROUNDS, HOLDEM_ACTIONS, $q;
+	var gameService, handEvalService, $rootScope, HOLDEM_EVENTS, HOLDEM_BETTING_ROUNDS, HOLDEM_ACTIONS, $q, $timeout;
 
 	// Load dependencies
 	beforeEach(module('holdemServices'));
@@ -11,6 +11,7 @@ describe('unit test for holdem game service', function() {
 		handEvalService = $injector.get('handEvalService');
 		$rootScope = $injector.get('$rootScope');
 		$q = $injector.get('$q');
+		$timeout = $injector.get('$timeout');
 		HOLDEM_EVENTS = $injector.get('HOLDEM_EVENTS');
 		HOLDEM_BETTING_ROUNDS = $injector.get('HOLDEM_BETTING_ROUNDS');
 		HOLDEM_ACTIONS = $injector.get('HOLDEM_ACTIONS');
@@ -1442,6 +1443,9 @@ describe('unit test for holdem game service', function() {
 
 	describe('evaluating showdowns', function() {
 		describe('with showdown ready hand', function() {
+			var testRanking = [3, [1, 2], 0];
+			var testHandNames = ["Straight", "One pair", "One pair"];
+
 			beforeEach(function() {
 				gameService.addPlayer();
 				gameService.addPlayer();
@@ -1533,8 +1537,18 @@ describe('unit test for holdem game service', function() {
 				});
 
 				spyOn(handEvalService, 'evaluateShowdown').and.callFake(function(hands, board) {
-					return $q.defer().promise;
+					var deferred = $q.defer();
+
+					deferred.resolve({
+						playerRanking: testRanking,
+						winningHandNames: testHandNames
+					});
+
+					return deferred.promise;
 				});
+
+				spyOn($rootScope, '$broadcast');
+				spyOn(gameService, 'resolveCurrentHandByShowdown');
 			});
 
 			it('should correctly call hand evaluation service', function() {
@@ -1556,6 +1570,30 @@ describe('unit test for holdem game service', function() {
 						}
 					], ['Jd', '4c', '9s', 'Ad', '3h']
 				);
+			});
+
+			it('should have called resolve method internally', function() {
+				gameService.evaluateShowdown();
+
+				$rootScope.$apply();
+
+				expect(gameService.resolveCurrentHandByShowdown).toHaveBeenCalledWith(testRanking);
+			});
+
+			it('should have set showdown info on current hand', function() {
+				var expectedShowdownInfo = [
+					"One pair", "One pair", "One pair", "Straight"
+				];
+
+				gameService.evaluateShowdown();
+
+				$rootScope.$apply();
+
+				var actualShowdownInfo = gameService.getCurrentHand().showdown;
+				expect(actualShowdownInfo).toBeDefined();
+				expect(actualShowdownInfo).toEqual(expectedShowdownInfo);
+
+				expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.SHOWDOWN_EVALUATED, expectedShowdownInfo);
 			});
 		});
 

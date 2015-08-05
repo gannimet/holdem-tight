@@ -51,18 +51,7 @@
 		};
 
 		$scope.evaluateShowdown = function() {
-			gameService.evaluateShowdown().then(function(data) {
-				var tie = data.tie;
-				var winningHand = data.winningHandName;
-				var winningPlayerNames = [];
-				data.winningPlayerIndices.forEach(function(playerIndex) {
-					winningPlayerNames.push(gameService.players[playerIndex].name);
-				});
-
-				uiService.infoMessage($filter('winnersMessage')(tie, winningPlayerNames, winningHand));
-			}, function(err) {
-				uiService.errorMessage(err);
-			});
+			gameService.evaluateShowdown();
 		};
 
 		/*

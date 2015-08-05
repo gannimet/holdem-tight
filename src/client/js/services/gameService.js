@@ -942,9 +942,35 @@
 
 			// Make eval request
 			handEvalService.evaluateShowdown(codifiedHoleCards, codifiedBoard).then(function(data) {
-				
+				var ranking = data.playerRanking;
+				var handNames = data.winningHandNames;
+
+				self.resolveCurrentHandByShowdown(ranking);
+
+				// Add showdown information to current hand
+				var showdownInfo = [];
+
+				for (var i = 0; i < ranking.length; i++) {
+					var rank = ranking[i];
+
+					if (Array.isArray(rank)) {
+						for (var j = 0; j < rank.length; j++) {
+							showdownInfo[rank[j]] = handNames[i];
+						}
+					} else {
+						showdownInfo[rank] = handNames[i];
+					}
+				}
+
+				self.getCurrentHand().showdown = showdownInfo;
+
+				// Tell the world about the evaluated showdown
+				$rootScope.$broadcast(HOLDEM_EVENTS.SHOWDOWN_EVALUATED, showdownInfo);
 			}, function(err) {
-				
+				throw {
+					message: 'Error evaluating the showdown.',
+					cause: err
+				};
 			});
 		};
 

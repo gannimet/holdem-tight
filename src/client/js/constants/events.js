@@ -18,6 +18,7 @@
 		FLOP_CARDS_ASSIGNED: 'flopCardsAssigned',
 		TURN_CARD_ASSIGNED: 'turnCardAssigned',
 		RIVER_CARD_ASSIGNED: 'riverCardAssigned',
+		SHOWDOWN_EVALUATED: 'showdownEvaluated'
 	});
 
 })(window);
