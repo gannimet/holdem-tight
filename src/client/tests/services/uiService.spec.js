@@ -1,17 +1,23 @@
 describe('uiService', function() {
-	var uiService, $modal, $q, $rootScope;
+	var uiService, $modal, $q, $rootScope, cardService;
 
 	var mockModalInstance = {};
 	var mockPlayer = { name: 'Hans', stack: 2000 };
 
 	beforeEach(module('holdemServices'));
 	beforeEach(module('ui.bootstrap'));
+	beforeEach(module(function($provide) {
+		$provide.value('cardNameFilter', function(card) {
+			return 'card-name';
+		});
+	}));
 
 	beforeEach(inject(function($injector) {
 		uiService = $injector.get('uiService');
 		$modal = $injector.get('$modal');
 		$q = $injector.get('$q');
 		$rootScope = $injector.get('$rootScope').$new();
+		cardService = $injector.get('cardService');
 
 		spyOn(alertify, 'success');
 		spyOn(alertify, 'error');
@@ -97,6 +103,25 @@ describe('uiService', function() {
 			expect(args.resolve.card1()).toEqual({ rank: 'ace', suit: 'clubs' });
 			expect(args.resolve.card2()).not.toBeDefined();
 			expect(args.resolve.card3()).not.toBeDefined();
+		});
+	});
+
+	describe('hole card tooltips', function() {
+		beforeEach(function() {
+			spyOn(cardService, 'getCardImagePath').and.returnValue('card.png');
+		});
+
+		it('should construct correct html string', function() {
+			var actualTooltip = uiService.getHoleCardTooltip([
+				{ rank: 'ace', suit: 'clubs' }, { rank: '10', suit: 'hearts' }
+			]);
+
+			var expectedTooltip = $('<img class="tooltip-thumbnail" src="card.png" alt="card-name" />' +
+				'<img class="tooltip-thumbnail" src="card.png" alt="card-name" />');
+
+			expect(actualTooltip.length).toEqual(2);
+			expect(actualTooltip[0].outerHTML).toEqual(expectedTooltip[0].outerHTML);
+			expect(actualTooltip[1].outerHTML).toEqual(expectedTooltip[1].outerHTML);
 		});
 	});
 });
