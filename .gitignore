@@ -10,3 +10,4 @@ static/css/
 static/html/
 npm-debug.log
 eval_hands_requests/
+coverage/
