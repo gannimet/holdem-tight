@@ -211,6 +211,11 @@ module.exports = function(grunt) {
 					}
 				]
 			}
+		},
+		karma: {
+			unit: {
+				configFile: 'karma.conf.js'
+			}
 		}
 	});
 
@@ -223,10 +228,12 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-jsdoc');
+	grunt.loadNpmTasks('grunt-karma');
 
 	var buildTasks = ['copy', 'jshint', 'concat', 'uglify', 'less', 'clean:concatenated', 'jade'];
 
 	grunt.registerTask('build', buildTasks);
 	grunt.registerTask('default', ['build']);
 	grunt.registerTask('doc', ['jsdoc']);
+	grunt.registerTask('test', ['karma']);
 };
