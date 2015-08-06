@@ -107,8 +107,10 @@ describe('uiService', function() {
 	});
 
 	describe('hole card tooltips', function() {
+		var dummyCard = '/img/10_of_clubs.svg';
+
 		beforeEach(function() {
-			spyOn(cardService, 'getCardImagePath').and.returnValue('card.png');
+			spyOn(cardService, 'getCardImagePath').and.returnValue(dummyCard);
 		});
 
 		it('should construct correct html string', function() {
@@ -116,12 +118,17 @@ describe('uiService', function() {
 				{ rank: 'ace', suit: 'clubs' }, { rank: '10', suit: 'hearts' }
 			]);
 
-			var expectedTooltip = $('<img class="tooltip-thumbnail" src="card.png" alt="card-name" />' +
-				'<img class="tooltip-thumbnail" src="card.png" alt="card-name" />');
+			var expectedTooltip = $('<img class="tooltip-thumbnail" src="' + dummyCard + '" alt="card-name" />' +
+				'<img class="tooltip-thumbnail" src="' + dummyCard + '" alt="card-name" />');
 
 			expect(actualTooltip.length).toEqual(2);
 			expect(actualTooltip[0].outerHTML).toEqual(expectedTooltip[0].outerHTML);
 			expect(actualTooltip[1].outerHTML).toEqual(expectedTooltip[1].outerHTML);
+		});
+
+		it('should return placeholder string if no hole cards given', function() {
+			expect(uiService.getHoleCardTooltip(undefined)).toEqual('No hole cards assigned');
+			expect(uiService.getHoleCardTooltip([])).toEqual('No hole cards assigned');
 		});
 	});
 });
