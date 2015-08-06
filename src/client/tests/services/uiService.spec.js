@@ -101,8 +101,8 @@ describe('uiService', function() {
 			expect(args.controller).toEqual('CommunityCardsCtrl');
 			expect(args.resolve.street()).toEqual('turn');
 			expect(args.resolve.card1()).toEqual({ rank: 'ace', suit: 'clubs' });
-			expect(args.resolve.card2()).not.toBeDefined();
-			expect(args.resolve.card3()).not.toBeDefined();
+			expect(args.resolve.card2()).toBeUndefined();
+			expect(args.resolve.card3()).toBeUndefined();
 		});
 	});
 
@@ -129,6 +129,59 @@ describe('uiService', function() {
 		it('should return placeholder string if no hole cards given', function() {
 			expect(uiService.getHoleCardTooltip(undefined)).toEqual('No hole cards assigned');
 			expect(uiService.getHoleCardTooltip([])).toEqual('No hole cards assigned');
+		});
+	});
+
+	describe('confirm dialogs', function() {
+		beforeEach(function() {
+			spyOn(alertify, 'set');
+			spyOn(alertify, 'confirm').and.callFake(function(message, callback) {
+				if (message === 'positive') {
+					callback('positive');
+				} else {
+					callback();
+				}
+			});
+
+			alertify.set.calls.reset();
+			alertify.confirm.calls.reset();
+		});
+
+		it('should set the correct button texts on alertify', function() {
+			uiService.confirmDecision('message', 'okText', 'cancelText', function() {}, function() {});
+
+			expect(alertify.set).toHaveBeenCalledWith({
+				labels: {
+					ok: 'okText',
+					cancel: 'cancelText'
+				}
+			});
+		});
+
+		describe('callbacks', function() {
+			var success, error;
+
+			beforeEach(function() {
+				success = jasmine.createSpy('success');
+				error = jasmine.createSpy('error');
+
+				success.calls.reset();
+				error.calls.reset();
+			});
+
+			it('should call success callback', function() {
+				uiService.confirmDecision('positive', 'ok', 'cancel', success, error);
+
+				expect(success).toHaveBeenCalled();
+				expect(error).not.toHaveBeenCalled();
+			});
+
+			it('should call error callback', function() {
+				uiService.confirmDecision('negative', 'ok', 'cancel', success, error);
+
+				expect(success).not.toHaveBeenCalled();
+				expect(error).toHaveBeenCalled();
+			});
 		});
 	});
 });
