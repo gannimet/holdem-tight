@@ -19,31 +19,48 @@ describe('unit test for holdem game service', function() {
 
 	describe('game mechanics', function() {
 		it('should perform a complete 5 handed poker game', function() {
+			// Test notifications
+			spyOn($rootScope, '$broadcast').and.callThrough();
+
 			// Add players
 			expect(gameService.players.length).toBe(0);
 			gameService.addPlayer({
 				name: 'Bernd',
 				stack: 1500
 			});
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_ADDED, [{ name: 'Bernd', stack: 1500 }]);
 			expect(gameService.players.length).toBe(1);
+			
 			gameService.addPlayer({
 				name: 'Hans',
 				stack: 4000
 			});
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_ADDED, [
+				{ name: 'Bernd', stack: 1500 }, { name: 'Hans', stack: 4000 }
+			]);
 			expect(gameService.players.length).toBe(2);
+			
 			gameService.addPlayer({
 				name: 'Raimund',
 				stack: 1500
 			});
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_ADDED, [
+				{ name: 'Bernd', stack: 1500 }, { name: 'Hans', stack: 4000 }, { name: 'Raimund', stack: 1500 }
+			]);
 			expect(gameService.players.length).toBe(3);
 
 			// Remove players
 			gameService.deletePlayer(1);
+			expect($rootScope.$broadcast).toHaveBeenCalledWith(HOLDEM_EVENTS.PLAYER_DELETED, [
+				{ name: 'Bernd', stack: 1500 }, { name: 'Raimund', stack: 1500 }
+			]);
 			expect(gameService.players.length).toBe(2);
 			expect(gameService.players[0].name).toEqual('Bernd');
 			expect(gameService.players[0].stack).toEqual(1500);
 			expect(gameService.players[1].name).toEqual('Raimund');
 			expect(gameService.players[1].stack).toEqual(1500);
+
+			$rootScope.$broadcast.calls.reset();
 
 			// And add some players again so we have a proper game
 			gameService.addPlayer({
@@ -60,9 +77,7 @@ describe('unit test for holdem game service', function() {
 			});
 
 			expect(gameService.players.length).toBe(5);
-
-			// Test notifications
-			spyOn($rootScope, '$broadcast').and.callThrough();
+			$rootScope.$broadcast.calls.reset();
 
 			expect(gameService.startGame.bind(gameService)).not.toThrow();
 
@@ -1668,6 +1683,24 @@ describe('unit test for holdem game service', function() {
 					expect(gameService.evaluateShowdown.bind(gameService)).toThrow();
 				});
 			});
+		});
+	});
+
+	describe('get previous hand', function() {
+		it('should return the hand previous to the current one', function() {
+			gameService.addPlayer();
+			gameService.addPlayer();
+			gameService.startGame();
+
+			// Leave a mark by which we can recognize the hand later on
+			gameService.assignTurnCard({ rank: 'jack', suit: 'diamonds' });
+
+			expect(gameService.getPreviousHand()).toBeNull();
+
+			gameService.nextHand();
+
+			expect(gameService.getPreviousHand()).not.toBeNull();
+			expect(gameService.getPreviousHand().board.turn).toEqual({ rank: 'jack', suit: 'diamonds' });
 		});
 	});
 });
