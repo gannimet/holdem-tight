@@ -23,5 +23,6 @@ describe('Filter: playerAction', function() {
 		expect(playerActionFilter(raise)).toEqual('raise 300');
 		expect(playerActionFilter(check)).toEqual('check');
 		expect(playerActionFilter(fold)).toEqual('fold');
+		expect(playerActionFilter(null)).toEqual('');
 	});
 });
