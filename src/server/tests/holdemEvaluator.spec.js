@@ -1,7 +1,8 @@
 var holdemEvaluator = require('../lib/holdemEvaluator');
+var should = require('should');
 
 describe('holdemEvaluator', function() {
-	var hand1, hand2, hand3, hand4, hand5, board;
+	var hand1, hand2, hand3, hand4, hand5, hand6, board;
 
 	beforeEach(function() {
 		hand1 = { playerIndex: 0, cardShortHands: ['2s', '6c'] };
@@ -14,9 +15,9 @@ describe('holdemEvaluator', function() {
 		board = ['8h', '2h', 'Ks', 'Ad', 'Ah'];
 	});
 
-	it('should correctly evaluate hands', function() {
-		var gameResult = holdemEvaluator.evaluate([hand1, hand2, hand3, hand4, hand5], board);
+	it('should correctly evaluate hands out of 5', function() {
+		var gameResult = holdemEvaluator.evaluate([hand1, hand2, hand3, hand4, hand5, hand6], board);
 
-		console.info('gameResult:', gameResult);
+		gameResult.playerRanking.should.eql([5, 4, 2, 3, 0, 1]);
 	});
 });

@@ -216,6 +216,14 @@ module.exports = function(grunt) {
 			unit: {
 				configFile: 'karma.conf.js'
 			}
+		},
+		mochaTest: {
+			test: {
+				options: {
+					reporter: 'spec'
+				},
+				src: ['src/server/tests/**/*.js']
+			}
 		}
 	});
 
@@ -229,11 +237,14 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-jsdoc');
 	grunt.loadNpmTasks('grunt-karma');
+	grunt.loadNpmTasks('grunt-mocha-test');
 
 	var buildTasks = ['copy', 'jshint', 'concat', 'uglify', 'less', 'clean:concatenated', 'jade'];
 
 	grunt.registerTask('build', buildTasks);
 	grunt.registerTask('default', ['build']);
 	grunt.registerTask('doc', ['jsdoc']);
-	grunt.registerTask('test', ['karma']);
+	grunt.registerTask('test', ['karma:unit']);
+	grunt.registerTask('test-frontend', ['karma:unit']);
+	grunt.registerTask('test-backend', ['mochaTest']);
 };
