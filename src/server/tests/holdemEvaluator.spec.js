@@ -18,6 +18,7 @@ describe('holdemEvaluator', function() {
 	it('should correctly evaluate hands out of 5', function() {
 		var gameResult = holdemEvaluator.evaluate([hand1, hand2, hand3, hand4, hand5, hand6], board);
 
-		gameResult.playerRanking.should.eql([5, 4, 2, 3, 0, 1]);
+		gameResult.should.have.a.property('playerRanking', [5, 4, 2, 3, 0, 1]);
+		gameResult.should.have.a.property('winningHandNames', ['Flush', 'Three of a kind', 'Two pair', 'Two pair', 'Two pair', 'One pair']);
 	});
 });
