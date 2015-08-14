@@ -63,10 +63,10 @@ describe('/partials/:partialName', function() {
 			});
 	});
 
-	xit('produces 404 on non-existent partial', function(done) {
+	it('produces 500 on non-existent partial', function(done) {
 		api
-			.get('/partials/cardpicker')
-			.expect(404)
+			.get('/partials/hurz')
+			.expect(500)
 			.end(function(err, res) {
 				if (err) {
 					return done(err);
