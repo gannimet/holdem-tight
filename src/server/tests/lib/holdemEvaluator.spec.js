@@ -1,4 +1,4 @@
-var holdemEvaluator = require('../lib/holdemEvaluator');
+var holdemEvaluator = require('../../lib/holdemEvaluator');
 var should = require('should');
 
 describe('holdemEvaluator', function() {

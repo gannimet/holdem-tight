@@ -36,7 +36,8 @@
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17",
     "phantomjs-polyfill": "0.0.1",
-    "should": "^7.0.3"
+    "should": "^7.0.3",
+    "supertest": "~1.0.1"
   },
   "dependencies": {
     "express": "^4.10.0",
