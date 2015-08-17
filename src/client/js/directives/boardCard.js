@@ -19,9 +19,7 @@
 					if (!$scope.card) {
 						return defaultImagePath;
 					} else {
-						return cardService.getCardImagePath(
-							$scope.card.rank, $scope.card.suit
-						);
+						return cardService.getCardImagePath($scope.card.rank, $scope.card.suit);
 					}
 				};
 			}]
