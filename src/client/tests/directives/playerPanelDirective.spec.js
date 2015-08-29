@@ -74,33 +74,12 @@ describe('unit test for playerPanel directive', function() {
 	});
 
 	describe('test behavior after game start', function() {
-		var mockConfigObj = {};
-
 		beforeEach(function() {
-			spyOn($.fn, 'tooltipster').and.callFake(function(config) {
-				if (angular.isFunction(config.functionBefore)) {
-					mockConfigObj.functionBefore = config.functionBefore;
-					console.log('1');
-					spyOn(mockConfigObj, 'functionBefore').and.callFake(function() {
-						console.log('called');
-					});
-				}
-			});
-
 			gameService.addPlayer({ name: 'Dankwart', stack: 2000 });
 			gameService.addPlayer({ name: 'Soraya', stack: 2000 });
 			gameService.startGame();
 			$timeout.flush();
 			$scope.$apply();
-		});
-
-		it('should have called mockConfigObj', function(done) {
-			$timeout(function() {
-				console.log('2');
-				expect(mockConfigObj.functionBefore).toHaveBeenCalled();
-				console.log('3');
-				done();
-			});
 		});
 
 		it('should display panel information', function() {
@@ -120,6 +99,32 @@ describe('unit test for playerPanel directive', function() {
 			expect(element.find('.raise-button')).not.toBeDisabled();
 			expect(element.find('.raise-amount-txt')).not.toBeDisabled();
 			expect(element.find('.raise-amount-txt')).toBeFocused();
+		});
+
+		describe('test tooltip behavior', function() {
+			var tooltipsterConfig, continueTooltipster, origin;
+
+			beforeEach(function() {
+				spyOn($.fn, 'tooltipster').and.callFake(function(config) {
+					tooltipsterConfig = config;
+				});
+				
+				continueTooltipster = jasmine.createSpy('continueTooltipster');
+				origin = jasmine.createSpyObj('origin', ['tooltipster']);
+
+				gameService.addPlayer({ name: 'Dankwart', stack: 2000 });
+				gameService.addPlayer({ name: 'Soraya', stack: 2000 });
+				gameService.startGame();
+				$timeout.flush();
+				$scope.$apply();
+			});
+
+			it('should have called mockConfigObj', function() {
+				tooltipsterConfig.functionBefore(origin, continueTooltipster);
+				
+				expect(continueTooltipster).toHaveBeenCalled();
+				expect(origin.tooltipster).toHaveBeenCalledWith('content', 'No hole cards assigned');
+			});
 		});
 
 		describe('test behavior after call', function() {
